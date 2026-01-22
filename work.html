@@ -2,53 +2,77 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
+<title>Infinix Worker</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Infinix Worker - Work</title>
-<link rel="stylesheet" href="style.css">
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+body{
+  font-family: Arial;
+  background:#f2f2f2;
+  text-align:center;
+}
+header{
+  background:#2e8b57;
+  color:white;
+  padding:15px;
+}
+button{
+  padding:12px 25px;
+  font-size:16px;
+  border:none;
+  border-radius:6px;
+  background:#2e8b57;
+  color:white;
+  margin:10px;
+}
+#rewardBtn{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:red;
+}
+</style>
 </head>
 <body>
 
-<header><h1>Infinix Worker</h1></header>
+<header>
+<h2>Infinix Worker</h2>
+</header>
 
-<main>
-  <button id="startWorkBtn">Start Work</button>
-  <p>Balance: <span id="balance">0</span> ৳</p>
-  <div id="floatingBtn"></div>
+<h3>Balance: <span id="balance">0</span> ৳</h3>
 
-  <div class="banner">
-    <iframe src="https://www.profitablecpmrate.com/28439125" frameborder="0"></iframe>
-  </div>
-</main>
+<button id="startWorkBtn">Start Work</button>
+
+<div id="rewardArea"></div>
 
 <script>
-const tg = window.Telegram.WebApp;
-tg.expand();
-
-let balance = 0;
 let clickCount = 0;
+let balance = 0;
 
-function openAd() {
+// Start Work Button
+document.getElementById("startWorkBtn").onclick = function () {
   window.open("https://www.profitablecpmrate.com/28439125", "_blank");
-}
-
-document.getElementById("startWorkBtn").onclick = () => {
-  openAd();
   clickCount++;
-  if(clickCount >= 20) {
-    document.getElementById("floatingBtn").innerHTML = 
-      '<button id="rewardBtn">Watch Reward Ad (+5৳)</button>';
-    document.getElementById("rewardBtn").onclick = () => {
-      openAd();
-      balance += 5;
-      document.getElementById("balance").innerText = balance;
-      document.getElementById("floatingBtn").innerHTML = "";
-    };
+
+  if (clickCount >= 20) {
+    document.getElementById("rewardArea").innerHTML = `
+      <button id="rewardBtn">Watch Reward Ad (+5৳)</button>
+    `;
+    document.getElementById("rewardBtn").onclick = rewardAd;
     clickCount = 0;
   }
 };
+
+// Reward Button
+function rewardAd() {
+  window.open("https://www.profitablecpmrate.com/28439125", "_blank");
+  balance += 5;
+  document.getElementById("balance").innerText = balance;
+  document.getElementById("rewardArea").innerHTML = "";
+}
 </script>
 
 </body>
 </html>
+
+
 

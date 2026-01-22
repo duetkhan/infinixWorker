@@ -1,1 +1,1 @@
-# infinixWorker
+# InfinixWorker

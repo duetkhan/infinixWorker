@@ -1,70 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Infinix Worker - Work</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-  <!-- Adsterra Banner -->
-  <script>
-    (function(){
-      var ad = document.createElement('script');
-      ad.type = 'text/javascript';
-      ad.async = true;
-      ad.src = 'https://yoursite.adsterra.com/your-zone-id.js'; // Replace with your Adsterra Zone ID
-      document.body.appendChild(ad);
-    })();
-  </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infinix Worker - Work</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-  <header>
-    <h1>Infinix Worker</h1>
-  </header>
 
-  <main>
-    <h2>Start Working!</h2>
-    <button id="startWorkBtn">Start Work</button>
+<header><h1>Infinix Worker</h1></header>
 
-    <div id="floatingBtnContainer"></div>
-    <p>Balance: <span id="balance">0</span> ৳</p>
+<main>
+  <button id="startWorkBtn">Start Work</button>
+  <p>Balance: <span id="balance">0</span> ৳</p>
+  <div id="floatingBtn"></div>
 
-    <div id="adsterra-banner"></div>
-  </main>
+  <div class="banner">
+    <iframe src="https://www.profitablecpmrate.com/28439125" frameborder="0"></iframe>
+  </div>
+</main>
 
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
+<script>
+const tg = window.Telegram.WebApp;
+tg.expand();
 
-    let balance = 0;
-    let adCount = 0;
+let balance = 0;
+let clickCount = 0;
 
-    const balanceEl = document.getElementById('balance');
-    const floatingContainer = document.getElementById('floatingBtnContainer');
+function openAd() {
+  window.open("https://www.profitablecpmrate.com/28439125", "_blank");
+}
 
-    function updateBalance(amount) {
-      balance += amount;
-      balanceEl.innerText = balance;
-    }
+document.getElementById("startWorkBtn").onclick = () => {
+  openAd();
+  clickCount++;
+  if(clickCount >= 20) {
+    document.getElementById("floatingBtn").innerHTML = 
+      '<button id="rewardBtn">Watch Reward Ad (+5৳)</button>';
+    document.getElementById("rewardBtn").onclick = () => {
+      openAd();
+      balance += 5;
+      document.getElementById("balance").innerText = balance;
+      document.getElementById("floatingBtn").innerHTML = "";
+    };
+    clickCount = 0;
+  }
+};
+</script>
 
-    function showFloatingButton() {
-      floatingContainer.innerHTML = '<button id="floatingBtn">Watch Rewarded Ad (+5 ৳)</button>';
-      document.getElementById('floatingBtn').addEventListener('click', () => {
-        // Future: replace with Adsterra rewarded popup code
-        updateBalance(5);
-        floatingContainer.innerHTML = '';
-      });
-    }
-
-    document.getElementById('startWorkBtn').addEventListener('click', () => {
-      // Future: replace with Adsterra interstitial code
-      adCount++;
-      if(adCount >= 20){
-        showFloatingButton();
-        adCount = 0;
-      }
-    });
-  </script>
 </body>
 </html>
+

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infinix Worker</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Infinix Worker</h1>
+  </header>
+
+  <main>
+    <h2>Welcome to Infinix Worker!</h2>
+    <button id="goWorkBtn">Go Work</button>
+
+    <!-- Banner Adsterra Container -->
+    <div id="adsterra-banner"></div>
+  </main>
+
+  <footer></footer>
+
+  <!-- Adsterra Banner Script -->
+  <script>
+    (function(){
+      var ad = document.createElement('script');
+      ad.type = 'text/javascript';
+      ad.async = true;
+      ad.src = 'https://yoursite.adsterra.com/your-zone-id.js'; // Replace with your Adsterra Zone ID
+      document.getElementById('adsterra-banner').appendChild(ad);
+    })();
+  </script>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    document.getElementById('goWorkBtn').addEventListener('click', () => {
+      window.location.href = 'work.html';
+    });
+  </script>
+</body>
+</html>

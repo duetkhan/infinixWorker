@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infinix Worker - Withdraw</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Infinix Worker</h1>
+  </header>
+
+  <main>
+    <h2>Withdraw Balance</h2>
+    <p>Current Balance: <span id="balance">0</span> ৳</p>
+
+    <label>
+      Choose Method:
+      <select id="method">
+        <option value="bkash">Bkash</option>
+        <option value="nagad">Nagad</option>
+      </select>
+    </label>
+
+    <input type="text" id="accountNumber" placeholder="Account Number">
+    <input type="number" id="withdrawAmount" placeholder="Amount ৳">
+
+    <button id="withdrawBtn">Submit Withdraw</button>
+
+    <!-- Banner Adsterra -->
+    <div id="adsterra-banner"></div>
+  </main>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    let balance = 0;
+    const balanceEl = document.getElementById('balance');
+    balanceEl.innerText = balance;
+
+    document.getElementById('withdrawBtn').addEventListener('click', () => {
+      const method = document.getElementById('method').value;
+      const account = document.getElementById('accountNumber').value;
+      const amount = parseFloat(document.getElementById('withdrawAmount').value);
+
+      if(amount > balance){
+        alert('Not enough balance!');
+        return;
+      }
+      if(!account || amount <= 0){
+        alert('Enter valid details!');
+        return;
+      }
+
+      balance -= amount;
+      balanceEl.innerText = balance;
+      alert(`Withdraw ${amount} ৳ to ${method} account ${account} submitted!`);
+    });
+  </script>
+</body>
+</html>

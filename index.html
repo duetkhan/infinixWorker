@@ -8,52 +8,66 @@
 </head>
 <body>
 
+<div class="container">
+
 <h2>Infinix Worker</h2>
 
-<div id="top-banner"></div>
+<!-- TOP BANNER -->
+<div class="banner-box" id="topBanner"></div>
 
-<button id="start-work">Start Work</button>
-<button id="watch-ad">Watch Ad For Reward</button>
+<div class="card">
+    <button id="start-work">Start Work</button>
+    <button id="watch-ad">Watch Ad For Reward</button>
+    <p>Balance: <span id="balance">0</span> TK</p>
+    <button onclick="location.href='withdraw.html'">Withdraw</button>
+</div>
 
-<p>Balance: <span id="balance">0</span> TK</p>
-<button onclick="location.href='withdraw.html'">Withdraw</button>
+<!-- MULTI BANNER ZONE -->
+<div class="card">
+    <h4>Sponsored Ads</h4>
+    <div class="multi-banner">
+        <div id="b1"></div>
+        <div id="b2"></div>
+        <div id="b3"></div>
+        <div id="b4"></div>
+    </div>
+</div>
 
-<div id="bottom-banner"></div>
+</div>
 
 <script>
-showBanner("top-banner");
-showBanner("bottom-banner");
-
-let balance = Number(localStorage.getItem("balance") || 0);
+let balance = Number(localStorage.getItem("balance")||0);
 document.getElementById("balance").innerText = balance;
 
-// Start Work
-document.getElementById("start-work").onclick = ()=>{
-    showPopunderAd();               // popunder
-    window.open(SMARTLINK1, "_blank");
-    setTimeout(()=>{
-        location.href = "balance.html";   // next page
-    }, 500);
+/* Load banners */
+loadBanner(document.getElementById("topBanner"));
+
+setTimeout(()=>loadBanner(document.getElementById("b1")),300);
+setTimeout(()=>loadBanner(document.getElementById("b2")),600);
+setTimeout(()=>loadBanner(document.getElementById("b3")),900);
+setTimeout(()=>loadBanner(document.getElementById("b4")),1200);
+
+/* Buttons */
+document.getElementById("start-work").onclick=()=>{
+    showPopunderAd();
+    window.open(SMARTLINK1,"_blank");
+    setTimeout(()=>location.href="balance.html",400);
 };
 
-// Watch Ad For Reward
-document.getElementById("watch-ad").onclick = ()=>{
-    const start = Date.now();
-    const w = window.open(SMARTLINK2, "_blank");
-
-    const timer = setInterval(()=>{
+document.getElementById("watch-ad").onclick=()=>{
+    const start=Date.now();
+    const w=window.open(SMARTLINK2,"_blank");
+    const t=setInterval(()=>{
         if(w.closed){
-            const diff = (Date.now() - start) / 1000;
-            if(diff >= 60){
-                const reward = Math.floor(Math.random()*3)+2;
-                balance += reward;
-                localStorage.setItem("balance", balance);
-                alert("You earned "+reward+" TK");
-            } else {
-                alert("Too early closed, no reward");
-            }
-            document.getElementById("balance").innerText = balance;
-            clearInterval(timer);
+            const s=(Date.now()-start)/1000;
+            if(s>=60){
+                const r=Math.floor(Math.random()*3)+2;
+                balance+=r;
+                localStorage.setItem("balance",balance);
+                alert("You earned "+r+" TK");
+            }else alert("Too early closed");
+            document.getElementById("balance").innerText=balance;
+            clearInterval(t);
         }
     },1000);
 };

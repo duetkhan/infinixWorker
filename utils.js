@@ -1,4 +1,3 @@
-// Balance & Click Tracking
 let balance = parseInt(localStorage.getItem('balance')||0);
 let workClickCount = parseInt(localStorage.getItem('workClickCount')||0);
 
@@ -18,7 +17,7 @@ function incrementWorkClick(){
     localStorage.setItem('workClickCount', workClickCount);
     if(workClickCount >= 20){
         alert("Popunder + 20 TK reward!");
-        showPopundeeAd();
+        showPopunderAd();  // Correct Popunder function
         addBalance(20);
         workClickCount = 0;
         localStorage.setItem('workClickCount', workClickCount);

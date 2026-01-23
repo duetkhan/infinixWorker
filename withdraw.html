@@ -3,21 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <title>Withdraw</title>
+<link rel="stylesheet" href="style.css">
 <script src="ads.js"></script>
 </head>
 <body>
 
-<h2>Withdraw</h2>
+<div class="container">
 
-<p>Balance: <span id="balance">0</span> TK</p>
+<h2>Withdraw Zone</h2>
 
-<input type="text" id="account" placeholder="Bkash / Nagad Number">
-<input type="number" id="amount" placeholder="Amount (110 - 5000)">
-<br><br>
-<button id="withdraw-btn">Submit Withdraw</button>
+<div class="card">
+    <p>Balance: <span id="balance">0</span> TK</p>
+</div>
 
-<h3>History</h3>
-<ul id="history"></ul>
+<div class="card">
+    <input type="text" id="account" placeholder="Bkash / Nagad Number">
+    <input type="number" id="amount" placeholder="Amount (110 - 5000)">
+    <button id="withdraw-btn">Submit Withdraw</button>
+</div>
+
+<div class="card">
+    <h4>Withdraw History</h4>
+    <ul id="history"></ul>
+</div>
+
+<!-- Bottom Banner -->
+<div class="card">
+    <div id="withdrawBottomBanner"></div>
+</div>
+
+</div>
 
 <script>
 let balance = Number(localStorage.getItem("balance") || 0);
@@ -36,16 +51,21 @@ function renderHistory(){
 }
 renderHistory();
 
+/* Bottom banner */
+setTimeout(()=>{
+    loadBanner(document.getElementById("withdrawBottomBanner"));
+},600);
+
 document.getElementById("withdraw-btn").onclick = ()=>{
     const acc = document.getElementById("account").value;
     const amt = Number(document.getElementById("amount").value);
 
-    if(amt < 110 || amt > 5000 || amt > balance){
-        alert("Invalid Amount");
+    if(!acc || amt<110 || amt>5000 || amt>balance){
+        alert("Invalid Withdraw");
         return;
     }
 
-    showNativeAd();   // Native banner here
+    showNativeAd();   // Native banner trigger
 
     balance -= amt;
     localStorage.setItem("balance", balance);

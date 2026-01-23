@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infinix Worker</title>
+<link rel="stylesheet" href="style.css">
+<script src="ads.js"></script>
+<script src="utils.js"></script>
+</head>
+<body>
+<header>
+    <h1>Infinix Worker</h1>
+    <div id="top-banner"></div>
+</header>
+
+<main>
+    <button id="start-work">Start Work</button>
+    <button id="watch-ad">Watch Ad for Reward</button>
+    <p>Balance: <span id="balance">0</span> TK</p>
+    <button id="withdraw-btn">Withdraw</button>
+</main>
+
+<div id="bottom-banner"></div>
+
+<script>
+    // Show banners
+    showBanner('top-banner');
+    showBanner('bottom-banner');
+
+    // Popunder 10s later (once)
+    setTimeout(showPopundeeAd, 10000);
+
+    // Display balance
+    updateBalanceDisplay();
+
+    document.getElementById('start-work').onclick = ()=>{
+        window.open(SMARTLINK1,"_blank");
+        incrementWorkClick();
+        window.location.href = "balance.html";
+    }
+
+    document.getElementById('watch-ad').onclick = ()=>{
+        const start = new Date().getTime();
+        const win = window.open(SMARTLINK2,"_blank");
+        const timer = setInterval(()=>{
+            if(win.closed){
+                const end = new Date().getTime();
+                const diff = Math.floor((end-start)/1000);
+                if(diff >= 60){
+                    const reward = Math.floor(Math.random()*3)+2; // 2-4 TK
+                    addBalance(reward);
+                    alert(`You earned ${reward} TK!`);
+                } else {
+                    alert("No reward! You closed too early.");
+                }
+                clearInterval(timer);
+            }
+        },1000);
+    }
+
+    document.getElementById('withdraw-btn').onclick = ()=>{
+        window.location.href = "withdraw.html";
+    }
+</script>
+</body>
+</html>

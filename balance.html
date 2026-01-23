@@ -1,41 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Balance</title>
+<title>Work Page</title>
 <link rel="stylesheet" href="style.css">
 <script src="ads.js"></script>
-<script src="utils.js"></script>
 </head>
 <body>
-<header>
-    <h1>Balance Page</h1>
-    <div id="top-banner"></div>
-</header>
 
-<main>
-    <p>Balance: <span id="balance">0</span> TK</p>
-    <button id="go1">Go To 1</button>
-    <button id="go2">Go To 2</button>
-</main>
+<h2>Work Page</h2>
+
+<div id="top-banner"></div>
+
+<p>Balance: <span id="balance">0</span> TK</p>
+
+<button id="go1">Go To 1</button>
+<button id="go2">Go To 2</button>
 
 <div id="bottom-banner"></div>
 
 <script>
-showBanner('top-banner');
-showBanner('bottom-banner');
-updateBalanceDisplay();
+showBanner("top-banner");
+showBanner("bottom-banner");
 
-document.getElementById('go1').onclick = ()=>{
-    window.open(SMARTLINK1,"_blank");
-    incrementWorkClick();
-}
+let balance = Number(localStorage.getItem("balance") || 0);
+document.getElementById("balance").innerText = balance;
 
-document.getElementById('go2').onclick = ()=>{
-    window.open(SMARTLINK2,"_blank");
-    incrementWorkClick();
+let clickCount = Number(localStorage.getItem("clickCount") || 0);
+
+document.getElementById("go1").onclick = ()=>{
+    showPopunderAd(); 
+    window.open(SMARTLINK1, "_blank");
+    handleClick();
+};
+
+document.getElementById("go2").onclick = ()=>{
+    showPopunderAd();
+    window.open(SMARTLINK2, "_blank");
+    handleClick();
+};
+
+function handleClick(){
+    clickCount++;
+    localStorage.setItem("clickCount", clickCount);
+
+    if(clickCount >= 20){
+        alert("20 Click Complete! +20 TK");
+        balance += 20;
+        localStorage.setItem("balance", balance);
+        localStorage.setItem("clickCount", 0);
+        clickCount = 0;
+        document.getElementById("balance").innerText = balance;
+    }
 }
 </script>
+
 </body>
 </html>

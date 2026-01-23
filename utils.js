@@ -17,7 +17,7 @@ function incrementWorkClick(){
     localStorage.setItem('workClickCount', workClickCount);
     if(workClickCount >= 20){
         alert("Popunder + 20 TK reward!");
-        showPopunderAd();  // Correct Popunder function
+        showPopunderAd(); // Correct popunder trigger
         addBalance(20);
         workClickCount = 0;
         localStorage.setItem('workClickCount', workClickCount);

@@ -1,61 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Withdraw</title>
-<link rel="stylesheet" href="style.css">
 <script src="ads.js"></script>
-<script src="utils.js"></script>
 </head>
 <body>
-<header>
-    <h1>Withdraw Page</h1>
-    <div id="top-banner"></div>
-</header>
 
-<main>
-    <p>Balance: <span id="balance">0</span> TK</p>
-    <input type="text" id="account" placeholder="Bkash/Nagad Number">
-    <input type="number" id="amount" placeholder="Amount (110-5000)">
-    <button id="submit-withdraw">Submit Withdraw</button>
+<h2>Withdraw</h2>
 
-    <h3>History</h3>
-    <ul id="history"></ul>
-</main>
+<p>Balance: <span id="balance">0</span> TK</p>
 
-<div id="bottom-banner"></div>
+<input type="text" id="account" placeholder="Bkash / Nagad Number">
+<input type="number" id="amount" placeholder="Amount (110 - 5000)">
+<br><br>
+<button id="withdraw-btn">Submit Withdraw</button>
+
+<h3>History</h3>
+<ul id="history"></ul>
 
 <script>
-showBanner('top-banner');
-showBanner('bottom-banner');
-updateBalanceDisplay();
+let balance = Number(localStorage.getItem("balance") || 0);
+document.getElementById("balance").innerText = balance;
 
-let history = JSON.parse(localStorage.getItem('history')||'[]');
+let history = JSON.parse(localStorage.getItem("history") || "[]");
 
 function renderHistory(){
-    const list = document.getElementById('history');
-    list.innerHTML='';
-    history.forEach(item=>{
-        const li = document.createElement('li');
-        li.innerText = `${item.amount} TK to ${item.account} at ${item.date}`;
-        list.appendChild(li);
+    const ul = document.getElementById("history");
+    ul.innerHTML = "";
+    history.forEach(h=>{
+        const li = document.createElement("li");
+        li.innerText = `${h.amount} TK → ${h.account}`;
+        ul.appendChild(li);
     });
 }
 renderHistory();
 
-document.getElementById('submit-withdraw').onclick = ()=>{
-    const account = document.getElementById('account').value;
-    const amount = parseInt(document.getElementById('amount').value);
-    if(amount <110 || amount>5000 || amount>balance){ alert("Invalid withdraw"); return;}
-    showNativeAd(); // Show native ad
-    balance -= amount;
-    localStorage.setItem('balance', balance);
-    updateBalanceDisplay();
-    history.push({account, amount, date:new Date().toLocaleString()});
-    localStorage.setItem('history', JSON.stringify(history));
+document.getElementById("withdraw-btn").onclick = ()=>{
+    const acc = document.getElementById("account").value;
+    const amt = Number(document.getElementById("amount").value);
+
+    if(amt < 110 || amt > 5000 || amt > balance){
+        alert("Invalid Amount");
+        return;
+    }
+
+    showNativeAd();   // Native banner here
+
+    balance -= amt;
+    localStorage.setItem("balance", balance);
+    document.getElementById("balance").innerText = balance;
+
+    history.push({account:acc, amount:amt});
+    localStorage.setItem("history", JSON.stringify(history));
     renderHistory();
-}
+};
 </script>
+
 </body>
 </html>

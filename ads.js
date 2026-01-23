@@ -2,38 +2,39 @@
 const SMARTLINK1 = "https://www.effectivegatecpm.com/mpae0kp3zc?key=554362a30b51a44282b343d46a59cd83";
 const SMARTLINK2 = "https://www.effectivegatecpm.com/svxajpx9r?key=5efebfef466ae261927234ad76166944";
 
-// Adsterra IDs
-const BANNER_ID = 28446328;
-const NATIVE_ID = 28446304;
-const POPUNDER_ID = 28446307;
-
 // Banner
 function showBanner(id){
-    var container = document.getElementById(id);
-    container.innerHTML = '';
-    var s = document.createElement('script');
-    s.type = 'text/javascript';
-    s.async = true;
-    s.src = 'https://www.adsterra.com/track.js?id=' + BANNER_ID;
-    container.appendChild(s);
+    const container = document.getElementById(id);
+    container.innerHTML = `
+    <script>
+      atOptions = {
+        'key' : 'b529261b98306ae1169a6bf5b991c3d4',
+        'format' : 'iframe',
+        'height' : 50,
+        'width' : 320,
+        'params' : {}
+      };
+    <\/script>
+    <script src="https://www.highperformanceformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js"><\/script>
+    `;
 }
 
 // Popunder
 function showPopunderAd(){
-    // Popunder trigger
-    var pop = window.open('https://www.adsterra.com/popunder?id=' + POPUNDER_ID, '_blank');
-    if(pop) pop.blur();      // Background
-    window.focus();           // Return focus to main window
+    const s = document.createElement('script');
+    s.src = "https://pl28546806.effectivegatecpm.com/b6/e2/25/b6e225daafa502cbf12bb14fdb9532f3.js";
+    document.body.appendChild(s);
 }
 
-// Native
+// Native Banner (4:1 layout)
 function showNativeAd(){
-    var container = document.createElement('div');
-    container.id = 'adsterra-native-popup';
+    const container = document.createElement('div');
+    container.id = "container-80507bc8e3d998279cd413247931169e";
     document.body.appendChild(container);
-    var s = document.createElement('script');
-    s.type = 'text/javascript';
+
+    const s = document.createElement('script');
     s.async = true;
-    s.src = 'https://www.adsterra.com/native.js?id=' + NATIVE_ID;
-    container.appendChild(s);
+    s.setAttribute("data-cfasync","false");
+    s.src = "https://pl28546803.effectivegatecpm.com/80507bc8e3d998279cd413247931169e/invoke.js";
+    document.body.appendChild(s);
 }

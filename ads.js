@@ -7,15 +7,33 @@ const BANNER_ID = 28446328;
 const NATIVE_ID = 28446304;
 const POPUNDER_ID = 28446307;
 
+// Banner
 function showBanner(id){
-    document.getElementById(id).innerHTML = `<iframe src="https://ad.adsterra.com/${BANNER_ID}" width="320" height="50" frameborder="0"></iframe>`;
+    var container = document.getElementById(id);
+    container.innerHTML = '';
+    var s = document.createElement('script');
+    s.type = 'text/javascript';
+    s.async = true;
+    s.src = 'https://www.adsterra.com/track.js?id=' + BANNER_ID;
+    container.appendChild(s);
 }
 
-function showPopundeeAd(){
-    window.open(`https://ad.adsterra.com/${POPUNDER_ID}`,"_blank");
+// Popunder
+function showPopunderAd(){
+    // Popunder trigger
+    var pop = window.open('https://www.adsterra.com/popunder?id=' + POPUNDER_ID, '_blank');
+    if(pop) pop.blur();      // Background
+    window.focus();           // Return focus to main window
 }
 
+// Native
 function showNativeAd(){
-    const win = window.open(`https://ad.adsterra.com/${NATIVE_ID}`,"_blank","width=320,height=200");
-    setTimeout(()=>win.close(),5000); // auto close after 5s
+    var container = document.createElement('div');
+    container.id = 'adsterra-native-popup';
+    document.body.appendChild(container);
+    var s = document.createElement('script');
+    s.type = 'text/javascript';
+    s.async = true;
+    s.src = 'https://www.adsterra.com/native.js?id=' + NATIVE_ID;
+    container.appendChild(s);
 }

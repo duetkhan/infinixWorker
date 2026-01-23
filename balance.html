@@ -8,35 +8,46 @@
 </head>
 <body>
 
-<h2>Work Page</h2>
+<div class="container">
 
-<div id="top-banner"></div>
+<h2>Work Zone</h2>
 
-<p>Balance: <span id="balance">0</span> TK</p>
+<div class="card">
+    <p>Balance: <span id="balance">0</span> TK</p>
+</div>
 
-<button id="go1">Go To 1</button>
-<button id="go2">Go To 2</button>
+<div class="card">
+    <button id="go1">Go To 1</button>
+    <button id="go2">Go To 2</button>
+</div>
 
-<div id="bottom-banner"></div>
+<!-- Bottom Banner -->
+<div class="card">
+    <div id="workBottomBanner"></div>
+</div>
+
+</div>
 
 <script>
-showBanner("top-banner");
-showBanner("bottom-banner");
-
 let balance = Number(localStorage.getItem("balance") || 0);
 document.getElementById("balance").innerText = balance;
 
 let clickCount = Number(localStorage.getItem("clickCount") || 0);
 
+/* Bottom banner */
+setTimeout(()=>{
+    loadBanner(document.getElementById("workBottomBanner"));
+},500);
+
 document.getElementById("go1").onclick = ()=>{
-    showPopunderAd(); 
-    window.open(SMARTLINK1, "_blank");
+    showPopunderAd();
+    window.open(SMARTLINK1,"_blank");
     handleClick();
 };
 
 document.getElementById("go2").onclick = ()=>{
     showPopunderAd();
-    window.open(SMARTLINK2, "_blank");
+    window.open(SMARTLINK2,"_blank");
     handleClick();
 };
 
@@ -45,11 +56,11 @@ function handleClick(){
     localStorage.setItem("clickCount", clickCount);
 
     if(clickCount >= 20){
-        alert("20 Click Complete! +20 TK");
+        alert("20 clicks completed! +20 TK added.");
         balance += 20;
         localStorage.setItem("balance", balance);
-        localStorage.setItem("clickCount", 0);
         clickCount = 0;
+        localStorage.setItem("clickCount", 0);
         document.getElementById("balance").innerText = balance;
     }
 }

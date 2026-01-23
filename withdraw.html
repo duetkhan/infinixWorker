@@ -48,7 +48,7 @@ document.getElementById('submit-withdraw').onclick = ()=>{
     const account = document.getElementById('account').value;
     const amount = parseInt(document.getElementById('amount').value);
     if(amount <110 || amount>5000 || amount>balance){ alert("Invalid withdraw"); return;}
-    showNativeAd();
+    showNativeAd(); // Show native ad
     balance -= amount;
     localStorage.setItem('balance', balance);
     updateBalanceDisplay();

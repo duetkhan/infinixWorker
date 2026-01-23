@@ -2,8 +2,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Infinix Worker</title>
+<link rel="stylesheet" href="style.css">
 <script src="ads.js"></script>
 </head>
 <body>
@@ -29,11 +29,14 @@ document.getElementById("balance").innerText = balance;
 
 // Start Work
 document.getElementById("start-work").onclick = ()=>{
-    showPopunderAd();     // Popunder only on click (browser block করবে না)
+    showPopunderAd();               // popunder
     window.open(SMARTLINK1, "_blank");
+    setTimeout(()=>{
+        location.href = "balance.html";   // next page
+    }, 500);
 };
 
-// Watch ad for reward
+// Watch Ad For Reward
 document.getElementById("watch-ad").onclick = ()=>{
     const start = Date.now();
     const w = window.open(SMARTLINK2, "_blank");
@@ -42,12 +45,12 @@ document.getElementById("watch-ad").onclick = ()=>{
         if(w.closed){
             const diff = (Date.now() - start) / 1000;
             if(diff >= 60){
-                const reward = Math.floor(Math.random()*3)+2; // 2-4 TK
+                const reward = Math.floor(Math.random()*3)+2;
                 balance += reward;
                 localStorage.setItem("balance", balance);
                 alert("You earned "+reward+" TK");
             } else {
-                alert("No reward! Too early closed.");
+                alert("Too early closed, no reward");
             }
             document.getElementById("balance").innerText = balance;
             clearInterval(timer);

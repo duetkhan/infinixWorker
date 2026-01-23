@@ -1,67 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Infinix Worker</title>
-<link rel="stylesheet" href="style.css">
 <script src="ads.js"></script>
-<script src="utils.js"></script>
 </head>
 <body>
-<header>
-    <h1>Infinix Worker</h1>
-    <div id="top-banner"></div>
-</header>
 
-<main>
-    <button id="start-work">Start Work</button>
-    <button id="watch-ad">Watch Ad for Reward</button>
-    <p>Balance: <span id="balance">0</span> TK</p>
-    <button id="withdraw-btn">Withdraw</button>
-</main>
+<h2>Infinix Worker</h2>
+
+<div id="top-banner"></div>
+
+<button id="start-work">Start Work</button>
+<button id="watch-ad">Watch Ad For Reward</button>
+
+<p>Balance: <span id="balance">0</span> TK</p>
+<button onclick="location.href='withdraw.html'">Withdraw</button>
 
 <div id="bottom-banner"></div>
 
 <script>
-showBanner('top-banner');
-showBanner('bottom-banner');
+showBanner("top-banner");
+showBanner("bottom-banner");
 
-// Popunder 10s later
-setTimeout(showPopunderAd, 10000);
+let balance = Number(localStorage.getItem("balance") || 0);
+document.getElementById("balance").innerText = balance;
 
-updateBalanceDisplay();
+// Start Work
+document.getElementById("start-work").onclick = ()=>{
+    showPopunderAd();     // Popunder only on click (browser block করবে না)
+    window.open(SMARTLINK1, "_blank");
+};
 
-// Start Work button
-document.getElementById('start-work').onclick = ()=>{
-    window.open(SMARTLINK1,"_blank");
-    incrementWorkClick();
-    window.location.href = "balance.html";
-}
+// Watch ad for reward
+document.getElementById("watch-ad").onclick = ()=>{
+    const start = Date.now();
+    const w = window.open(SMARTLINK2, "_blank");
 
-// Watch Ad button
-document.getElementById('watch-ad').onclick = ()=>{
-    const start = new Date().getTime();
-    const win = window.open(SMARTLINK2,"_blank");
     const timer = setInterval(()=>{
-        if(win.closed){
-            const end = new Date().getTime();
-            const diff = Math.floor((end-start)/1000);
+        if(w.closed){
+            const diff = (Date.now() - start) / 1000;
             if(diff >= 60){
                 const reward = Math.floor(Math.random()*3)+2; // 2-4 TK
-                addBalance(reward);
-                alert(`You earned ${reward} TK!`);
+                balance += reward;
+                localStorage.setItem("balance", balance);
+                alert("You earned "+reward+" TK");
             } else {
-                alert("No reward! You closed too early.");
+                alert("No reward! Too early closed.");
             }
+            document.getElementById("balance").innerText = balance;
             clearInterval(timer);
         }
     },1000);
-}
-
-document.getElementById('withdraw-btn').onclick = ()=>{
-    window.location.href = "withdraw.html";
-}
+};
 </script>
+
 </body>
 </html>

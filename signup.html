@@ -13,234 +13,321 @@
   <link rel="stylesheet" href="style.css">
 
   <style>
+    .signup-page {
+      min-height: 100vh;
+      padding-bottom: 145px;
+    }
 
-    .auth-page {
-      min-height: calc(100vh - 70px);
+    .top-ad {
+      width: 320px;
+      height: 50px;
+      max-width: calc(100vw - 10px);
+      margin: 8px auto 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 25px 15px 90px;
+      overflow: hidden;
     }
 
-    .auth-box {
-      width: 100%;
-      max-width: 390px;
-      background: #ffffff;
-      border-radius: 18px;
-      padding: 25px 20px;
-      box-shadow: 0 8px 30px rgba(0,0,0,.10);
-    }
-
-    .auth-box h1 {
+    .signup-header {
+      background: linear-gradient(135deg, #1769e0, #0755c9);
+      color: #fff;
+      padding: 20px 16px 22px;
+      border-radius: 0 0 24px 24px;
+      box-shadow: 0 5px 18px rgba(23,105,224,.20);
       text-align: center;
-      margin: 0 0 8px;
-      font-size: 25px;
-      color: #172238;
     }
 
-    .auth-subtitle {
+    .signup-logo {
+      width: 54px;
+      height: 54px;
+      margin: 0 auto 10px;
+      border-radius: 17px;
+      background: rgba(255,255,255,.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .signup-header h1 {
+      margin: 0;
+      font-size: 21px;
+      font-weight: 800;
+    }
+
+    .signup-header p {
+      margin: 5px 0 0;
+      font-size: 12px;
+      opacity: .9;
+    }
+
+    .signup-content {
+      padding: 16px;
+    }
+
+    .signup-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 20px 17px;
+      box-shadow: 0 6px 20px rgba(25,35,60,.08);
+    }
+
+    .signup-card h2 {
+      margin: 0 0 6px;
+      color: #20283a;
       text-align: center;
-      color: #777;
-      font-size: 14px;
-      margin-bottom: 22px;
+      font-size: 22px;
     }
 
-    .auth-box label {
+    .signup-subtitle {
+      margin: 0 0 20px;
+      color: #7a8394;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .field {
+      margin-bottom: 15px;
+    }
+
+    .field label {
       display: block;
-      margin: 14px 0 6px;
-      font-weight: 600;
-      font-size: 14px;
-      color: #172238;
+      margin-bottom: 7px;
+      color: #30394b;
+      font-size: 13px;
+      font-weight: 700;
     }
 
-    .auth-box input {
+    .field input {
       width: 100%;
       box-sizing: border-box;
-      padding: 13px 14px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      font-size: 15px;
+      min-height: 46px;
+      padding: 12px 13px;
+      border: 1px solid #dce2eb;
+      border-radius: 12px;
+      background: #f9fbff;
+      color: #20283a;
+      font-size: 14px;
       outline: none;
+    }
+
+    .field input:focus {
+      border-color: #1769e0;
       background: #fff;
+      box-shadow: 0 0 0 3px rgba(23,105,224,.08);
     }
 
-    .auth-box input:focus {
-      border-color: #0875ed;
-    }
-
-    .auth-btn {
+    .signup-btn {
       width: 100%;
-      border: none;
-      border-radius: 10px;
-      padding: 13px;
-      margin-top: 20px;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      background: #0875ed;
+      min-height: 47px;
+      border: 0;
+      border-radius: 13px;
+      margin-top: 4px;
+      background: linear-gradient(135deg, #1769e0, #0755c9);
       color: #fff;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(23,105,224,.20);
     }
 
-    .auth-btn:active {
+    .signup-btn:active {
       transform: scale(.98);
     }
 
-    .auth-btn:disabled {
+    .signup-btn:disabled {
       opacity: .6;
       cursor: not-allowed;
     }
 
-    .auth-message {
-      margin-top: 15px;
-      padding: 10px;
-      border-radius: 9px;
+    .signup-message {
       display: none;
+      margin-top: 14px;
+      padding: 11px 12px;
+      border-radius: 12px;
       font-size: 13px;
       line-height: 1.4;
       text-align: center;
     }
 
-    .auth-message.error {
+    .signup-message.error {
       display: block;
-      background: #ffe8e8;
-      color: #b00020;
+      background: #fff0f0;
+      color: #b33b3b;
     }
 
-    .auth-message.success {
+    .signup-message.success {
       display: block;
-      background: #e8fff0;
-      color: #08752d;
+      background: #eaf8f1;
+      color: #14754b;
     }
 
-    .auth-links {
+    .login-link {
+      margin-top: 17px;
       text-align: center;
-      margin-top: 18px;
-      font-size: 14px;
-      color: #666;
+      color: #7a8394;
+      font-size: 13px;
     }
 
-    .auth-links a {
-      color: #0875ed;
-      font-weight: 700;
+    .login-link a {
+      color: #1769e0;
+      font-weight: 800;
       text-decoration: none;
     }
 
+    .native-ad {
+      width: 100%;
+      min-height: 100px;
+      margin: 12px 0;
+      border-radius: 15px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .bottom-banner {
+      width: 320px;
+      height: 50px;
+      max-width: calc(100vw - 10px);
+      margin: 10px auto 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
   </style>
 </head>
 
 <body>
 
+<div class="signup-page">
+
+  <!-- TOP 320x50 AD -->
+  <div class="top-ad">
+
+    <script>
+      atOptions = {
+        'key' : 'b529261b98306ae1169a6bf5b991c3d4',
+        'format' : 'iframe',
+        'height' : 50,
+        'width' : 320,
+        'params' : {}
+      };
+    </script>
+
+    <script src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js"></script>
+
+  </div>
+
 
   <!-- HEADER -->
+  <header class="signup-header">
 
-  <header class="home-header">
-
-    <div class="home-brand">
-
-      <div class="logo-box">
-        IW
-      </div>
-
-      <div class="brand-title">
-
-        <strong>
-          Infinix Worker
-        </strong>
-
-        <small>
-          CREATE YOUR ACCOUNT
-        </small>
-
-      </div>
-
+    <div class="signup-logo">
+      IW
     </div>
+
+    <h1>Infinix Worker</h1>
+
+    <p>Fast • Simple • Smart Earning Platform</p>
 
   </header>
 
 
-  <!-- SIGNUP -->
+  <main class="signup-content">
 
-  <main class="auth-page">
+    <!-- SIGNUP CARD -->
+    <div class="signup-card">
 
-    <div class="auth-box">
+      <h2>Create Account</h2>
 
-      <h1>Create Account</h1>
-
-      <div class="auth-subtitle">
+      <p class="signup-subtitle">
         Create your Infinix Worker account
-      </div>
+      </p>
 
 
       <form id="signupForm">
 
-
         <!-- USERNAME -->
+        <div class="field">
 
-        <label for="signupUsername">
-          Username
-        </label>
+          <label for="signupUsername">
+            Username
+          </label>
 
-        <input
-          type="text"
-          id="signupUsername"
-          placeholder="Choose a username"
-          minlength="3"
-          maxlength="30"
-          autocomplete="username"
-          required
-        >
+          <input
+            type="text"
+            id="signupUsername"
+            placeholder="Choose a username"
+            minlength="3"
+            maxlength="30"
+            autocomplete="username"
+            required
+          >
+
+        </div>
 
 
         <!-- EMAIL -->
+        <div class="field">
 
-        <label for="signupEmail">
-          Email
-        </label>
+          <label for="signupEmail">
+            Email
+          </label>
 
-        <input
-          type="email"
-          id="signupEmail"
-          placeholder="Enter your email"
-          autocomplete="email"
-          required
-        >
+          <input
+            type="email"
+            id="signupEmail"
+            placeholder="Enter your email"
+            autocomplete="email"
+            required
+          >
+
+        </div>
 
 
         <!-- PASSWORD -->
+        <div class="field">
 
-        <label for="signupPassword">
-          Password
-        </label>
+          <label for="signupPassword">
+            Password
+          </label>
 
-        <input
-          type="password"
-          id="signupPassword"
-          placeholder="Create a password"
-          minlength="6"
-          autocomplete="new-password"
-          required
-        >
+          <input
+            type="password"
+            id="signupPassword"
+            placeholder="Create a password"
+            minlength="6"
+            autocomplete="new-password"
+            required
+          >
+
+        </div>
 
 
         <!-- CONFIRM PASSWORD -->
+        <div class="field">
 
-        <label for="confirmPassword">
-          Confirm Password
-        </label>
+          <label for="confirmPassword">
+            Confirm Password
+          </label>
 
-        <input
-          type="password"
-          id="confirmPassword"
-          placeholder="Confirm your password"
-          minlength="6"
-          autocomplete="new-password"
-          required
-        >
+          <input
+            type="password"
+            id="confirmPassword"
+            placeholder="Confirm your password"
+            minlength="6"
+            autocomplete="new-password"
+            required
+          >
+
+        </div>
 
 
         <button
           type="submit"
-          class="auth-btn"
+          class="signup-btn"
           id="signupBtn"
         >
           Create Account
@@ -251,11 +338,11 @@
 
       <div
         id="signupMessage"
-        class="auth-message"
+        class="signup-message"
       ></div>
 
 
-      <div class="auth-links">
+      <div class="login-link">
 
         Already have an account?
 
@@ -267,18 +354,48 @@
 
     </div>
 
+
+    <!-- NATIVE 2:1 -->
+    <div class="native-ad">
+
+      <script
+        async="async"
+        data-cfasync="false"
+        src="https://pl28546803.profitableratecpmnetwork.com/80507bc8e3d998279cd413247931169e/invoke.js">
+      </script>
+
+      <div id="container-80507bc8e3d998279cd413247931169e"></div>
+
+    </div>
+
+
+    <!-- BELOW NATIVE 320x50 -->
+    <div class="bottom-banner">
+
+      <script>
+        atOptions = {
+          'key' : 'b529261b98306ae1169a6bf5b991c3d4',
+          'format' : 'iframe',
+          'height' : 50,
+          'width' : 320,
+          'params' : {}
+        };
+      </script>
+
+      <script src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js"></script>
+
+    </div>
+
   </main>
 
 
   <!-- BOTTOM NAV -->
-
   <nav class="bottom-nav">
 
     <a href="index.html" class="nav-item">
       <span>⌂</span>
       <small>Home</small>
     </a>
-
 
     <a
       href="https://lsr-video-downloaders.vercel.app/"
@@ -287,7 +404,6 @@
       <span>🌐</span>
       <small>Website</small>
     </a>
-
 
     <a
       href="https://t.me/bitbytee_bot"
@@ -299,7 +415,6 @@
       <small>Telegram</small>
     </a>
 
-
     <a
       href="profile.html"
       class="nav-item"
@@ -307,7 +422,6 @@
       <span>👤</span>
       <small>Profile</small>
     </a>
-
 
     <a
       href="more.html"
@@ -319,11 +433,16 @@
 
   </nav>
 
+</div>
+
 
 <script>
 
-const USER_KEY = "iw_device_user";
-const LOGIN_KEY = "worker_logged_in";
+const USER_KEY =
+  "iw_device_user";
+
+const LOGIN_KEY =
+  "worker_logged_in";
 
 
 function showSignupMessage(text, type) {
@@ -334,13 +453,13 @@ function showSignupMessage(text, type) {
   box.textContent = text;
 
   box.className =
-    "auth-message " + type;
+    "signup-message " + type;
 
 }
 
 
 /* =========================================================
-   IF USER ALREADY EXISTS ON THIS DEVICE
+   CHECK EXISTING ACCOUNT / LOGIN
 ========================================================= */
 
 document.addEventListener(
@@ -354,9 +473,7 @@ document.addEventListener(
       localStorage.getItem(LOGIN_KEY);
 
 
-    /*
-      Already logged in → Home
-    */
+    /* Already logged in → Home */
 
     if (loggedIn === "true") {
 

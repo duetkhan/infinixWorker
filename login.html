@@ -9,169 +9,328 @@
   <link rel="stylesheet" href="style.css">
 
   <style>
-    .auth-page {
-      min-height: calc(100vh - 70px);
+    .login-page {
+      min-height: 100vh;
+      padding-bottom: 145px;
+    }
+
+    .top-ad {
+      width: 320px;
+      height: 50px;
+      max-width: calc(100vw - 10px);
+      margin: 8px auto 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 25px 15px 90px;
+      overflow: hidden;
     }
 
-    .auth-box {
-      width: 100%;
-      max-width: 390px;
-      background: #ffffff;
-      border-radius: 18px;
-      padding: 25px 20px;
-      box-shadow: 0 8px 30px rgba(0,0,0,.10);
-    }
-
-    .auth-box h1 {
+    .login-header {
+      background: linear-gradient(135deg, #1769e0, #0755c9);
+      color: #fff;
+      padding: 20px 16px 22px;
+      border-radius: 0 0 24px 24px;
+      box-shadow: 0 5px 18px rgba(23,105,224,.20);
       text-align: center;
-      margin: 0 0 8px;
-      font-size: 25px;
     }
 
-    .auth-subtitle {
+    .login-logo {
+      width: 54px;
+      height: 54px;
+      margin: 0 auto 10px;
+      border-radius: 17px;
+      background: rgba(255,255,255,.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .login-header h1 {
+      margin: 0;
+      font-size: 21px;
+      font-weight: 800;
+    }
+
+    .login-header p {
+      margin: 5px 0 0;
+      font-size: 12px;
+      opacity: .9;
+    }
+
+    .login-content {
+      padding: 16px;
+    }
+
+    .login-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 20px 17px;
+      box-shadow: 0 6px 20px rgba(25,35,60,.08);
+    }
+
+    .login-card h2 {
+      margin: 0 0 6px;
+      color: #20283a;
       text-align: center;
-      color: #777;
-      font-size: 14px;
-      margin-bottom: 22px;
+      font-size: 22px;
     }
 
-    .auth-box label {
+    .login-subtitle {
+      margin: 0 0 20px;
+      color: #7a8394;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .field {
+      margin-bottom: 15px;
+    }
+
+    .field label {
       display: block;
-      margin: 14px 0 6px;
-      font-weight: 600;
-      font-size: 14px;
+      margin-bottom: 7px;
+      color: #30394b;
+      font-size: 13px;
+      font-weight: 700;
     }
 
-    .auth-box input {
+    .field input {
       width: 100%;
       box-sizing: border-box;
-      padding: 13px 14px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      font-size: 15px;
+      min-height: 46px;
+      padding: 12px 13px;
+      border: 1px solid #dce2eb;
+      border-radius: 12px;
+      background: #f9fbff;
+      color: #20283a;
+      font-size: 14px;
       outline: none;
     }
 
-    .auth-box input:focus {
-      border-color: #555;
+    .field input:focus {
+      border-color: #1769e0;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(23,105,224,.08);
     }
 
-    .auth-btn {
+    .login-btn {
       width: 100%;
-      border: none;
-      border-radius: 10px;
-      padding: 13px;
-      margin-top: 20px;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      background: #111;
+      min-height: 47px;
+      border: 0;
+      border-radius: 13px;
+      margin-top: 4px;
+      background: linear-gradient(135deg, #1769e0, #0755c9);
       color: #fff;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(23,105,224,.20);
     }
 
-    .auth-btn:disabled {
+    .login-btn:disabled {
       opacity: .6;
+      cursor: not-allowed;
     }
 
-    .auth-message {
-      margin-top: 15px;
-      padding: 10px;
-      border-radius: 9px;
+    .login-message {
       display: none;
-      font-size: 14px;
+      margin-top: 14px;
+      padding: 11px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.4;
       text-align: center;
     }
 
-    .auth-message.error {
+    .login-message.error {
       display: block;
-      background: #ffe8e8;
-      color: #b00020;
+      background: #fff0f0;
+      color: #b33b3b;
     }
 
-    .auth-message.success {
+    .login-message.success {
       display: block;
-      background: #e8fff0;
-      color: #08752d;
+      background: #eaf8f1;
+      color: #14754b;
     }
 
-    .auth-links {
+    .signup-link {
+      margin-top: 17px;
       text-align: center;
-      margin-top: 18px;
-      font-size: 14px;
+      color: #7a8394;
+      font-size: 13px;
     }
 
-    .auth-links a {
-      font-weight: 700;
+    .signup-link a {
+      color: #1769e0;
+      font-weight: 800;
       text-decoration: none;
+    }
+
+    .native-ad {
+      width: 100%;
+      min-height: 100px;
+      margin: 12px 0;
+      border-radius: 15px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .bottom-banner {
+      width: 320px;
+      height: 50px;
+      max-width: calc(100vw - 10px);
+      margin: 10px auto 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
     }
   </style>
 </head>
 
 <body>
 
+<div class="login-page">
+
+  <!-- TOP 320x50 AD -->
+  <div class="top-ad">
+
+    <script>
+      atOptions = {
+        'key' : 'b529261b98306ae1169a6bf5b991c3d4',
+        'format' : 'iframe',
+        'height' : 50,
+        'width' : 320,
+        'params' : {}
+      };
+    </script>
+
+    <script src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js"></script>
+
+  </div>
+
+
   <!-- HEADER -->
-  <header class="home-header">
-    <div class="logo">IW</div>
-    <div>
-      <h2>Infinix Worker</h2>
-      <p>Login to your account</p>
+  <header class="login-header">
+
+    <div class="login-logo">
+      IW
     </div>
+
+    <h1>Infinix Worker</h1>
+
+    <p>Fast • Simple • Smart Earning Platform</p>
+
   </header>
 
 
-  <!-- LOGIN -->
-  <main class="auth-page">
+  <main class="login-content">
 
-    <div class="auth-box">
+    <!-- LOGIN CARD -->
+    <div class="login-card">
 
-      <h1>Login</h1>
+      <h2>Welcome Back</h2>
 
-      <div class="auth-subtitle">
-        Login to continue working
-      </div>
+      <p class="login-subtitle">
+        Login to continue working and earning
+      </p>
+
 
       <form id="loginForm">
 
-        <label for="loginEmail">Email</label>
+        <div class="field">
 
-        <input
-          type="email"
-          id="loginEmail"
-          placeholder="Enter your email"
-          required
-          autocomplete="email"
-        >
+          <label for="loginEmail">
+            Email
+          </label>
 
-        <label for="loginPassword">Password</label>
+          <input
+            type="email"
+            id="loginEmail"
+            placeholder="Enter your email"
+            required
+            autocomplete="email"
+          >
 
-        <input
-          type="password"
-          id="loginPassword"
-          placeholder="Enter your password"
-          required
-          autocomplete="current-password"
-        >
+        </div>
+
+
+        <div class="field">
+
+          <label for="loginPassword">
+            Password
+          </label>
+
+          <input
+            type="password"
+            id="loginPassword"
+            placeholder="Enter your password"
+            required
+            autocomplete="current-password"
+          >
+
+        </div>
+
 
         <button
           type="submit"
-          class="auth-btn"
-          id="loginBtn"
-        >
+          class="login-btn"
+          id="loginBtn">
           Login
         </button>
 
       </form>
 
-      <div id="loginMessage" class="auth-message"></div>
 
-      <div class="auth-links">
-        Don't have an account?
-        <a href="signup.html">Create account</a>
+      <div
+        id="loginMessage"
+        class="login-message">
       </div>
+
+
+      <div class="signup-link">
+
+        Don't have an account?
+        <a href="signup.html">
+          Create account
+        </a>
+
+      </div>
+
+    </div>
+
+
+    <!-- NATIVE 2:1 -->
+    <div class="native-ad">
+
+      <script
+        async="async"
+        data-cfasync="false"
+        src="https://pl28546803.profitableratecpmnetwork.com/80507bc8e3d998279cd413247931169e/invoke.js">
+      </script>
+
+      <div id="container-80507bc8e3d998279cd413247931169e"></div>
+
+    </div>
+
+
+    <!-- BELOW NATIVE 320x50 -->
+    <div class="bottom-banner">
+
+      <script>
+        atOptions = {
+          'key' : 'b529261b98306ae1169a6bf5b991c3d4',
+          'format' : 'iframe',
+          'height' : 50,
+          'width' : 320,
+          'params' : {}
+        };
+      </script>
+
+      <script src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js"></script>
 
     </div>
 
@@ -182,45 +341,65 @@
   <nav class="bottom-nav">
 
     <a href="index.html">
-      <span>⌂</span>
-      <small>Home</small>
+      <span class="nav-icon">⌂</span>
+      <span>Home</span>
     </a>
 
     <a href="https://lsr-video-downloaders.vercel.app/">
-      <span>🌐</span>
-      <small>Website</small>
+      <span class="nav-icon">🌐</span>
+      <span>Website</span>
     </a>
 
-    <a href="https://t.me/bitbytee_bot">
-      <span>✈</span>
-      <small>Telegram</small>
+    <a
+      href="https://t.me/bitbytee_bot"
+      target="_blank"
+      rel="noopener noreferrer">
+      <span class="nav-icon">✈</span>
+      <span>Telegram</span>
     </a>
 
     <a href="profile.html">
-      <span>👤</span>
-      <small>Profile</small>
+      <span class="nav-icon">👤</span>
+      <span>Profile</span>
     </a>
 
     <a href="more.html">
-      <span>☰</span>
-      <small>More</small>
+      <span class="nav-icon">☰</span>
+      <span>More</span>
     </a>
 
   </nav>
 
+</div>
+
 
 <script>
 
-const USER_KEY = "iw_device_user";
-const LOGIN_KEY = "worker_logged_in";
+/* =========================================================
+   EXISTING DEVICE ACCOUNT SYSTEM
+========================================================= */
 
+const USER_KEY =
+  "iw_device_user";
+
+const LOGIN_KEY =
+  "worker_logged_in";
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
 
 function showMessage(text, type) {
 
-  const box = document.getElementById("loginMessage");
+  const box =
+    document.getElementById("loginMessage");
 
   box.textContent = text;
-  box.className = "auth-message " + type;
+
+  box.className =
+    "login-message " + type;
+
 }
 
 
@@ -228,9 +407,12 @@ function showMessage(text, type) {
    CHECK EXISTING LOGIN
 ========================================================= */
 
-if (localStorage.getItem(LOGIN_KEY) === "true") {
+if (
+  localStorage.getItem(LOGIN_KEY) === "true"
+) {
 
-  window.location.href = "index.html";
+  window.location.href =
+    "index.html";
 
 }
 
@@ -241,108 +423,138 @@ if (localStorage.getItem(LOGIN_KEY) === "true") {
 
 document
   .getElementById("loginForm")
-  .addEventListener("submit", function(e) {
+  .addEventListener(
+    "submit",
+    function(e) {
 
-    e.preventDefault();
-
-    const email =
-      document.getElementById("loginEmail")
-      .value
-      .trim()
-      .toLowerCase();
-
-    const password =
-      document.getElementById("loginPassword")
-      .value;
+      e.preventDefault();
 
 
-    const savedUser =
-      localStorage.getItem(USER_KEY);
+      const email =
+        document
+          .getElementById("loginEmail")
+          .value
+          .trim()
+          .toLowerCase();
 
 
-    if (!savedUser) {
-
-      showMessage(
-        "No account found on this device. Please create an account first.",
-        "error"
-      );
-
-      return;
-    }
+      const password =
+        document
+          .getElementById("loginPassword")
+          .value;
 
 
-    let user;
-
-    try {
-
-      user = JSON.parse(savedUser);
-
-    } catch {
-
-      showMessage(
-        "Account data is corrupted.",
-        "error"
-      );
-
-      return;
-    }
+      const loginBtn =
+        document.getElementById("loginBtn");
 
 
-    if (
-      user.email !== email ||
-      user.password !== password
-    ) {
-
-      showMessage(
-        "Invalid email or password.",
-        "error"
-      );
-
-      return;
-    }
+      const savedUser =
+        localStorage.getItem(USER_KEY);
 
 
-    /* LOGIN SUCCESS */
+      if (!savedUser) {
 
-    localStorage.setItem(
-      "worker_username",
-      user.username
-    );
+        showMessage(
+          "No account found on this device. Please create an account first.",
+          "error"
+        );
 
-    localStorage.setItem(
-      "worker_email",
-      user.email
-    );
+        return;
 
-    localStorage.setItem(
-      LOGIN_KEY,
-      "true"
-    );
+      }
 
 
-    if (!localStorage.getItem("worker_balance")) {
+      let user;
+
+
+      try {
+
+        user =
+          JSON.parse(savedUser);
+
+      }
+      catch (error) {
+
+        showMessage(
+          "Account data is corrupted.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      if (
+        user.email !== email ||
+        user.password !== password
+      ) {
+
+        showMessage(
+          "Invalid email or password.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      /* LOGIN SUCCESS */
 
       localStorage.setItem(
-        "worker_balance",
-        "0.00"
+        "worker_username",
+        user.username
+      );
+
+
+      localStorage.setItem(
+        "worker_email",
+        user.email
+      );
+
+
+      localStorage.setItem(
+        LOGIN_KEY,
+        "true"
+      );
+
+
+      if (
+        !localStorage.getItem(
+          "worker_balance"
+        )
+      ) {
+
+        localStorage.setItem(
+          "worker_balance",
+          "0.00"
+        );
+
+      }
+
+
+      loginBtn.disabled = true;
+
+
+      showMessage(
+        "Login successful. Redirecting...",
+        "success"
+      );
+
+
+      setTimeout(
+        function() {
+
+          window.location.href =
+            "index.html";
+
+        },
+        700
       );
 
     }
-
-
-    showMessage(
-      "Login successful. Redirecting...",
-      "success"
-    );
-
-
-    setTimeout(() => {
-
-      window.location.href = "index.html";
-
-    }, 700);
-
-  });
+  );
 
 </script>
 

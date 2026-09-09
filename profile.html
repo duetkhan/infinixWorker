@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2563eb">
+
+  <title>Profile - Infinix Worker</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    .page-header {
+      height: 72px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .back-button {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: #eef4ff;
+      color: #2563eb;
+      font-size: 22px;
+    }
+
+    .page-title h1 {
+      font-size: 18px;
+      font-weight: 750;
+    }
+
+    .page-title p {
+      margin-top: 2px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .profile-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 22px 18px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(20, 30, 50, .04);
+    }
+
+    .profile-avatar {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 12px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 22px;
+
+      background: #eef4ff;
+      color: #2563eb;
+
+      font-size: 29px;
+    }
+
+    .profile-name {
+      font-size: 18px;
+      font-weight: 750;
+    }
+
+    .profile-email {
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .profile-balance {
+      margin-top: 18px;
+      padding: 14px;
+
+      border-radius: 14px;
+      background: #f5f8ff;
+    }
+
+    .profile-balance span {
+      display: block;
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .profile-balance strong {
+      display: block;
+      margin-top: 4px;
+      color: #2563eb;
+      font-size: 23px;
+    }
+
+    .profile-actions {
+      margin-top: 16px;
+
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .profile-action {
+      width: 100%;
+      min-height: 54px;
+      padding: 10px 13px;
+
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      text-align: left;
+
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+
+    .profile-action-icon {
+      width: 35px;
+      height: 35px;
+
+      flex: 0 0 35px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 10px;
+      background: #eef4ff;
+
+      font-size: 16px;
+    }
+
+    .profile-action-text {
+      flex: 1;
+    }
+
+    .profile-action-text strong {
+      display: block;
+      font-size: 12px;
+    }
+
+    .profile-action-text span {
+      display: block;
+      margin-top: 2px;
+      font-size: 9px;
+      color: var(--muted);
+    }
+
+    .profile-arrow {
+      color: #9aa5b5;
+      font-size: 17px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="app">
+
+  <!-- Header -->
+  <header class="page-header">
+
+    <button
+      class="back-button"
+      onclick="history.back()"
+    >
+      ←
+    </button>
+
+    <div class="page-title">
+      <h1>Profile</h1>
+      <p>Account information</p>
+    </div>
+
+  </header>
+
+
+  <main class="main-content">
+
+    <!-- Profile -->
+    <section class="profile-card">
+
+      <div class="profile-avatar">
+        👤
+      </div>
+
+      <div class="profile-name" id="profileName">
+        Guest User
+      </div>
+
+      <div class="profile-email" id="profileEmail">
+        Not logged in
+      </div>
+
+      <div class="profile-balance">
+
+        <span>Available Balance</span>
+
+        <strong id="profileBalance">
+          0.00 Coins
+        </strong>
+
+      </div>
+
+    </section>
+
+
+    <!-- Actions -->
+    <section class="profile-actions">
+
+      <button
+        class="profile-action"
+        onclick="window.location.href='tasks.html'"
+      >
+
+        <div class="profile-action-icon">
+          ⚡
+        </div>
+
+        <div class="profile-action-text">
+          <strong>My Tasks</strong>
+          <span>View available earning tasks</span>
+        </div>
+
+        <div class="profile-arrow">›</div>
+
+      </button>
+
+
+      <button
+        class="profile-action"
+        onclick="window.location.href='withdraw.html'"
+      >
+
+        <div class="profile-action-icon">
+          💳
+        </div>
+
+        <div class="profile-action-text">
+          <strong>Withdraw</strong>
+          <span>Withdraw your available balance</span>
+        </div>
+
+        <div class="profile-arrow">›</div>
+
+      </button>
+
+
+      <button
+        class="profile-action"
+        onclick="logoutUser()"
+      >
+
+        <div class="profile-action-icon">
+          🚪
+        </div>
+
+        <div class="profile-action-text">
+          <strong>Logout</strong>
+          <span>Sign out from this device</span>
+        </div>
+
+        <div class="profile-arrow">›</div>
+
+      </button>
+
+    </section>
+
+
+    <!-- Native Ad -->
+    <section class="native-ad">
+
+      <div class="ad-label">
+        Advertisement
+      </div>
+
+      <div id="native-ad-container"></div>
+
+    </section>
+
+
+    <!-- Banner Ad -->
+    <section class="banner-ad">
+
+      <div class="ad-label">
+        Advertisement
+      </div>
+
+      <div id="banner-ad-container"></div>
+
+    </section>
+
+  </main>
+
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+
+    <button
+      class="nav-item"
+      onclick="window.location.href='index.html'"
+    >
+      <span>⌂</span>
+      <small>Home</small>
+    </button>
+
+    <button
+      class="nav-item"
+      onclick="window.location.href='tasks.html'"
+    >
+      <span>⚡</span>
+      <small>Work</small>
+    </button>
+
+    <button
+      class="nav-item"
+      onclick="window.location.href='index.html'"
+    >
+      <span>▶</span>
+      <small>Ads</small>
+    </button>
+
+    <button
+      class="nav-item"
+      onclick="window.location.href='withdraw.html'"
+    >
+      <span>💳</span>
+      <small>Withdraw</small>
+    </button>
+
+    <button class="nav-item active">
+      <span>👤</span>
+      <small>Profile</small>
+    </button>
+
+  </nav>
+
+</div>
+
+
+<script src="app.js"></script>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const balance =
+    Number(localStorage.getItem("worker_balance") || "0");
+
+  const balanceElement =
+    document.getElementById("profileBalance");
+
+  if (balanceElement) {
+    balanceElement.textContent =
+      balance.toFixed(2) + " Coins";
+  }
+
+});
+
+
+function logoutUser() {
+
+  localStorage.removeItem("worker_logged_in");
+  localStorage.removeItem("worker_username");
+
+  alert("You have been logged out.");
+
+  window.location.href = "index.html";
+}
+
+</script>
+
+</body>
+</html>

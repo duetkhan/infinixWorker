@@ -1,51 +1,206 @@
 /* =========================================================
    INFINIX WORKER - APP.JS
-   Smartlink + Local User/Balance
+   Login + Signup + Device User + Balance + Smartlink
+========================================================= */
+
+
+/* =========================================================
+   SMARTLINK
 ========================================================= */
 
 const SMARTLINK_URL =
   "https://www.profitableratecpmnetwork.com/xujhdqwep?key=a7974e14e4446b0e7745df0efe2ed3e9";
 
-const SMARTLINK_KEY = "iw_smartlink_last_open";
+const SMARTLINK_KEY =
+  "iw_smartlink_last_open";
 
 /*
-  Minimum interval between Smartlink triggers.
-  30 minutes = limited frequency.
+  Smartlink minimum interval:
+  30 minutes
 */
-const SMARTLINK_COOLDOWN = 30 * 60 * 1000;
+const SMARTLINK_COOLDOWN =
+  30 * 60 * 1000;
 
 
 /* =========================================================
-   LOCAL USER DATA
+   USER KEYS
+========================================================= */
+
+const USER_KEY =
+  "iw_device_user";
+
+const LOGIN_KEY =
+  "worker_logged_in";
+
+
+/* =========================================================
+   USER STATUS
+========================================================= */
+
+function isLoggedIn() {
+
+  return (
+    localStorage.getItem(LOGIN_KEY) === "true"
+  );
+
+}
+
+
+/* =========================================================
+   GET USER
+========================================================= */
+
+function getStoredUser() {
+
+  const data =
+    localStorage.getItem(USER_KEY);
+
+  if (!data) {
+    return null;
+  }
+
+  try {
+
+    return JSON.parse(data);
+
+  } catch (error) {
+
+    return null;
+
+  }
+
+}
+
+
+/* =========================================================
+   USERNAME
 ========================================================= */
 
 function getUsername() {
-  return localStorage.getItem("worker_username") || "Guest User";
-}
 
-function getBalance() {
-  const value = parseFloat(
-    localStorage.getItem("worker_balance") || "0"
+  const user =
+    getStoredUser();
+
+  if (user && user.username) {
+
+    return user.username;
+
+  }
+
+  return (
+    localStorage.getItem(
+      "worker_username"
+    ) || "Guest User"
   );
 
-  return isNaN(value) ? 0 : value;
 }
 
+
+/* =========================================================
+   EMAIL
+========================================================= */
+
+function getUserEmail() {
+
+  const user =
+    getStoredUser();
+
+  if (user && user.email) {
+
+    return user.email;
+
+  }
+
+  return (
+    localStorage.getItem(
+      "worker_email"
+    ) || ""
+  );
+
+}
+
+
+/* =========================================================
+   BALANCE
+========================================================= */
+
+function getBalance() {
+
+  const value =
+    parseFloat(
+      localStorage.getItem(
+        "worker_balance"
+      ) || "0"
+    );
+
+  if (isNaN(value)) {
+
+    return 0;
+
+  }
+
+  return value;
+
+}
+
+
+/* =========================================================
+   SET BALANCE
+========================================================= */
+
 function setBalance(amount) {
-  const value = Number(amount) || 0;
+
+  let value =
+    Number(amount);
+
+  if (
+    !Number.isFinite(value) ||
+    value < 0
+  ) {
+
+    value = 0;
+
+  }
+
 
   localStorage.setItem(
     "worker_balance",
     value.toFixed(2)
   );
 
+
   updateBalanceDisplays();
+
 }
 
-function addBalance(amount) {
-  const current = getBalance();
 
-  setBalance(current + Number(amount || 0));
+/* =========================================================
+   ADD BALANCE
+========================================================= */
+
+function addBalance(amount) {
+
+  const reward =
+    Number(amount);
+
+  if (
+    !Number.isFinite(reward) ||
+    reward <= 0
+  ) {
+
+    return;
+
+  }
+
+
+  const current =
+    getBalance();
+
+
+  setBalance(
+    current + reward
+  );
+
 }
 
 
@@ -55,113 +210,231 @@ function addBalance(amount) {
 
 function updateUserDisplays() {
 
-  const username = getUsername();
-  const balance = getBalance().toFixed(2);
+  const username =
+    getUsername();
 
-  document.querySelectorAll("[data-username]").forEach(el => {
-    el.textContent = username;
-  });
+  const email =
+    getUserEmail();
 
-  document.querySelectorAll("[data-balance]").forEach(el => {
-    el.textContent = balance;
-  });
-}
+  const balance =
+    getBalance().toFixed(2);
 
 
-function updateBalanceDisplays() {
+  document
+    .querySelectorAll(
+      "[data-username]"
+    )
+    .forEach(
+      element => {
 
-  const balance = getBalance().toFixed(2);
+        element.textContent =
+          username;
 
-  document.querySelectorAll("[data-balance]").forEach(el => {
-    el.textContent = balance;
-  });
+      }
+    );
+
+
+  document
+    .querySelectorAll(
+      "[data-email]"
+    )
+    .forEach(
+      element => {
+
+        element.textContent =
+          email;
+
+      }
+    );
+
+
+  document
+    .querySelectorAll(
+      "[data-balance]"
+    )
+    .forEach(
+      element => {
+
+        element.textContent =
+          balance;
+
+      }
+    );
+
 }
 
 
 /* =========================================================
-   SMARTLINK COOLDOWN
+   BALANCE DISPLAY
+========================================================= */
+
+function updateBalanceDisplays() {
+
+  const balance =
+    getBalance().toFixed(2);
+
+
+  document
+    .querySelectorAll(
+      "[data-balance]"
+    )
+    .forEach(
+      element => {
+
+        element.textContent =
+          balance;
+
+      }
+    );
+
+}
+
+
+/* =========================================================
+   INITIAL BALANCE
+========================================================= */
+
+function initializeBalance() {
+
+  if (
+    localStorage.getItem(
+      "worker_balance"
+    ) === null
+  ) {
+
+    localStorage.setItem(
+      "worker_balance",
+      "0.00"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   SMARTLINK - CHECK COOLDOWN
 ========================================================= */
 
 function canOpenSmartlink() {
 
-  const lastOpen = parseInt(
-    localStorage.getItem(SMARTLINK_KEY) || "0"
+  const lastOpen =
+    parseInt(
+      localStorage.getItem(
+        SMARTLINK_KEY
+      ) || "0",
+      10
+    );
+
+
+  const now =
+    Date.now();
+
+
+  return (
+    now - lastOpen
+    >= SMARTLINK_COOLDOWN
   );
 
-  const now = Date.now();
-
-  return (now - lastOpen) >= SMARTLINK_COOLDOWN;
 }
 
 
 /* =========================================================
-   OPEN SMARTLINK
+   SMARTLINK - OPEN
 ========================================================= */
 
 function openSmartlink() {
 
-  if (!canOpenSmartlink()) {
+  if (
+    !canOpenSmartlink()
+  ) {
+
     return false;
+
   }
+
+
+  /*
+    Save timestamp BEFORE opening.
+    This prevents repeated triggers.
+  */
 
   localStorage.setItem(
     SMARTLINK_KEY,
     Date.now().toString()
   );
 
-  /*
-    Open in a new tab.
-    User's original page remains available.
-  */
-  window.open(
-    SMARTLINK_URL,
-    "_blank",
-    "noopener,noreferrer"
-  );
 
-  return true;
+  /*
+    Open Smartlink in a new tab.
+  */
+
+  const newWindow =
+    window.open(
+      SMARTLINK_URL,
+      "_blank"
+    );
+
+
+  /*
+    Some browsers may block popup.
+    Navigation still continues.
+  */
+
+  return !!newWindow;
+
 }
 
 
 /* =========================================================
-   NAVIGATION + SMARTLINK
+   SMART NAVIGATION
 ========================================================= */
 
 function smartNavigate(url) {
 
   /*
-    First genuine navigation click:
-    Smartlink may open if cooldown expired.
-    
-    Navigation itself always continues.
+    Smartlink is controlled by cooldown.
+    It is NOT connected to rewards.
   */
+
   openSmartlink();
 
-  setTimeout(() => {
-    window.location.href = url;
-  }, 150);
+
+  setTimeout(
+    function() {
+
+      window.location.href =
+        url;
+
+    },
+    150
+  );
 
 }
 
 
 /* =========================================================
-   BROWSER CARD
+   BROWSER
 ========================================================= */
 
 function openBrowser() {
 
-  smartNavigate("browser.html");
+  smartNavigate(
+    "browser.html"
+  );
 
 }
 
 
 /* =========================================================
-   VIDEO DOWNLOADER CARD
+   VIDEO DOWNLOADER
 ========================================================= */
 
 function openVideoDownloader() {
 
-  smartNavigate("video-downloader.html");
+  smartNavigate(
+    "video-downloader.html"
+  );
 
 }
 
@@ -172,7 +445,9 @@ function openVideoDownloader() {
 
 function openProfile() {
 
-  smartNavigate("profile.html");
+  smartNavigate(
+    "profile.html"
+  );
 
 }
 
@@ -183,7 +458,8 @@ function openProfile() {
 
 function openMore() {
 
-  window.location.href = "more.html";
+  window.location.href =
+    "more.html";
 
 }
 
@@ -194,13 +470,14 @@ function openMore() {
 
 function openTask() {
 
-  window.location.href = "task.html";
+  window.location.href =
+    "task.html";
 
 }
 
 
 /* =========================================================
-   MICRO TASK / OFFERWALL
+   MICRO TASK
 ========================================================= */
 
 function openMicroTask() {
@@ -212,24 +489,224 @@ function openMicroTask() {
 
 
 /* =========================================================
+   LOGIN PAGE
+========================================================= */
+
+function openLogin() {
+
+  window.location.href =
+    "login.html";
+
+}
+
+
+/* =========================================================
+   SIGNUP PAGE
+========================================================= */
+
+function openSignup() {
+
+  window.location.href =
+    "signup.html";
+
+}
+
+
+/* =========================================================
    LOGOUT
 ========================================================= */
 
 function logout() {
 
-  localStorage.removeItem("worker_username");
-
-  localStorage.removeItem("worker_email");
-
-  localStorage.removeItem("worker_logged_in");
-
   /*
-    Balance/history are intentionally not deleted here.
-    If your real authentication is added later,
-    Supabase logout should be called here.
+    Remove login session.
+    Keep device account so another
+    account cannot be created.
   */
 
-  window.location.href = "index.html";
+  localStorage.removeItem(
+    LOGIN_KEY
+  );
+
+
+  localStorage.removeItem(
+    "worker_username"
+  );
+
+
+  localStorage.removeItem(
+    "worker_email"
+  );
+
+
+  /*
+    IMPORTANT:
+    iw_device_user is NOT removed.
+
+    This keeps:
+    1 device = 1 user
+  */
+
+
+  window.location.href =
+    "index.html";
+
+}
+
+
+/* =========================================================
+   AUTH BUTTON DISPLAY
+========================================================= */
+
+function updateAuthButtons() {
+
+  const loggedIn =
+    isLoggedIn();
+
+
+  /*
+    Login buttons
+  */
+
+  document
+    .querySelectorAll(
+      "[data-login-button]"
+    )
+    .forEach(
+      element => {
+
+        element.style.display =
+          loggedIn
+            ? "none"
+            : "";
+
+      }
+    );
+
+
+  /*
+    Signup buttons
+  */
+
+  document
+    .querySelectorAll(
+      "[data-signup-button]"
+    )
+    .forEach(
+      element => {
+
+        element.style.display =
+          loggedIn
+            ? "none"
+            : "";
+
+      }
+    );
+
+
+  /*
+    Logout buttons
+  */
+
+  document
+    .querySelectorAll(
+      "[data-logout-button]"
+    )
+    .forEach(
+      element => {
+
+        element.style.display =
+          loggedIn
+            ? ""
+            : "none";
+
+      }
+    );
+
+
+  /*
+    Logged-in user sections
+  */
+
+  document
+    .querySelectorAll(
+      "[data-logged-in]"
+    )
+    .forEach(
+      element => {
+
+        element.style.display =
+          loggedIn
+            ? ""
+            : "none";
+
+      }
+    );
+
+
+  /*
+    Guest sections
+  */
+
+  document
+    .querySelectorAll(
+      "[data-guest]"
+    )
+    .forEach(
+      element => {
+
+        element.style.display =
+          loggedIn
+            ? "none"
+            : "";
+
+      }
+    );
+
+}
+
+
+/* =========================================================
+   LOGIN PROTECTION
+========================================================= */
+
+function requireLogin() {
+
+  if (
+    isLoggedIn()
+  ) {
+
+    return true;
+
+  }
+
+
+  window.location.href =
+    "login.html";
+
+
+  return false;
+
+}
+
+
+/* =========================================================
+   LOGOUT ALL SESSION DATA
+========================================================= */
+
+function clearLoginSession() {
+
+  localStorage.removeItem(
+    LOGIN_KEY
+  );
+
+  localStorage.removeItem(
+    "worker_username"
+  );
+
+  localStorage.removeItem(
+    "worker_email"
+  );
 
 }
 
@@ -238,22 +715,15 @@ function logout() {
    INITIALIZE
 ========================================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener(
+  "DOMContentLoaded",
+  function() {
 
-  if (!localStorage.getItem("worker_balance")) {
-    localStorage.setItem(
-      "worker_balance",
-      "0.00"
-    );
+    initializeBalance();
+
+    updateUserDisplays();
+
+    updateAuthButtons();
+
   }
-
-  if (!localStorage.getItem("worker_username")) {
-    localStorage.setItem(
-      "worker_username",
-      "Guest User"
-    );
-  }
-
-  updateUserDisplays();
-
-});
+);

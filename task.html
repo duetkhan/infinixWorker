@@ -4,77 +4,259 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Complete Task & Earn Rewards - Infinix Worker</title>
+  <title>Task - Infinix Worker</title>
 
   <link rel="stylesheet" href="style.css">
+
+  <style>
+    .task-page {
+      min-height: 100vh;
+      padding-bottom: 145px;
+    }
+
+    .task-header {
+      background: linear-gradient(135deg, #1769e0, #0755c9);
+      color: #fff;
+      padding: 18px 16px 20px;
+      border-radius: 0 0 24px 24px;
+      box-shadow: 0 5px 18px rgba(23,105,224,.20);
+    }
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-button {
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 12px;
+      background: rgba(255,255,255,.18);
+      color: #fff;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .header-title {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .header-subtitle {
+      margin: 5px 0 0 52px;
+      font-size: 12px;
+      opacity: .88;
+    }
+
+    .task-content {
+      padding: 16px;
+    }
+
+    .balance-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fff;
+      border-radius: 18px;
+      padding: 15px 17px;
+      margin-bottom: 14px;
+      box-shadow: 0 6px 20px rgba(25,35,60,.08);
+    }
+
+    .balance-box .username {
+      color: #20283a;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .balance-box .balance {
+      color: #1769e0;
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .notice {
+      background: #eef5ff;
+      color: #596579;
+      border-radius: 15px;
+      padding: 13px;
+      font-size: 12px;
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
+
+    .task-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 17px;
+      margin-bottom: 15px;
+      box-shadow: 0 6px 20px rgba(25,35,60,.08);
+    }
+
+    .task-card h3 {
+      margin: 0 0 8px;
+      color: #20283a;
+      font-size: 17px;
+    }
+
+    .task-card p {
+      margin: 0 0 12px;
+      color: #70798b;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .task-reward {
+      display: inline-block;
+      background: #eaf2ff;
+      color: #1769e0;
+      border-radius: 10px;
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .btn {
+      width: 100%;
+      min-height: 46px;
+      border: 0;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #1769e0, #0755c9);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 5px 14px rgba(23,105,224,.18);
+    }
+
+    .btn.success {
+      background: #168f5b;
+      box-shadow: 0 5px 14px rgba(22,143,91,.15);
+    }
+
+    .btn:active {
+      transform: scale(.98);
+    }
+
+    .task-timer {
+      display: none;
+      margin-top: 12px;
+      padding: 10px;
+      background: #f4f7fc;
+      border-radius: 11px;
+      text-align: center;
+      color: #1769e0;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .task-message {
+      display: none;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      padding: 12px;
+      border-radius: 13px;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .success-message {
+      background: #eaf8f1;
+      color: #14754b;
+    }
+
+    .error-message {
+      background: #fff0f0;
+      color: #b33b3b;
+    }
+
+    .top-ad {
+      width: 320px;
+      height: 50px;
+      max-width: calc(100vw - 10px);
+      margin: 8px auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .native-ad {
+      width: 100%;
+      min-height: 100px;
+      margin: 10px 0 12px;
+      border-radius: 15px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .below-banner {
+      width: 320px;
+      height: 50px;
+      max-width: calc(100vw - 10px);
+      margin: 10px auto 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+  </style>
 </head>
 
 <body>
 
-<div id="app">
+<div id="app" class="task-page">
 
-  <!-- =====================================================
-       TOP AD
-  ====================================================== -->
+  <!-- TOP 320x50 -->
+  <div class="top-ad">
 
-  <div class="ad-area top-ad">
+    <script>
+      atOptions = {
+        'key' : 'b529261b98306ae1169a6bf5b991c3d4',
+        'format' : 'iframe',
+        'height' : 50,
+        'width' : 320,
+        'params' : {}
+      };
+    </script>
 
-    <div id="task-top-banner">
+    <script src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js"></script>
 
-      <script>
-        atOptions = {
-          'key' : 'b529261b98306ae1169a6bf5b991c3d4',
-          'format' : 'iframe',
-          'height' : 50,
-          'width' : 320,
-          'params' : {}
-        };
-      </script>
+  </div>
 
-      <script src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js"></script>
+
+  <!-- HEADER -->
+  <header class="task-header">
+
+    <div class="header-row">
+
+      <button
+        class="back-button"
+        type="button"
+        onclick="window.location.href='index.html'">
+        ←
+      </button>
+
+      <h1 class="header-title">
+        Complete Task & Earn
+      </h1>
 
     </div>
 
-  </div>
+    <div class="header-subtitle">
+      Complete genuine activities and earn rewards
+    </div>
+
+  </header>
 
 
-  <!-- =====================================================
-       SOCIAL BAR
-  ====================================================== -->
+  <main class="task-content">
 
-  <div class="social-bar">
-
-    <script src="https://pl31263667.profitableratecpmnetwork.com/b0/c5/21/b0c5218558b6cd7043e11407e07289b1.js"></script>
-
-  </div>
-
-
-  <!-- =====================================================
-       PAGE HEADER
-  ====================================================== -->
-
-  <div class="page-header">
-
-    <button
-      class="back-btn"
-      type="button"
-      onclick="window.location.href='index.html'">
-      ←
-    </button>
-
-    <h1>Complete Task & Earn Rewards</h1>
-
-  </div>
-
-
-  <!-- =====================================================
-       CONTENT
-  ====================================================== -->
-
-  <main class="page-content">
-
-    <!-- Balance -->
-
+    <!-- USER BALANCE -->
     <div class="balance-box">
 
       <div class="username">
@@ -88,10 +270,7 @@
     </div>
 
 
-    <!-- ===================================================
-         NOTICE
-    ==================================================== -->
-
+    <!-- NOTICE -->
     <div class="notice">
 
       Please complete the required activity genuinely.
@@ -100,24 +279,20 @@
     </div>
 
 
-    <!-- ===================================================
-         VISIT WEB & EARN
-    ==================================================== -->
-
+    <!-- VISIT WEB -->
     <div class="task-card">
 
       <h3>🌐 Visit Web & Earn</h3>
 
       <p>
         Visit the website and complete the required activity.
-        Registration, download or other requested activity may
-        be required to qualify for the reward.
+        Registration, download or another requested activity
+        may be required to qualify for the reward.
       </p>
 
       <div class="task-reward">
         Reward: $0.05
       </div>
-
 
       <button
         id="webStartBtn"
@@ -127,18 +302,10 @@
         Visit Web
       </button>
 
-
       <div
         id="webTimer"
-        style="
-          display:none;
-          margin-top:12px;
-          text-align:center;
-          font-weight:700;
-          color:#5b3df5;
-        ">
+        class="task-timer">
       </div>
-
 
       <button
         id="webCompleteBtn"
@@ -152,16 +319,27 @@
     </div>
 
 
-    <!-- ===================================================
-         WATCH & EARN
-    ==================================================== -->
+    <!-- NATIVE 2:1 -->
+    <div class="native-ad">
 
+      <script
+        async="async"
+        data-cfasync="false"
+        src="https://pl28546803.profitableratecpmnetwork.com/80507bc8e3d998279cd413247931169e/invoke.js">
+      </script>
+
+      <div id="container-80507bc8e3d998279cd413247931169e"></div>
+
+    </div>
+
+
+    <!-- WATCH -->
     <div class="task-card">
 
       <h3>▶️ Watch & Earn</h3>
 
       <p>
-        Start the advertisement and remain on the task page.
+        Start the available task and remain on the task page.
         After the required waiting period, the completion
         button will become available.
       </p>
@@ -169,7 +347,6 @@
       <div class="task-reward">
         Reward: $0.03
       </div>
-
 
       <button
         id="watchStartBtn"
@@ -179,21 +356,10 @@
         Watch Now
       </button>
 
-
-      <!-- Countdown appears beside/right of the button -->
-
       <div
         id="watchTimer"
-        style="
-          display:none;
-          margin-top:12px;
-          text-align:right;
-          font-size:14px;
-          font-weight:800;
-          color:#5b3df5;
-        ">
+        class="task-timer">
       </div>
-
 
       <button
         id="watchCompleteBtn"
@@ -201,33 +367,21 @@
         type="button"
         style="display:none; margin-top:10px;"
         onclick="completeWatchTask()">
-        Click
+        Complete
       </button>
 
     </div>
 
 
-    <!-- ===================================================
-         MESSAGE
-    ==================================================== -->
-
+    <!-- MESSAGE -->
     <div
       id="taskMessage"
-      style="display:none; margin-top:10px;">
+      class="task-message">
     </div>
 
-  </main>
 
-
-  <!-- =====================================================
-       BOTTOM ADS
-  ====================================================== -->
-
-  <div class="bottom-ads">
-
-    <!-- 320x50 Banner -->
-
-    <div id="bottom-banner-1">
+    <!-- BELOW NATIVE 320x50 -->
+    <div class="below-banner">
 
       <script>
         atOptions = {
@@ -243,74 +397,42 @@
 
     </div>
 
-
-    <!-- Native Banner -->
-
-    <div id="bottom-banner-2">
-
-      <script
-        async="async"
-        data-cfasync="false"
-        src="https://pl28546803.profitableratecpmnetwork.com/80507bc8e3d998279cd413247931169e/invoke.js">
-      </script>
-
-      <div id="container-80507bc8e3d998279cd413247931169e"></div>
-
-    </div>
-
-  </div>
+  </main>
 
 
-  <!-- =====================================================
-       BOTTOM NAV
-  ====================================================== -->
-
+  <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
 
     <a href="index.html">
-
       <span class="nav-icon">⌂</span>
       <span>Home</span>
-
     </a>
-
 
     <a href="https://lsr-video-downloaders.vercel.app/">
-
       <span class="nav-icon">🌐</span>
       <span>Website</span>
-
     </a>
-
 
     <a
       href="https://t.me/bitbytee_bot"
       target="_blank"
       rel="noopener noreferrer">
-
       <span class="nav-icon">✈</span>
       <span>Telegram</span>
-
     </a>
-
 
     <button
       type="button"
       onclick="openProfile()">
-
       <span class="nav-icon">👤</span>
       <span>Profile</span>
-
     </button>
-
 
     <button
       type="button"
       onclick="openMore()">
-
       <span class="nav-icon">☰</span>
       <span>More</span>
-
     </button>
 
   </nav>
@@ -318,18 +440,10 @@
 </div>
 
 
-<!-- =======================================================
-     APP JS
-======================================================== -->
-
 <script src="app.js"></script>
 
 
 <script>
-
-/* =========================================================
-   TASK SETTINGS
-========================================================= */
 
 const WEB_REWARD = 0.05;
 const WATCH_REWARD = 0.03;
@@ -344,18 +458,16 @@ const WATCH_WAIT = 15;
 
 function showTaskMessage(text, type) {
 
-  const box = document.getElementById("taskMessage");
+  const box =
+    document.getElementById("taskMessage");
 
   box.style.display = "block";
 
-  box.className = "";
-
-  if (type === "success") {
-    box.classList.add("success-message");
-  }
-  else {
-    box.classList.add("error-message");
-  }
+  box.className =
+    "task-message " +
+    (type === "success"
+      ? "success-message"
+      : "error-message");
 
   box.textContent = text;
 
@@ -370,6 +482,15 @@ let webInterval = null;
 
 function startWebTask() {
 
+  if (typeof requireLogin === "function") {
+
+    if (!requireLogin()) {
+      return;
+    }
+
+  }
+
+
   const startBtn =
     document.getElementById("webStartBtn");
 
@@ -381,7 +502,7 @@ function startWebTask() {
 
 
   /*
-    Smartlink is only an ad/navigation action.
+    Smartlink is advertising/navigation only.
     Reward does NOT depend on ad clicking.
   */
 
@@ -389,11 +510,6 @@ function startWebTask() {
     openSmartlink();
   }
 
-
-  /*
-    Open the task website.
-    Replace this URL later with the actual advertiser/task URL.
-  */
 
   window.open(
     "https://www.google.com/",
@@ -420,7 +536,7 @@ function startWebTask() {
   clearInterval(webInterval);
 
 
-  webInterval = setInterval(() => {
+  webInterval = setInterval(function() {
 
     remaining--;
 
@@ -454,16 +570,21 @@ function startWebTask() {
 
 function completeWebTask() {
 
-  const key = "iw_web_task_date";
+  if (typeof requireLogin === "function") {
+
+    if (!requireLogin()) {
+      return;
+    }
+
+  }
+
+
+  const key =
+    "iw_web_task_date";
 
   const today =
     new Date().toISOString().slice(0, 10);
 
-
-  /*
-    Prevent multiple rewards on the same day
-    from the same local task.
-  */
 
   if (localStorage.getItem(key) === today) {
 
@@ -473,18 +594,14 @@ function completeWebTask() {
     );
 
     return;
+
   }
 
 
-  /*
-    User confirmation.
-    The reward is for completing the actual activity,
-    not for clicking an advertisement.
-  */
-
-  const confirmed = confirm(
-    "Did you genuinely complete the required registration, download, or activity?"
-  );
+  const confirmed =
+    confirm(
+      "Did you genuinely complete the required registration, download, or activity?"
+    );
 
 
   if (!confirmed) {
@@ -495,6 +612,7 @@ function completeWebTask() {
     );
 
     return;
+
   }
 
 
@@ -518,7 +636,10 @@ function completeWebTask() {
   }
 
 
-  localStorage.setItem(key, today);
+  localStorage.setItem(
+    key,
+    today
+  );
 
 
   document.getElementById(
@@ -544,6 +665,15 @@ let watchInterval = null;
 
 function startWatchTask() {
 
+  if (typeof requireLogin === "function") {
+
+    if (!requireLogin()) {
+      return;
+    }
+
+  }
+
+
   const startBtn =
     document.getElementById("watchStartBtn");
 
@@ -555,19 +685,8 @@ function startWatchTask() {
 
 
   /*
-    Monetag code will be inserted here later.
-    Do NOT reward for ad clicks.
-  */
-
-
-  /*
-  =========================================================
-  MONETAG PLACEHOLDER
-
-  Your Monetag ad code will be inserted here when you
-  provide it.
-
-  =========================================================
+    Monetag code can be inserted here later.
+    Reward is never based on clicking an ad.
   */
 
 
@@ -589,7 +708,7 @@ function startWatchTask() {
   clearInterval(watchInterval);
 
 
-  watchInterval = setInterval(() => {
+  watchInterval = setInterval(function() {
 
     remaining--;
 
@@ -607,7 +726,7 @@ function startWatchTask() {
       clearInterval(watchInterval);
 
       timer.textContent =
-        "Completed. You can continue.";
+        "Time completed. You can continue.";
 
       completeBtn.style.display = "block";
 
@@ -624,7 +743,17 @@ function startWatchTask() {
 
 function completeWatchTask() {
 
-  const key = "iw_watch_task_date";
+  if (typeof requireLogin === "function") {
+
+    if (!requireLogin()) {
+      return;
+    }
+
+  }
+
+
+  const key =
+    "iw_watch_task_date";
 
   const today =
     new Date().toISOString().slice(0, 10);
@@ -638,6 +767,7 @@ function completeWatchTask() {
     );
 
     return;
+
   }
 
 
@@ -661,7 +791,10 @@ function completeWatchTask() {
   }
 
 
-  localStorage.setItem(key, today);
+  localStorage.setItem(
+    key,
+    today
+  );
 
 
   document.getElementById(

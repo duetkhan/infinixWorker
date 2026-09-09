@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Sign Up - Infinix Worker</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+
+    .auth-page {
+      min-height: calc(100vh - 70px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 25px 15px 90px;
+    }
+
+    .auth-box {
+      width: 100%;
+      max-width: 390px;
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 25px 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.10);
+    }
+
+    .auth-box h1 {
+      text-align: center;
+      margin: 0 0 8px;
+      font-size: 25px;
+      color: #172238;
+    }
+
+    .auth-subtitle {
+      text-align: center;
+      color: #777;
+      font-size: 14px;
+      margin-bottom: 22px;
+    }
+
+    .auth-box label {
+      display: block;
+      margin: 14px 0 6px;
+      font-weight: 600;
+      font-size: 14px;
+      color: #172238;
+    }
+
+    .auth-box input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 13px 14px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+      background: #fff;
+    }
+
+    .auth-box input:focus {
+      border-color: #0875ed;
+    }
+
+    .auth-btn {
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      padding: 13px;
+      margin-top: 20px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #0875ed;
+      color: #fff;
+    }
+
+    .auth-btn:active {
+      transform: scale(.98);
+    }
+
+    .auth-btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .auth-message {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 9px;
+      display: none;
+      font-size: 13px;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    .auth-message.error {
+      display: block;
+      background: #ffe8e8;
+      color: #b00020;
+    }
+
+    .auth-message.success {
+      display: block;
+      background: #e8fff0;
+      color: #08752d;
+    }
+
+    .auth-links {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .auth-links a {
+      color: #0875ed;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+  </style>
+</head>
+
+<body>
+
+
+  <!-- HEADER -->
+
+  <header class="home-header">
+
+    <div class="home-brand">
+
+      <div class="logo-box">
+        IW
+      </div>
+
+      <div class="brand-title">
+
+        <strong>
+          Infinix Worker
+        </strong>
+
+        <small>
+          CREATE YOUR ACCOUNT
+        </small>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- SIGNUP -->
+
+  <main class="auth-page">
+
+    <div class="auth-box">
+
+      <h1>Create Account</h1>
+
+      <div class="auth-subtitle">
+        Create your Infinix Worker account
+      </div>
+
+
+      <form id="signupForm">
+
+
+        <!-- USERNAME -->
+
+        <label for="signupUsername">
+          Username
+        </label>
+
+        <input
+          type="text"
+          id="signupUsername"
+          placeholder="Choose a username"
+          minlength="3"
+          maxlength="30"
+          autocomplete="username"
+          required
+        >
+
+
+        <!-- EMAIL -->
+
+        <label for="signupEmail">
+          Email
+        </label>
+
+        <input
+          type="email"
+          id="signupEmail"
+          placeholder="Enter your email"
+          autocomplete="email"
+          required
+        >
+
+
+        <!-- PASSWORD -->
+
+        <label for="signupPassword">
+          Password
+        </label>
+
+        <input
+          type="password"
+          id="signupPassword"
+          placeholder="Create a password"
+          minlength="6"
+          autocomplete="new-password"
+          required
+        >
+
+
+        <!-- CONFIRM PASSWORD -->
+
+        <label for="confirmPassword">
+          Confirm Password
+        </label>
+
+        <input
+          type="password"
+          id="confirmPassword"
+          placeholder="Confirm your password"
+          minlength="6"
+          autocomplete="new-password"
+          required
+        >
+
+
+        <button
+          type="submit"
+          class="auth-btn"
+          id="signupBtn"
+        >
+          Create Account
+        </button>
+
+      </form>
+
+
+      <div
+        id="signupMessage"
+        class="auth-message"
+      ></div>
+
+
+      <div class="auth-links">
+
+        Already have an account?
+
+        <a href="login.html">
+          Login
+        </a>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <!-- BOTTOM NAV -->
+
+  <nav class="bottom-nav">
+
+    <a href="index.html" class="nav-item">
+      <span>⌂</span>
+      <small>Home</small>
+    </a>
+
+
+    <a
+      href="https://lsr-video-downloaders.vercel.app/"
+      class="nav-item"
+    >
+      <span>🌐</span>
+      <small>Website</small>
+    </a>
+
+
+    <a
+      href="https://t.me/bitbytee_bot"
+      class="nav-item"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <span>✈</span>
+      <small>Telegram</small>
+    </a>
+
+
+    <a
+      href="profile.html"
+      class="nav-item"
+    >
+      <span>👤</span>
+      <small>Profile</small>
+    </a>
+
+
+    <a
+      href="more.html"
+      class="nav-item"
+    >
+      <span>☰</span>
+      <small>More</small>
+    </a>
+
+  </nav>
+
+
+<script>
+
+const USER_KEY = "iw_device_user";
+const LOGIN_KEY = "worker_logged_in";
+
+
+function showSignupMessage(text, type) {
+
+  const box =
+    document.getElementById("signupMessage");
+
+  box.textContent = text;
+
+  box.className =
+    "auth-message " + type;
+
+}
+
+
+/* =========================================================
+   IF USER ALREADY EXISTS ON THIS DEVICE
+========================================================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function() {
+
+    const existingUser =
+      localStorage.getItem(USER_KEY);
+
+    const loggedIn =
+      localStorage.getItem(LOGIN_KEY);
+
+
+    /*
+      Already logged in → Home
+    */
+
+    if (loggedIn === "true") {
+
+      window.location.href =
+        "index.html";
+
+      return;
+
+    }
+
+
+    /*
+      Device already has an account.
+      Block creating another account.
+    */
+
+    if (existingUser) {
+
+      document
+        .getElementById("signupBtn")
+        .disabled = true;
+
+
+      showSignupMessage(
+        "An account is already registered on this device. Please login with the existing account.",
+        "error"
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   SIGNUP
+========================================================= */
+
+document
+  .getElementById("signupForm")
+  .addEventListener(
+    "submit",
+    function(event) {
+
+      event.preventDefault();
+
+
+      /*
+        Double-check device restriction.
+      */
+
+      if (
+        localStorage.getItem(USER_KEY)
+      ) {
+
+        showSignupMessage(
+          "Only one account is allowed on this device.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      const username =
+        document
+          .getElementById(
+            "signupUsername"
+          )
+          .value
+          .trim();
+
+
+      const email =
+        document
+          .getElementById(
+            "signupEmail"
+          )
+          .value
+          .trim()
+          .toLowerCase();
+
+
+      const password =
+        document
+          .getElementById(
+            "signupPassword"
+          )
+          .value;
+
+
+      const confirmPassword =
+        document
+          .getElementById(
+            "confirmPassword"
+          )
+          .value;
+
+
+      if (username.length < 3) {
+
+        showSignupMessage(
+          "Username must be at least 3 characters.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      if (password.length < 6) {
+
+        showSignupMessage(
+          "Password must be at least 6 characters.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      if (
+        password !== confirmPassword
+      ) {
+
+        showSignupMessage(
+          "Passwords do not match.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      /*
+        Create local device account.
+      */
+
+      const user = {
+
+        username: username,
+
+        email: email,
+
+        password: password,
+
+        createdAt:
+          new Date().toISOString()
+
+      };
+
+
+      /*
+        Save the single device account.
+      */
+
+      localStorage.setItem(
+        USER_KEY,
+        JSON.stringify(user)
+      );
+
+
+      localStorage.setItem(
+        "worker_username",
+        username
+      );
+
+
+      localStorage.setItem(
+        "worker_email",
+        email
+      );
+
+
+      /*
+        Automatic login
+      */
+
+      localStorage.setItem(
+        LOGIN_KEY,
+        "true"
+      );
+
+
+      /*
+        Initial balance
+      */
+
+      if (
+        !localStorage.getItem(
+          "worker_balance"
+        )
+      ) {
+
+        localStorage.setItem(
+          "worker_balance",
+          "0.00"
+        );
+
+      }
+
+
+      showSignupMessage(
+        "Account created successfully. Redirecting...",
+        "success"
+      );
+
+
+      /*
+        Redirect to Home
+      */
+
+      setTimeout(
+        function() {
+
+          window.location.href =
+            "index.html";
+
+        },
+        900
+      );
+
+    }
+  );
+
+</script>
+
+</body>
+</html>

@@ -14,12 +14,55 @@
       padding-bottom: 145px;
     }
 
+    .top-ad {
+      width: 320px;
+      height: 50px;
+      max-width: calc(100vw - 10px);
+      margin: 8px auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .profile-header {
+      background: linear-gradient(135deg, #1769e0, #0755c9);
+      color: #fff;
+      padding: 15px 16px 18px;
+      border-radius: 0 0 24px 24px;
+      box-shadow: 0 5px 18px rgba(23,105,224,.20);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .profile-back {
+      width: 38px;
+      height: 38px;
+      border: 0;
+      border-radius: 12px;
+      background: rgba(255,255,255,.16);
+      color: #fff;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .profile-header h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .profile-content {
+      padding: 16px;
+    }
+
     .profile-card {
       background: #fff;
-      border-radius: 18px;
+      border-radius: 20px;
       padding: 18px;
       margin-bottom: 14px;
-      box-shadow: 0 5px 18px rgba(25,35,60,.07);
+      box-shadow: 0 6px 20px rgba(25,35,60,.08);
     }
 
     .profile-user {
@@ -29,11 +72,12 @@
     }
 
     .profile-avatar {
-      width: 54px;
-      height: 54px;
-      border-radius: 50%;
-      background: #f0edff;
-      color: #5b3df5;
+      width: 56px;
+      height: 56px;
+      flex: 0 0 56px;
+      border-radius: 17px;
+      background: #eaf2ff;
+      color: #1769e0;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -41,33 +85,107 @@
     }
 
     .profile-user h2 {
+      margin: 0 0 4px;
+      color: #20283a;
       font-size: 18px;
-      margin-bottom: 4px;
+      font-weight: 800;
+      word-break: break-word;
     }
 
     .profile-user p {
       margin: 0;
       color: #7a8294;
       font-size: 12px;
+      word-break: break-word;
     }
 
     .balance-large {
       margin-top: 18px;
-      padding: 16px;
-      border-radius: 15px;
-      background: linear-gradient(135deg,#5b3df5,#7659ff);
+      padding: 17px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #1769e0, #0755c9);
       color: #fff;
+      box-shadow: 0 6px 15px rgba(23,105,224,.16);
     }
 
     .balance-large small {
       display: block;
-      opacity: .85;
+      opacity: .88;
       font-size: 12px;
       margin-bottom: 5px;
     }
 
     .balance-large strong {
-      font-size: 28px;
+      font-size: 29px;
+      font-weight: 800;
+    }
+
+    .section-title {
+      margin: 0 0 12px;
+      color: #20283a;
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .notice {
+      margin-bottom: 15px;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 7px;
+      color: #30394b;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      min-height: 45px;
+      box-sizing: border-box;
+      padding: 11px 12px;
+      border: 1px solid #dce2eb;
+      border-radius: 12px;
+      background: #f9fbff;
+      color: #20283a;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: #1769e0;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(23,105,224,.08);
+    }
+
+    .profile-btn {
+      width: 100%;
+      min-height: 46px;
+      border: 0;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #1769e0, #0755c9);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 5px 14px rgba(23,105,224,.18);
+    }
+
+    .profile-btn:active {
+      transform: scale(.98);
+    }
+
+    .logout-btn {
+      background: #fff1f1;
+      color: #c53b3b;
+      box-shadow: none;
+      border: 1px solid #ffdada;
     }
 
     .history-item {
@@ -75,8 +193,13 @@
       border-bottom: 1px solid #edf0f5;
     }
 
+    .history-item:first-child {
+      padding-top: 0;
+    }
+
     .history-item:last-child {
       border-bottom: 0;
+      padding-bottom: 0;
     }
 
     .history-row {
@@ -86,18 +209,27 @@
     }
 
     .history-row strong {
+      color: #30394b;
       font-size: 13px;
     }
 
     .history-row span {
+      color: #1769e0;
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .history-meta {
-      margin-top: 4px;
+      margin-top: 5px;
       color: #818898;
       font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .empty-history {
+      color: #818898;
+      font-size: 13px;
+      margin: 0;
     }
 
     .fixed-banner {
@@ -116,16 +248,45 @@
       overflow: hidden;
       box-shadow: 0 -2px 12px rgba(0,0,0,.12);
     }
+
+    .message {
+      display: none;
+      margin-top: 12px;
+      padding: 11px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .message.success {
+      display: block;
+      background: #eaf8f1;
+      color: #14754b;
+    }
+
+    .message.error {
+      display: block;
+      background: #fff0f0;
+      color: #b33b3b;
+    }
+
+    .native-ad {
+      width: 100%;
+      min-height: 100px;
+      margin: 12px 0;
+      border-radius: 15px;
+      overflow: hidden;
+      background: #fff;
+    }
   </style>
 </head>
 
 <body>
 
-<div id="app" class="profile-page">
+<div class="profile-page">
 
-
-  <!-- TOP BANNER -->
-  <div class="ad-area top-ad">
+  <!-- TOP 320x50 -->
+  <div class="top-ad">
 
     <script>
       atOptions = {
@@ -142,33 +303,26 @@
   </div>
 
 
-  <!-- SOCIAL BAR -->
-  <div class="social-bar">
-
-    <script src="https://pl31263667.profitableratecpmnetwork.com/b0/c5/21/b0c5218558b6cd7043e11407e07289b1.js"></script>
-
-  </div>
-
-
   <!-- HEADER -->
-  <div class="page-header">
+  <header class="profile-header">
 
     <button
-      class="back-btn"
+      class="profile-back"
+      type="button"
       onclick="window.location.href='index.html'">
       ←
     </button>
 
     <h1>Profile</h1>
 
-  </div>
+  </header>
 
 
-  <main class="page-content">
+  <main class="profile-content">
 
 
-    <!-- USER -->
-    <div class="profile-card">
+    <!-- USER + BALANCE -->
+    <section class="profile-card">
 
       <div class="profile-user">
 
@@ -203,13 +357,13 @@
 
       </div>
 
-    </div>
+    </section>
 
 
     <!-- WITHDRAW -->
-    <div class="profile-card">
+    <section class="profile-card">
 
-      <h3 style="margin-bottom:12px;">
+      <h3 class="section-title">
         Withdraw Balance
       </h3>
 
@@ -249,7 +403,8 @@
           id="account"
           type="text"
           inputmode="numeric"
-          placeholder="Enter payment account number">
+          placeholder="Enter payment account number"
+        >
 
       </div>
 
@@ -265,13 +420,14 @@
           type="number"
           min="1.10"
           step="0.01"
-          placeholder="Enter amount">
+          placeholder="Enter amount"
+        >
 
       </div>
 
 
       <button
-        class="btn"
+        class="profile-btn"
         type="button"
         onclick="submitWithdraw()">
         Submit Withdraw
@@ -280,46 +436,78 @@
 
       <div
         id="withdrawMessage"
-        style="display:none; margin-top:12px;">
+        class="message">
       </div>
+
+    </section>
+
+
+    <!-- NATIVE 2:1 -->
+    <div class="native-ad">
+
+      <script
+        async="async"
+        data-cfasync="false"
+        src="https://pl28546803.profitableratecpmnetwork.com/80507bc8e3d998279cd413247931169e/invoke.js">
+      </script>
+
+      <div id="container-80507bc8e3d998279cd413247931169e"></div>
 
     </div>
 
 
-    <!-- HISTORY -->
-    <div class="profile-card">
+    <!-- WITHDRAW HISTORY -->
+    <section class="profile-card">
 
-      <h3 style="margin-bottom:10px;">
+      <h3 class="section-title">
         Withdrawal History
       </h3>
 
       <div id="withdrawHistory">
 
-        <p style="color:#818898;font-size:13px;">
+        <p class="empty-history">
           No withdrawal history yet.
         </p>
 
       </div>
 
-    </div>
+    </section>
 
 
     <!-- LOGOUT -->
-    <div class="profile-card">
+    <section class="profile-card">
 
       <button
-        class="btn danger"
+        class="profile-btn logout-btn"
         type="button"
         onclick="logout()">
         Logout
       </button>
+
+    </section>
+
+
+    <!-- BELOW NATIVE 320x50 -->
+    <div class="top-ad">
+
+      <script>
+        atOptions = {
+          'key' : 'b529261b98306ae1169a6bf5b991c3d4',
+          'format' : 'iframe',
+          'height' : 50,
+          'width' : 320,
+          'params' : {}
+        };
+      </script>
+
+      <script src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js"></script>
 
     </div>
 
   </main>
 
 
-  <!-- FIXED 320x50 BANNER -->
+  <!-- FIXED BOTTOM 320x50 -->
   <div class="fixed-banner">
 
     <script>
@@ -393,12 +581,13 @@ function loadProfilePage() {
     "Not logged in";
 
 
-  const usernameElements =
-    document.querySelectorAll("[data-username]");
+  document
+    .querySelectorAll("[data-username]")
+    .forEach(function(el) {
 
-  usernameElements.forEach(function(el) {
-    el.textContent = username;
-  });
+      el.textContent = username;
+
+    });
 
 
   document.getElementById(
@@ -407,10 +596,11 @@ function loadProfilePage() {
 
 
   if (
-    typeof updateUserDisplays ===
-    "function"
+    typeof updateUserDisplays === "function"
   ) {
+
     updateUserDisplays();
+
   }
 
 }
@@ -423,14 +613,16 @@ function loadProfilePage() {
 function showWithdrawMessage(text, success) {
 
   const box =
-    document.getElementById("withdrawMessage");
+    document.getElementById(
+      "withdrawMessage"
+    );
 
   box.style.display = "block";
 
   box.className =
     success
-      ? "success-message"
-      : "error-message";
+      ? "message success"
+      : "message error";
 
   box.textContent = text;
 
@@ -444,14 +636,22 @@ function showWithdrawMessage(text, success) {
 function submitWithdraw() {
 
   const method =
-    document.getElementById("method").value;
+    document.getElementById(
+      "method"
+    ).value;
+
 
   const account =
-    document.getElementById("account").value.trim();
+    document.getElementById(
+      "account"
+    ).value.trim();
+
 
   const amount =
     parseFloat(
-      document.getElementById("amount").value
+      document.getElementById(
+        "amount"
+      ).value
     );
 
 
@@ -463,6 +663,7 @@ function submitWithdraw() {
     );
 
     return;
+
   }
 
 
@@ -474,6 +675,7 @@ function submitWithdraw() {
     );
 
     return;
+
   }
 
 
@@ -495,13 +697,14 @@ function submitWithdraw() {
     );
 
     return;
+
   }
 
 
   /*
-    Local demo withdrawal record.
-    A real payment requires a secure backend/admin
-    processing system.
+    Local withdrawal record.
+    Real payment processing requires
+    a secure backend/admin system.
   */
 
   const withdrawals =
@@ -523,11 +726,13 @@ function submitWithdraw() {
         ? "****" + account.slice(-4)
         : account,
 
-    amount: amount.toFixed(2),
+    amount:
+      amount.toFixed(2),
 
     status: "Pending",
 
-    date: new Date().toLocaleString()
+    date:
+      new Date().toLocaleString()
 
   });
 
@@ -538,9 +743,13 @@ function submitWithdraw() {
   );
 
 
-  if (typeof setBalance === "function") {
+  if (
+    typeof setBalance === "function"
+  ) {
 
-    setBalance(balance - amount);
+    setBalance(
+      balance - amount
+    );
 
   }
   else {
@@ -556,6 +765,7 @@ function submitWithdraw() {
   document.getElementById(
     "account"
   ).value = "";
+
 
   document.getElementById(
     "amount"
@@ -596,11 +806,12 @@ function loadWithdrawHistory() {
   if (!withdrawals.length) {
 
     box.innerHTML =
-      '<p style="color:#818898;font-size:13px;">' +
+      '<p class="empty-history">' +
       'No withdrawal history yet.' +
       '</p>';
 
     return;
+
   }
 
 
@@ -610,7 +821,10 @@ function loadWithdrawHistory() {
   withdrawals.forEach(function(item) {
 
     const div =
-      document.createElement("div");
+      document.createElement(
+        "div"
+      );
+
 
     div.className =
       "history-item";

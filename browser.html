@@ -1,65 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
   <title>Browser - Infinix Worker</title>
 
   <link rel="stylesheet" href="style.css">
 
+
   <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+
+    html,
     body {
       margin: 0;
-      background: #f4f7fc;
-    }
-
-    .browser-page {
-      min-height: 100vh;
-      padding-bottom: 135px;
-    }
-
-    /* TOP AD */
-    .browser-top-ad {
+      padding: 0;
       width: 100%;
-      min-height: 50px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      height: 100%;
+
       background: #f4f7fc;
+
       overflow: hidden;
     }
 
-    /* HEADER */
-    .browser-header {
-      background: linear-gradient(
-        135deg,
-        #0755c9,
-        #398ce9
-      );
 
-      color: white;
+    /* =====================================================
+       MAIN BROWSER
+    ===================================================== */
 
-      padding: 28px 22px 30px;
+    .browser-page {
 
-      border-radius: 0 0 45px 45px;
+      width: 100%;
+      height: 100vh;
+
+      overflow: hidden;
+
+      background: #f4f7fc;
+    }
+
+
+    /* =====================================================
+       FIXED TOP BANNER
+    ===================================================== */
+
+    .browser-top-ad {
+
+      position: fixed;
+
+      top: 0;
+      left: 50%;
+
+      transform: translateX(-50%);
+
+      width: 320px;
+      height: 50px;
+
+      max-width: 100vw;
+
+      background: #ffffff;
 
       display: flex;
       align-items: center;
-      gap: 18px;
+      justify-content: center;
+
+      overflow: hidden;
+
+      z-index: 10000;
+
+      box-shadow:
+        0 2px 10px rgba(0,0,0,.10);
     }
 
+
+    /* =====================================================
+       HEADER
+    ===================================================== */
+
+    .browser-header {
+
+      position: fixed;
+
+      top: 50px;
+      left: 0;
+
+      width: 100%;
+
+      height: 105px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #0755c9,
+          #398ce9
+        );
+
+      color: #ffffff;
+
+      border-radius:
+        0 0 38px 38px;
+
+      display: flex;
+      align-items: center;
+
+      padding:
+        15px 20px;
+
+      z-index: 9000;
+
+      box-shadow:
+        0 6px 20px rgba(20,80,160,.15);
+    }
+
+
     .browser-back {
-      width: 64px;
-      height: 64px;
+
+      width: 62px;
+      height: 62px;
 
       border: 0;
+
       border-radius: 20px;
 
-      background: rgba(255,255,255,.18);
+      background:
+        rgba(255,255,255,.18);
 
-      color: white;
+      color: #ffffff;
 
       font-size: 34px;
 
@@ -68,312 +142,459 @@
       justify-content: center;
 
       cursor: pointer;
+
       flex-shrink: 0;
     }
+
+
+    .browser-header-text {
+
+      margin-left: 17px;
+    }
+
 
     .browser-header h1 {
+
       margin: 0;
-      font-size: 30px;
+
+      font-size: 29px;
+      line-height: 1.1;
     }
+
 
     .browser-header p {
-      margin: 6px 0 0;
-      font-size: 14px;
-      opacity: .9;
-    }
 
-    /* SEARCH CARD */
-    .browser-search-card {
-      background: white;
-
-      margin: 28px 18px 16px;
-
-      padding: 26px 20px;
-
-      border-radius: 28px;
-
-      box-shadow:
-        0 8px 25px rgba(30,60,100,.08);
-    }
-
-    .browser-search-card h2 {
-      margin: 0 0 20px;
-
-      font-size: 23px;
-      color: #26364a;
-    }
-
-    .browser-search-row {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .browser-search-row input {
-      flex: 1;
-
-      min-width: 0;
-
-      height: 58px;
-
-      border: 1px solid #dce3ed;
-
-      border-radius: 18px;
-
-      padding: 0 18px;
-
-      font-size: 17px;
-
-      outline: none;
-
-      color: #333;
-      background: #fff;
-    }
-
-    .browser-search-row input:focus {
-      border-color: #1769e0;
-
-      box-shadow:
-        0 0 0 3px rgba(23,105,224,.08);
-    }
-
-    .browser-search-btn {
-      width: 62px;
-      height: 58px;
-
-      border: 0;
-
-      border-radius: 18px;
-
-      background: linear-gradient(
-        135deg,
-        #1769e0,
-        #3289ed
-      );
-
-      color: white;
-
-      font-size: 25px;
-
-      cursor: pointer;
-
-      flex-shrink: 0;
-    }
-
-    /* QUICK SEARCH */
-    .quick-search {
-      display: flex;
-      gap: 10px;
-
-      margin-top: 18px;
-
-      overflow-x: auto;
-
-      scrollbar-width: none;
-    }
-
-    .quick-search::-webkit-scrollbar {
-      display: none;
-    }
-
-    .quick-search button {
-      flex: 0 0 auto;
-
-      border: 0;
-
-      border-radius: 15px;
-
-      background: #edf4ff;
-
-      color: #1769e0;
-
-      padding: 12px 18px;
+      margin:
+        6px 0 0;
 
       font-size: 13px;
 
-      font-weight: 600;
-
-      cursor: pointer;
+      opacity: .92;
     }
 
-    /* CONTENT */
-    .browser-content-card {
-      margin: 0 18px;
 
-      background: white;
+    /* =====================================================
+       SEARCH AREA
+    ===================================================== */
 
-      border-radius: 25px;
+    .browser-search-area {
+
+      position: fixed;
+
+      top: 166px;
+      left: 0;
+
+      width: 100%;
+
+      padding:
+        10px 14px 8px;
+
+      background: #f4f7fc;
+
+      z-index: 8000;
+    }
+
+
+    .browser-search-box {
+
+      width: 100%;
+
+      background: #ffffff;
+
+      border-radius: 18px;
+
+      padding: 7px;
+
+      display: flex;
+
+      gap: 7px;
+
+      box-shadow:
+        0 5px 18px rgba(30,60,100,.09);
+    }
+
+
+    .browser-search-box input {
+
+      flex: 1;
+
+      width: 100%;
+
+      min-width: 0;
+
+      height: 50px;
+
+      border: 1px solid #e0e5ec;
+
+      border-radius: 13px;
+
+      padding:
+        0 15px;
+
+      outline: none;
+
+      background: #ffffff;
+
+      color: #222;
+
+      font-family: inherit;
+
+      font-size: 16px;
+    }
+
+
+    .browser-search-box input:focus {
+
+      border-color: #1769e0;
+
+      box-shadow:
+        0 0 0 3px
+        rgba(23,105,224,.08);
+    }
+
+
+    .browser-search-button {
+
+      height: 50px;
+
+      min-width: 92px;
+
+      padding:
+        0 17px;
+
+      border: 0;
+
+      border-radius: 13px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #1769e0,
+          #3289ed
+        );
+
+      color: #ffffff;
+
+      font-family: inherit;
+
+      font-size: 14px;
+
+      font-weight: 700;
+
+      cursor: pointer;
+
+      box-shadow:
+        0 4px 12px
+        rgba(23,105,224,.20);
+    }
+
+
+    .browser-search-button:active {
+
+      transform: scale(.98);
+    }
+
+
+    /* =====================================================
+       RESULT STATUS
+    ===================================================== */
+
+    .browser-status {
+
+      position: fixed;
+
+      top: 230px;
+      left: 0;
+
+      width: 100%;
+
+      height: 34px;
+
+      padding:
+        0 17px;
+
+      display: flex;
+      align-items: center;
+
+      color: #778397;
+
+      font-size: 12px;
+
+      z-index: 7000;
+
+      pointer-events: none;
+    }
+
+
+    /* =====================================================
+       RESULT AREA
+    ===================================================== */
+
+    .browser-result {
+
+      position: fixed;
+
+      top: 264px;
+      left: 0;
+
+      width: 100%;
+
+      /*
+        Leave room for:
+        bottom banner + navigation
+      */
+
+      bottom: 122px;
+
+      padding:
+        0 10px;
+
+      z-index: 100;
+
+      background: #f4f7fc;
+    }
+
+
+    .browser-result-card {
+
+      width: 100%;
+      height: 100%;
+
+      background: #ffffff;
+
+      border-radius:
+        20px 20px 0 0;
 
       overflow: hidden;
 
       box-shadow:
-        0 8px 25px rgba(30,60,100,.08);
+        0 -2px 15px
+        rgba(30,60,100,.06);
     }
 
-    .browser-content-top {
-      height: 52px;
-
-      padding: 0 16px;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: space-between;
-
-      border-bottom: 1px solid #edf0f5;
-
-      color: #718096;
-
-      font-size: 14px;
-    }
-
-    .browser-reload {
-      width: 40px;
-      height: 40px;
-
-      border: 0;
-
-      border-radius: 14px;
-
-      background: #edf4ff;
-
-      color: #1769e0;
-
-      font-size: 21px;
-
-      cursor: pointer;
-    }
-
-    /*
-      Important:
-      No huge artificial gray area.
-    */
 
     #browserFrame {
+
       display: block;
 
       width: 100%;
-
-      height: 62vh;
-
-      min-height: 400px;
+      height: 100%;
 
       border: 0;
 
-      background: white;
+      background: #ffffff;
     }
 
-    /* FALLBACK */
+
+    /* =====================================================
+       FALLBACK
+    ===================================================== */
+
     #browserMessage {
+
       display: none;
 
-      min-height: 300px;
+      width: 100%;
+      height: 100%;
 
-      padding: 40px 25px;
+      padding: 50px 25px;
 
       text-align: center;
 
-      background: white;
+      background: #ffffff;
     }
 
-    #browserMessage .msg-icon {
+
+    #browserMessage .message-icon {
+
       font-size: 42px;
+
       margin-bottom: 12px;
     }
 
+
     #browserMessage h3 {
-      margin: 0 0 8px;
+
+      margin:
+        0 0 8px;
 
       color: #27364a;
+
+      font-size: 18px;
     }
 
+
     #browserMessage p {
+
       margin: 0;
 
-      color: #8a94a5;
+      color: #8993a3;
 
       font-size: 13px;
 
       line-height: 1.6;
     }
 
-    /* FIXED BOTTOM AD */
+
+    /* =====================================================
+       FIXED BOTTOM BANNER
+    ===================================================== */
+
     .browser-bottom-ad {
+
       position: fixed;
 
       left: 50%;
-      bottom: 70px;
+      bottom: 68px;
 
-      transform: translateX(-50%);
+      transform:
+        translateX(-50%);
 
       width: 320px;
       height: 50px;
 
-      max-width: calc(100vw - 8px);
+      max-width: 100vw;
 
-      background: white;
-
-      z-index: 9990;
+      background: #ffffff;
 
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
 
       overflow: hidden;
 
+      z-index: 10000;
+
       box-shadow:
-        0 -3px 14px rgba(0,0,0,.12);
+        0 -3px 12px
+        rgba(0,0,0,.12);
     }
 
-    @media (max-width: 480px) {
+
+    /* =====================================================
+       BOTTOM NAV
+    ===================================================== */
+
+    .bottom-nav {
+
+      position: fixed !important;
+
+      left: 0 !important;
+      bottom: 0 !important;
+
+      width: 100% !important;
+
+      height: 68px !important;
+
+      z-index: 10001 !important;
+    }
+
+
+    /* =====================================================
+       SMALL SCREEN
+    ===================================================== */
+
+    @media (max-width: 380px) {
 
       .browser-header {
-        padding: 25px 18px 28px;
+
+        height: 100px;
+
+        padding:
+          12px 15px;
       }
+
+
+      .browser-back {
+
+        width: 56px;
+        height: 56px;
+      }
+
 
       .browser-header h1 {
-        font-size: 27px;
+
+        font-size: 26px;
       }
 
-      .browser-search-card {
-        margin: 22px 14px 14px;
+
+      .browser-header p {
+
+        font-size: 12px;
       }
 
-      .browser-content-card {
-        margin: 0 14px;
+
+      .browser-search-area {
+
+        top: 155px;
       }
 
-      #browserFrame {
-        height: 58vh;
-        min-height: 390px;
+
+      .browser-status {
+
+        top: 219px;
+      }
+
+
+      .browser-result {
+
+        top: 253px;
+      }
+
+
+      .browser-search-button {
+
+        min-width: 82px;
+
+        padding:
+          0 10px;
       }
 
     }
+
   </style>
+
 </head>
+
 
 <body>
 
+
 <div class="browser-page">
 
+
   <!-- =====================================================
-       TOP 320x50 AD
+       FIXED TOP 320x50 AD
   ===================================================== -->
 
   <div class="browser-top-ad">
 
     <script>
+
       atOptions = {
-        'key' : 'b529261b98306ae1169a6bf5b991c3d4',
-        'format' : 'iframe',
-        'height' : 50,
-        'width' : 320,
+
+        'key' :
+          'b529261b98306ae1169a6bf5b991c3d4',
+
+        'format' :
+          'iframe',
+
+        'height' :
+          50,
+
+        'width' :
+          320,
+
         'params' : {}
+
       };
+
     </script>
 
-    <script src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js"></script>
+
+    <script
+      src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js">
+    </script>
 
   </div>
 
@@ -384,15 +605,22 @@
 
   <div class="browser-header">
 
+
     <button
       class="browser-back"
       onclick="goHome()">
+
       ←
+
     </button>
 
-    <div>
 
-      <h1>Browser</h1>
+    <div class="browser-header-text">
+
+      <h1>
+        Browser
+      </h1>
+
 
       <p>
         Search and browse inside Infinix Worker
@@ -404,114 +632,96 @@
 
 
   <!-- =====================================================
-       GOOGLE SEARCH
+       SEARCH
   ===================================================== -->
 
-  <div class="browser-search-card">
-
-    <h2>
-      Search anything with Google
-    </h2>
-
+  <div class="browser-search-area">
 
     <form
-      class="browser-search-row"
+      class="browser-search-box"
       onsubmit="googleSearch(event)">
+
 
       <input
         id="googleSearchInput"
         type="text"
-        placeholder="Type something"
+        placeholder="Search with Google"
         autocomplete="off">
 
+
       <button
-        class="browser-search-btn"
+        class="browser-search-button"
         type="submit">
-        🔎
+
+        SEARCH
+
       </button>
+
 
     </form>
 
-
-    <div class="quick-search">
-
-      <button
-        onclick="quickSearch('youtube')">
-        YouTube
-      </button>
-
-      <button
-        onclick="quickSearch('best football news')">
-        Football News
-      </button>
-
-      <button
-        onclick="quickSearch('facebook')">
-        Facebook
-      </button>
-
-      <button
-        onclick="quickSearch('instagram')">
-        Instagram
-      </button>
-
-    </div>
-
   </div>
 
 
   <!-- =====================================================
-       BROWSER CONTENT
+       STATUS
   ===================================================== -->
 
-  <div class="browser-content-card">
+  <div
+    id="browserStatus"
+    class="browser-status">
 
-    <div class="browser-content-top">
+    Search results
 
-      <span id="browserStatus">
-        Search results
-      </span>
-
-      <button
-        class="browser-reload"
-        onclick="reloadBrowser()">
-        ↻
-      </button>
-
-    </div>
+  </div>
 
 
-    <iframe
-      id="browserFrame"
-      title="Infinix Worker Browser"
+  <!-- =====================================================
+       GOOGLE RESULT
+  ===================================================== -->
 
-      src="https://www.google.com/search?igu=1"
+  <div class="browser-result">
 
-      allow="
-        autoplay;
-        fullscreen;
-        picture-in-picture;
-        encrypted-media
-      "
-
-      referrerpolicy="no-referrer-when-downgrade">
-    </iframe>
+    <div class="browser-result-card">
 
 
-    <div id="browserMessage">
+      <iframe
+        id="browserFrame"
 
-      <div class="msg-icon">
-        🌐
+        title="Google Search"
+
+        src="https://www.google.com/search?igu=1"
+
+        allow="
+          autoplay;
+          fullscreen;
+          picture-in-picture;
+          encrypted-media
+        "
+
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+
+
+      <div
+        id="browserMessage">
+
+        <div class="message-icon">
+          🌐
+        </div>
+
+
+        <h3>
+          Search page unavailable
+        </h3>
+
+
+        <p>
+          Try another Google search.
+        </p>
+
       </div>
 
-      <h3>
-        Page cannot be displayed
-      </h3>
-
-      <p>
-        This website does not allow embedded viewing.
-        Try another Google search.
-      </p>
 
     </div>
 
@@ -519,64 +729,126 @@
 
 
   <!-- =====================================================
-       FIXED BOTTOM 320x50
+       FIXED BOTTOM 320x50 AD
   ===================================================== -->
 
   <div class="browser-bottom-ad">
 
     <script>
+
       atOptions = {
-        'key' : 'b529261b98306ae1169a6bf5b991c3d4',
-        'format' : 'iframe',
-        'height' : 50,
-        'width' : 320,
+
+        'key' :
+          'b529261b98306ae1169a6bf5b991c3d4',
+
+        'format' :
+          'iframe',
+
+        'height' :
+          50,
+
+        'width' :
+          320,
+
         'params' : {}
+
       };
+
     </script>
 
-    <script src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js"></script>
+
+    <script
+      src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js">
+    </script>
 
   </div>
 
 
   <!-- =====================================================
-       BOTTOM NAV
+       BOTTOM NAVIGATION
   ===================================================== -->
 
   <nav class="bottom-nav">
 
+
     <a href="index.html">
-      <span class="nav-icon">⌂</span>
-      <span>Home</span>
+
+      <span class="nav-icon">
+        ⌂
+      </span>
+
+      <span>
+        Home
+      </span>
+
     </a>
 
-    <a href="https://lsr-video-downloaders.vercel.app/">
-      <span class="nav-icon">🌐</span>
-      <span>Website</span>
+
+    <a
+      href="https://lsr-video-downloaders.vercel.app/">
+
+      <span class="nav-icon">
+        🌐
+      </span>
+
+      <span>
+        Website
+      </span>
+
     </a>
+
 
     <a
       href="https://t.me/bitbytee_bot"
       target="_blank"
       rel="noopener noreferrer">
-      <span class="nav-icon">✈</span>
-      <span>Telegram</span>
+
+      <span class="nav-icon">
+        ✈
+      </span>
+
+      <span>
+        Telegram
+      </span>
+
     </a>
 
+
     <button onclick="openProfile()">
-      <span class="nav-icon">👤</span>
-      <span>Profile</span>
+
+      <span class="nav-icon">
+        👤
+      </span>
+
+      <span>
+        Profile
+      </span>
+
     </button>
 
+
     <button onclick="openMore()">
-      <span class="nav-icon">☰</span>
-      <span>More</span>
+
+      <span class="nav-icon">
+        ☰
+      </span>
+
+      <span>
+        More
+      </span>
+
     </button>
+
 
   </nav>
 
+
 </div>
 
+
+<!-- =======================================================
+     APP JS
+======================================================== -->
 
 <script src="app.js"></script>
 
@@ -590,7 +862,9 @@
 function googleSearch(event) {
 
   if (event) {
+
     event.preventDefault();
+
   }
 
 
@@ -605,7 +879,11 @@ function googleSearch(event) {
 
 
   if (!query) {
+
+    input.focus();
+
     return;
+
   }
 
 
@@ -630,6 +908,7 @@ function googleSearch(event) {
   frame.style.display =
     "block";
 
+
   message.style.display =
     "none";
 
@@ -639,7 +918,7 @@ function googleSearch(event) {
 
 
   /*
-    Google Search stays inside
+    Google result remains inside
     the Browser iframe.
   */
 
@@ -655,26 +934,8 @@ function googleSearch(event) {
         "Search results";
 
     },
-    1800
+    1200
   );
-
-}
-
-
-/* =========================================================
-   QUICK SEARCH
-========================================================= */
-
-function quickSearch(query) {
-
-  document
-    .getElementById(
-      "googleSearchInput"
-    )
-    .value = query;
-
-
-  googleSearch(null);
 
 }
 
@@ -718,7 +979,57 @@ function goHome() {
 
 }
 
+
+/* =========================================================
+   ENTER KEY
+========================================================= */
+
+document
+  .getElementById(
+    "googleSearchInput"
+  )
+  .addEventListener(
+    "keydown",
+    function(event) {
+
+      if (
+        event.key === "Enter"
+      ) {
+
+        event.preventDefault();
+
+        googleSearch(event);
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   INITIAL STATUS
+========================================================= */
+
+document
+  .getElementById(
+    "browserFrame"
+  )
+  .addEventListener(
+    "load",
+    function() {
+
+      document
+        .getElementById(
+          "browserStatus"
+        )
+        .textContent =
+          "Search results";
+
+    }
+  );
+
 </script>
+
 
 </body>
 </html>

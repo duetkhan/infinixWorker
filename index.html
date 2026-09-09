@@ -3,159 +3,204 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <meta name="theme-color" content="#2563eb">
-  <meta name="description" content="Micro Tasks Web App">
-
-  <title>Infinix Worker</title>
-
+  <meta name="theme-color" content="#0755c9">
+  <title>LSR Video Downloader</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
 </head>
 
 <body>
 
-  <div id="app">
+<div id="app">
 
-    <!-- Header -->
-    <header class="app-header">
-      <div class="brand">
-        <div class="brand-icon">IW</div>
+  <!-- TOP BLUE HEADER -->
+  <header class="home-header">
 
-        <div>
-          <h1>Infinix Worker</h1>
-          <span>Earn by completing tasks</span>
-        </div>
+    <button class="menu-btn" aria-label="Menu">
+      ☰
+    </button>
+
+    <div class="home-brand">
+      <div class="logo-box">
+        <span>▶</span>
       </div>
 
-      <button class="notification-btn" aria-label="Notifications">
-        🔔
-      </button>
-    </header>
+      <div class="brand-title">
+        <strong>LSR</strong>
+        <small>Video Downloader</small>
+      </div>
+    </div>
+
+    <div class="header-space"></div>
+
+    <div class="home-tagline">
+      Download&nbsp; • &nbsp;Watch&nbsp; • &nbsp;Enjoy
+    </div>
+
+  </header>
 
 
-    <!-- Main Content -->
-    <main class="main-content">
+  <!-- WHITE CONTENT -->
+  <main class="home-content">
 
-      <!-- Balance Card -->
-      <section class="balance-card">
+    <!-- DOWNLOAD CARD -->
+    <section class="download-card">
 
-        <div class="balance-info">
-          <span class="balance-label">Available Balance</span>
-          <strong id="balance">0.00</strong>
-          <small>Coins</small>
-        </div>
+      <div class="url-box">
+        <span class="url-icon">🔗</span>
 
-        <div class="balance-icon">
-          💰
-        </div>
-
-      </section>
-
-
-      <!-- Welcome -->
-      <section class="welcome-section">
-        <h2>Start earning today</h2>
-        <p>Complete simple tasks and earn rewards.</p>
-      </section>
+        <input
+          type="url"
+          id="videoUrl"
+          placeholder="Paste video link here..."
+          autocomplete="off"
+        >
+      </div>
 
 
-      <!-- Main Actions -->
-      <section class="action-grid">
-
-        <button class="action-card" onclick="startWork()">
-          <div class="action-icon">🚀</div>
-          <div>
-            <h3>Start Work</h3>
-            <p>Complete available tasks</p>
-          </div>
-        </button>
-
-
-        <button class="action-card" onclick="watchAd()">
-          <div class="action-icon">▶️</div>
-          <div>
-            <h3>Watch Ad</h3>
-            <p>Watch ads and earn</p>
-          </div>
-        </button>
-
-
-        <button class="action-card" onclick="openWithdraw()">
-          <div class="action-icon">💳</div>
-          <div>
-            <h3>Withdraw</h3>
-            <p>Withdraw your balance</p>
-          </div>
-        </button>
-
-
-        <button class="action-card" onclick="openProfile()">
-          <div class="action-icon">👤</div>
-          <div>
-            <h3>Profile</h3>
-            <p>Manage your account</p>
-          </div>
-        </button>
-
-      </section>
-
-
-      <!-- Native Ad -->
-      <section class="native-ad">
-        <div class="ad-label">Advertisement</div>
-
-        <!-- Adsterra Native Banner will go here -->
-        <div id="native-ad-container"></div>
-      </section>
-
-
-      <!-- 320x50 Banner -->
-      <section class="banner-ad">
-        <div class="ad-label">Advertisement</div>
-
-        <div id="banner-ad-container"></div>
-      </section>
-
-    </main>
-
-
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
-
-      <button class="nav-item active" onclick="goHome()">
-        <span>⌂</span>
-        <small>Home</small>
+      <button class="download-btn" onclick="downloadVideo()">
+        <span>⇩</span>
+        Download
       </button>
 
-      <button class="nav-item" onclick="startWork()">
-        <span>⚡</span>
-        <small>Work</small>
+    </section>
+
+
+    <!-- FOUR MAIN CARDS -->
+    <section class="home-grid">
+
+      <button
+        class="home-feature"
+        onclick="location.href='downloader.html'"
+      >
+        <div class="feature-icon">⇩</div>
+
+        <strong>Video Downloader</strong>
+
+        <span>Download videos<br>from multiple sites</span>
       </button>
 
-      <button class="nav-item" onclick="watchAd()">
-        <span>▶</span>
-        <small>Ads</small>
+
+      <button
+        class="home-feature"
+        onclick="location.href='browser.html'"
+      >
+        <div class="feature-icon">◎</div>
+
+        <strong>Browser</strong>
+
+        <span>Browse the web<br>with built-in browser</span>
       </button>
 
-      <button class="nav-item" onclick="openWithdraw()">
-        <span>💳</span>
-        <small>Withdraw</small>
+
+      <button
+        class="home-feature"
+        onclick="location.href='downloads.html'"
+      >
+        <div class="feature-icon">▶</div>
+
+        <strong>My Downloads</strong>
+
+        <span>View and manage<br>your downloads</span>
       </button>
 
-      <button class="nav-item" onclick="openProfile()">
-        <span>👤</span>
-        <small>Profile</small>
+
+      <button
+        class="home-feature"
+        onclick="location.href='more.html'"
+      >
+        <div class="feature-icon">⚙</div>
+
+        <strong>Settings</strong>
+
+        <span>Customize your<br>experience</span>
       </button>
 
-    </nav>
-
-  </div>
+    </section>
 
 
-  <!-- Smartlink / Popunder scripts will be integrated in Step 3 -->
+    <!-- NATIVE AD -->
+    <section class="native-ad">
+      <div class="ad-label">Advertisement</div>
+      <div id="native-ad-container"></div>
+    </section>
 
-  <script src="app.js"></script>
+
+    <!-- 320x50 AD -->
+    <section class="banner-ad">
+      <div class="ad-label">Advertisement</div>
+      <div id="banner-ad-container"></div>
+    </section>
+
+  </main>
+
+
+  <!-- BOTTOM NAVIGATION -->
+  <nav class="bottom-nav">
+
+    <button class="nav-item active">
+      <span>⌂</span>
+      <small>Home</small>
+    </button>
+
+    <button
+      class="nav-item"
+      onclick="location.href='downloader.html'"
+    >
+      <span>⇩</span>
+      <small>Downloader</small>
+    </button>
+
+    <button
+      class="nav-item"
+      onclick="location.href='browser.html'"
+    >
+      <span>◎</span>
+      <small>Browser</small>
+    </button>
+
+    <button
+      class="nav-item"
+      onclick="location.href='more.html'"
+    >
+      <span>•••</span>
+      <small>More</small>
+    </button>
+
+  </nav>
+
+</div>
+
+
+<script src="app.js"></script>
+
+<script>
+function downloadVideo() {
+
+  const url =
+    document.getElementById("videoUrl").value.trim();
+
+  if (!url) {
+    alert("Please paste a video link first.");
+    return;
+  }
+
+  /*
+   * Smartlink can be triggered from the
+   * user's explicit Download action.
+   */
+
+  if (typeof openSmartlink === "function") {
+    openSmartlink();
+  }
+
+  /*
+   * Real video downloading backend will
+   * be connected separately.
+   */
+
+  alert("Download system will process this video link.");
+}
+</script>
 
 </body>
 </html>

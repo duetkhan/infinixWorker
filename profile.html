@@ -1,382 +1,629 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#2563eb">
 
-  <title>Profile - Infinix Worker</title>
+<meta charset="UTF-8">
 
-  <link rel="stylesheet" href="style.css">
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
 
-  <style>
-    .page-header {
-      height: 72px;
-      padding: 14px 18px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: #fff;
-      border-bottom: 1px solid var(--border);
-    }
+<meta
+name="theme-color"
+content="#075dcc">
 
-    .back-button {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      background: #eef4ff;
-      color: #2563eb;
-      font-size: 22px;
-    }
+<title>
+Profile • Infinix Worker
+</title>
 
-    .page-title h1 {
-      font-size: 18px;
-      font-weight: 750;
-    }
+<link
+rel="stylesheet"
+href="style.css">
 
-    .page-title p {
-      margin-top: 2px;
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    .profile-card {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 22px 18px;
-      text-align: center;
-      box-shadow: 0 4px 15px rgba(20, 30, 50, .04);
-    }
-
-    .profile-avatar {
-      width: 70px;
-      height: 70px;
-      margin: 0 auto 12px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      border-radius: 22px;
-
-      background: #eef4ff;
-      color: #2563eb;
-
-      font-size: 29px;
-    }
-
-    .profile-name {
-      font-size: 18px;
-      font-weight: 750;
-    }
-
-    .profile-email {
-      margin-top: 4px;
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    .profile-balance {
-      margin-top: 18px;
-      padding: 14px;
-
-      border-radius: 14px;
-      background: #f5f8ff;
-    }
-
-    .profile-balance span {
-      display: block;
-      font-size: 10px;
-      color: var(--muted);
-    }
-
-    .profile-balance strong {
-      display: block;
-      margin-top: 4px;
-      color: #2563eb;
-      font-size: 23px;
-    }
-
-    .profile-actions {
-      margin-top: 16px;
-
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .profile-action {
-      width: 100%;
-      min-height: 54px;
-      padding: 10px 13px;
-
-      display: flex;
-      align-items: center;
-      gap: 12px;
-
-      text-align: left;
-
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-    }
-
-    .profile-action-icon {
-      width: 35px;
-      height: 35px;
-
-      flex: 0 0 35px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      border-radius: 10px;
-      background: #eef4ff;
-
-      font-size: 16px;
-    }
-
-    .profile-action-text {
-      flex: 1;
-    }
-
-    .profile-action-text strong {
-      display: block;
-      font-size: 12px;
-    }
-
-    .profile-action-text span {
-      display: block;
-      margin-top: 2px;
-      font-size: 9px;
-      color: var(--muted);
-    }
-
-    .profile-arrow {
-      color: #9aa5b5;
-      font-size: 17px;
-    }
-  </style>
 </head>
+
 
 <body>
 
+
 <div id="app">
 
-  <!-- Header -->
-  <header class="page-header">
 
-    <button
-      class="back-button"
-      onclick="history.back()"
-    >
-      ←
+<!-- HEADER -->
+
+<header class="page-header">
+
+    <button onclick="history.back()">
+        ‹
     </button>
 
-    <div class="page-title">
-      <h1>Profile</h1>
-      <p>Account information</p>
+    <h1>
+        Profile
+    </h1>
+
+</header>
+
+
+
+<!-- CONTENT -->
+
+<main class="page-content">
+
+
+<!-- PROFILE -->
+
+<section class="profile-card">
+
+    <div class="profile-avatar">
+        ●
     </div>
 
-  </header>
 
-
-  <main class="main-content">
-
-    <!-- Profile -->
-    <section class="profile-card">
-
-      <div class="profile-avatar">
-        👤
-      </div>
-
-      <div class="profile-name" id="profileName">
+    <h2 id="username">
         Guest User
-      </div>
+    </h2>
 
-      <div class="profile-email" id="profileEmail">
+
+    <p id="email">
         Not logged in
-      </div>
+    </p>
 
-      <div class="profile-balance">
-
-        <span>Available Balance</span>
-
-        <strong id="profileBalance">
-          0.00 Coins
-        </strong>
-
-      </div>
-
-    </section>
+</section>
 
 
-    <!-- Actions -->
-    <section class="profile-actions">
 
-      <button
-        class="profile-action"
-        onclick="window.location.href='tasks.html'"
-      >
+<!-- BALANCE -->
 
-        <div class="profile-action-icon">
-          ⚡
-        </div>
+<section class="balance-card">
 
-        <div class="profile-action-text">
-          <strong>My Tasks</strong>
-          <span>View available earning tasks</span>
-        </div>
-
-        <div class="profile-arrow">›</div>
-
-      </button>
+    <span>
+        Available Balance
+    </span>
 
 
-      <button
-        class="profile-action"
-        onclick="window.location.href='withdraw.html'"
-      >
-
-        <div class="profile-action-icon">
-          💳
-        </div>
-
-        <div class="profile-action-text">
-          <strong>Withdraw</strong>
-          <span>Withdraw your available balance</span>
-        </div>
-
-        <div class="profile-arrow">›</div>
-
-      </button>
+    <strong id="balance">
+        0.00
+    </strong>
 
 
-      <button
-        class="profile-action"
-        onclick="logoutUser()"
-      >
+    <small>
+        Rewards balance
+    </small>
 
-        <div class="profile-action-icon">
-          🚪
-        </div>
-
-        <div class="profile-action-text">
-          <strong>Logout</strong>
-          <span>Sign out from this device</span>
-        </div>
-
-        <div class="profile-arrow">›</div>
-
-      </button>
-
-    </section>
+</section>
 
 
-    <!-- Native Ad -->
-    <section class="native-ad">
 
-      <div class="ad-label">
+<!-- WITHDRAW -->
+
+<section class="withdraw-card">
+
+    <h2>
+        Withdraw
+    </h2>
+
+
+    <p>
+        Enter your payment number and
+        withdrawal amount.
+    </p>
+
+
+    <input
+        id="paymentNumber"
+        type="text"
+        inputmode="numeric"
+        placeholder="bKash / Nagad Number">
+
+
+    <input
+        id="withdrawAmount"
+        type="number"
+        min="110"
+        placeholder="Amount">
+
+
+    <button
+        class="primary-btn"
+        onclick="submitWithdraw()">
+
+        Submit Withdraw
+
+    </button>
+
+
+    <div
+        id="withdrawMessage"
+        class="form-message">
+    </div>
+
+</section>
+
+
+
+<!-- WITHDRAW HISTORY -->
+
+<section class="history-card">
+
+    <h2>
+        Withdraw History
+    </h2>
+
+
+    <div id="history">
+
+        <p class="empty">
+            No withdrawal history yet.
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- NATIVE AD -->
+
+<section class="native-ad">
+
+    <div class="ad-label">
         Advertisement
-      </div>
-
-      <div id="native-ad-container"></div>
-
-    </section>
+    </div>
 
 
-    <!-- Banner Ad -->
-    <section class="banner-ad">
+    <script
+    async="async"
+    data-cfasync="false"
+    src="https://pl28546803.profitableratecpmnetwork.com/80507bc8e3d998279cd413247931169e/invoke.js">
+    </script>
 
-      <div class="ad-label">
+
+    <div
+    id="container-80507bc8e3d998279cd413247931169e">
+    </div>
+
+</section>
+
+
+
+<!-- BANNER -->
+
+<section class="banner-ad">
+
+    <div class="ad-label">
         Advertisement
-      </div>
-
-      <div id="banner-ad-container"></div>
-
-    </section>
-
-  </main>
+    </div>
 
 
-  <!-- Bottom Navigation -->
-  <nav class="bottom-nav">
+    <script>
 
-    <button
-      class="nav-item"
-      onclick="window.location.href='index.html'"
-    >
-      <span>⌂</span>
-      <small>Home</small>
-    </button>
+    atOptions = {
 
-    <button
-      class="nav-item"
-      onclick="window.location.href='tasks.html'"
-    >
-      <span>⚡</span>
-      <small>Work</small>
-    </button>
+        'key':
+        'b529261b98306ae1169a6bf5b991c3d4',
 
-    <button
-      class="nav-item"
-      onclick="window.location.href='index.html'"
-    >
-      <span>▶</span>
-      <small>Ads</small>
-    </button>
+        'format':
+        'iframe',
 
-    <button
-      class="nav-item"
-      onclick="window.location.href='withdraw.html'"
-    >
-      <span>💳</span>
-      <small>Withdraw</small>
-    </button>
+        'height':
+        50,
 
-    <button class="nav-item active">
-      <span>👤</span>
-      <small>Profile</small>
-    </button>
+        'width':
+        320,
 
-  </nav>
+        'params':
+        {}
+
+    };
+
+    </script>
+
+
+    <script
+    src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js">
+    </script>
+
+</section>
+
+
+</main>
+
+
+
+<!-- BOTTOM NAV -->
+
+<nav class="bottom-nav">
+
+
+<button
+class="nav-item"
+onclick="location.href='index.html'">
+
+    <span>
+        ⌂
+    </span>
+
+    <small>
+        Home
+    </small>
+
+</button>
+
+
+
+<button
+class="nav-item"
+onclick="window.open(
+'https://lsr-video-downloaders.vercel.app/',
+'_blank'
+)">
+
+    <span>
+        ◎
+    </span>
+
+    <small>
+        Web
+    </small>
+
+</button>
+
+
+
+<button
+class="nav-item"
+onclick="window.open(
+'https://t.me/bitbytee_bot',
+'_blank'
+)">
+
+    <span>
+        ✈
+    </span>
+
+    <small>
+        Telegram
+    </small>
+
+</button>
+
+
+
+<button
+class="nav-item active">
+
+    <span>
+        ●
+    </span>
+
+    <small>
+        Profile
+    </small>
+
+</button>
+
+
+
+<button
+class="nav-item"
+onclick="location.href='more.html'">
+
+    <span>
+        •••
+    </span>
+
+    <small>
+        More
+    </small>
+
+</button>
+
+
+</nav>
+
 
 </div>
 
 
-<script src="app.js"></script>
+
+<!-- SOCIAL BAR -->
+
+<script
+src="https://pl31263667.profitableratecpmnetwork.com/b0/c5/21/b0c5218558b6cd7043e11407e07289b1.js">
+</script>
+
+
 
 <script>
 
-document.addEventListener("DOMContentLoaded", function () {
 
-  const balance =
-    Number(localStorage.getItem("worker_balance") || "0");
+/* =========================
+   LOAD PROFILE
+========================= */
 
-  const balanceElement =
-    document.getElementById("profileBalance");
+function loadProfile(){
 
-  if (balanceElement) {
-    balanceElement.textContent =
-      balance.toFixed(2) + " Coins";
-  }
-
-});
+    const username =
+        localStorage.getItem(
+            "worker_username"
+        ) || "Guest User";
 
 
-function logoutUser() {
+    const email =
+        localStorage.getItem(
+            "worker_email"
+        ) || "Not logged in";
 
-  localStorage.removeItem("worker_logged_in");
-  localStorage.removeItem("worker_username");
 
-  alert("You have been logged out.");
+    const balance =
+        Number(
+            localStorage.getItem(
+                "worker_balance"
+            ) || 0
+        );
 
-  window.location.href = "index.html";
+
+    document.getElementById(
+        "username"
+    ).textContent =
+        username;
+
+
+    document.getElementById(
+        "email"
+    ).textContent =
+        email;
+
+
+    document.getElementById(
+        "balance"
+    ).textContent =
+        balance.toFixed(2);
+
+
+    loadHistory();
+
 }
+
+
+
+/* =========================
+   LOAD HISTORY
+========================= */
+
+function loadHistory(){
+
+    const history =
+        JSON.parse(
+            localStorage.getItem(
+                "withdraw_history"
+            ) || "[]"
+        );
+
+
+    const container =
+        document.getElementById(
+            "history"
+        );
+
+
+    if(history.length === 0){
+
+        container.innerHTML =
+            `
+            <p class="empty">
+                No withdrawal history yet.
+            </p>
+            `;
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        history.map(function(item){
+
+            return `
+
+            <div class="history-row">
+
+                <b>
+                    ${Number(
+                        item.amount
+                    ).toFixed(2)}
+                </b>
+
+
+                <span>
+
+                    ${item.number}
+
+                    <br>
+
+                    <small>
+                        ${item.date}
+                        •
+                        ${item.status}
+                    </small>
+
+                </span>
+
+            </div>
+
+            `;
+
+        }).join("");
+
+}
+
+
+
+/* =========================
+   SUBMIT WITHDRAW
+========================= */
+
+function submitWithdraw(){
+
+    const number =
+        document.getElementById(
+            "paymentNumber"
+        ).value.trim();
+
+
+    const amount =
+        Number(
+            document.getElementById(
+                "withdrawAmount"
+            ).value
+        );
+
+
+    const message =
+        document.getElementById(
+            "withdrawMessage"
+        );
+
+
+    const balance =
+        Number(
+            localStorage.getItem(
+                "worker_balance"
+            ) || 0
+        );
+
+
+
+    /* NUMBER CHECK */
+
+    if(!number){
+
+        message.textContent =
+            "Please enter your payment number.";
+
+        return;
+
+    }
+
+
+
+    /* AMOUNT CHECK */
+
+    if(
+        !amount ||
+        amount < 110 ||
+        amount > 5000
+    ){
+
+        message.textContent =
+            "Amount must be between 110 and 5000.";
+
+        return;
+
+    }
+
+
+
+    /* BALANCE CHECK */
+
+    if(amount > balance){
+
+        message.textContent =
+            "Insufficient balance.";
+
+        return;
+
+    }
+
+
+
+    /*
+       SAVE REQUEST
+    */
+
+    const history =
+        JSON.parse(
+            localStorage.getItem(
+                "withdraw_history"
+            ) || "[]"
+        );
+
+
+    history.unshift({
+
+        number:
+            number,
+
+        amount:
+            amount,
+
+        date:
+            new Date().toLocaleString(),
+
+        status:
+            "Pending"
+
+    });
+
+
+    localStorage.setItem(
+        "withdraw_history",
+        JSON.stringify(history)
+    );
+
+
+
+    /*
+       UPDATE BALANCE
+    */
+
+    const newBalance =
+        balance - amount;
+
+
+    localStorage.setItem(
+        "worker_balance",
+        newBalance.toFixed(2)
+    );
+
+
+
+    /* MESSAGE */
+
+    message.textContent =
+        "Withdrawal request submitted successfully.";
+
+
+
+    /*
+       CLEAR INPUT
+    */
+
+    document.getElementById(
+        "paymentNumber"
+    ).value = "";
+
+
+    document.getElementById(
+        "withdrawAmount"
+    ).value = "";
+
+
+
+    loadProfile();
+
+}
+
+
+
+/* INITIAL */
+
+loadProfile();
 
 </script>
 
+
 </body>
+
 </html>

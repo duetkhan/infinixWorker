@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Login - Infinix Worker</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    .auth-page {
+      min-height: calc(100vh - 70px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 25px 15px 90px;
+    }
+
+    .auth-box {
+      width: 100%;
+      max-width: 390px;
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 25px 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.10);
+    }
+
+    .auth-box h1 {
+      text-align: center;
+      margin: 0 0 8px;
+      font-size: 25px;
+    }
+
+    .auth-subtitle {
+      text-align: center;
+      color: #777;
+      font-size: 14px;
+      margin-bottom: 22px;
+    }
+
+    .auth-box label {
+      display: block;
+      margin: 14px 0 6px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .auth-box input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 13px 14px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .auth-box input:focus {
+      border-color: #555;
+    }
+
+    .auth-btn {
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      padding: 13px;
+      margin-top: 20px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #111;
+      color: #fff;
+    }
+
+    .auth-btn:disabled {
+      opacity: .6;
+    }
+
+    .auth-message {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 9px;
+      display: none;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .auth-message.error {
+      display: block;
+      background: #ffe8e8;
+      color: #b00020;
+    }
+
+    .auth-message.success {
+      display: block;
+      background: #e8fff0;
+      color: #08752d;
+    }
+
+    .auth-links {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 14px;
+    }
+
+    .auth-links a {
+      font-weight: 700;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="home-header">
+    <div class="logo">IW</div>
+    <div>
+      <h2>Infinix Worker</h2>
+      <p>Login to your account</p>
+    </div>
+  </header>
+
+
+  <!-- LOGIN -->
+  <main class="auth-page">
+
+    <div class="auth-box">
+
+      <h1>Login</h1>
+
+      <div class="auth-subtitle">
+        Login to continue working
+      </div>
+
+      <form id="loginForm">
+
+        <label for="loginEmail">Email</label>
+
+        <input
+          type="email"
+          id="loginEmail"
+          placeholder="Enter your email"
+          required
+          autocomplete="email"
+        >
+
+        <label for="loginPassword">Password</label>
+
+        <input
+          type="password"
+          id="loginPassword"
+          placeholder="Enter your password"
+          required
+          autocomplete="current-password"
+        >
+
+        <button
+          type="submit"
+          class="auth-btn"
+          id="loginBtn"
+        >
+          Login
+        </button>
+
+      </form>
+
+      <div id="loginMessage" class="auth-message"></div>
+
+      <div class="auth-links">
+        Don't have an account?
+        <a href="signup.html">Create account</a>
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+
+    <a href="index.html">
+      <span>⌂</span>
+      <small>Home</small>
+    </a>
+
+    <a href="https://lsr-video-downloaders.vercel.app/">
+      <span>🌐</span>
+      <small>Website</small>
+    </a>
+
+    <a href="https://t.me/bitbytee_bot">
+      <span>✈</span>
+      <small>Telegram</small>
+    </a>
+
+    <a href="profile.html">
+      <span>👤</span>
+      <small>Profile</small>
+    </a>
+
+    <a href="more.html">
+      <span>☰</span>
+      <small>More</small>
+    </a>
+
+  </nav>
+
+
+<script>
+
+const USER_KEY = "iw_device_user";
+const LOGIN_KEY = "worker_logged_in";
+
+
+function showMessage(text, type) {
+
+  const box = document.getElementById("loginMessage");
+
+  box.textContent = text;
+  box.className = "auth-message " + type;
+}
+
+
+/* =========================================================
+   CHECK EXISTING LOGIN
+========================================================= */
+
+if (localStorage.getItem(LOGIN_KEY) === "true") {
+
+  window.location.href = "index.html";
+
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+document
+  .getElementById("loginForm")
+  .addEventListener("submit", function(e) {
+
+    e.preventDefault();
+
+    const email =
+      document.getElementById("loginEmail")
+      .value
+      .trim()
+      .toLowerCase();
+
+    const password =
+      document.getElementById("loginPassword")
+      .value;
+
+
+    const savedUser =
+      localStorage.getItem(USER_KEY);
+
+
+    if (!savedUser) {
+
+      showMessage(
+        "No account found on this device. Please create an account first.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    let user;
+
+    try {
+
+      user = JSON.parse(savedUser);
+
+    } catch {
+
+      showMessage(
+        "Account data is corrupted.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    if (
+      user.email !== email ||
+      user.password !== password
+    ) {
+
+      showMessage(
+        "Invalid email or password.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    /* LOGIN SUCCESS */
+
+    localStorage.setItem(
+      "worker_username",
+      user.username
+    );
+
+    localStorage.setItem(
+      "worker_email",
+      user.email
+    );
+
+    localStorage.setItem(
+      LOGIN_KEY,
+      "true"
+    );
+
+
+    if (!localStorage.getItem("worker_balance")) {
+
+      localStorage.setItem(
+        "worker_balance",
+        "0.00"
+      );
+
+    }
+
+
+    showMessage(
+      "Login successful. Redirecting...",
+      "success"
+    );
+
+
+    setTimeout(() => {
+
+      window.location.href = "index.html";
+
+    }, 700);
+
+  });
+
+</script>
+
+</body>
+</html>

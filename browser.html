@@ -1,16 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
-  >
-
-  <meta name="theme-color" content="#0755c9">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
   <title>Browser - Infinix Worker</title>
 
@@ -19,7 +12,7 @@
   <style>
 
     /* =====================================================
-       INFINIX WORKER MINI BROWSER
+       BROWSER PAGE
     ===================================================== */
 
     .browser-page {
@@ -29,213 +22,70 @@
 
 
     /* =====================================================
-       TOP BANNER
+       TOP SEARCH AREA
     ===================================================== */
 
-    .browser-top-ad {
-      width: 100%;
-      min-height: 50px;
+    .browser-bar {
+      padding: 14px 12px;
+      background: #ffffff;
+      box-shadow: 0 3px 12px rgba(0,0,0,.07);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
+
+    .browser-search {
       display: flex;
-      justify-content: center;
-      align-items: center;
-
-      padding: 3px 0;
-
-      overflow: hidden;
-    }
-
-
-    /* =====================================================
-       BROWSER HEADER
-    ===================================================== */
-
-    .browser-header {
-      width: 100%;
-
-      min-height: 72px;
-
-      padding: 12px 15px;
-
-      display: flex;
-      align-items: center;
-
-      gap: 11px;
-
-      color: #fff;
-
-      background:
-        linear-gradient(
-          135deg,
-          #0755c9 0%,
-          #1769e0 50%,
-          #3d8cf1 100%
-        );
-
-      border-radius:
-        0
-        0
-        24px
-        24px;
-
-      box-shadow:
-        0 6px 20px rgba(15,91,202,.16);
-    }
-
-
-    .browser-back {
-      width: 40px;
-      height: 40px;
-
-      flex: 0 0 40px;
-
-      padding: 0;
-
-      border: 0;
-      border-radius: 12px;
-
-      background:
-        rgba(255,255,255,.16);
-
-      color: #fff;
-
-      font-size: 22px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-
-    .browser-header-text {
-      min-width: 0;
-    }
-
-
-    .browser-header-text strong {
-      display: block;
-
-      color: #fff;
-
-      font-size: 18px;
-      font-weight: 800;
-    }
-
-
-    .browser-header-text span {
-      display: block;
-
-      margin-top: 2px;
-
-      color:
-        rgba(255,255,255,.78);
-
-      font-size: 10px;
-    }
-
-
-    /* =====================================================
-       SEARCH CARD
-    ===================================================== */
-
-    .browser-search-card {
-
-      margin: 13px 15px 0;
-
-      padding: 14px;
-
-      background: #fff;
-
-      border-radius: 18px;
-
-      box-shadow:
-        0 6px 18px rgba(24,55,100,.08);
-    }
-
-
-    .browser-search-title {
-
-      margin-bottom: 9px;
-
-      color: #172033;
-
-      font-size: 13px;
-      font-weight: 750;
-    }
-
-
-    .browser-search-row {
-
-      display: flex;
-
-      align-items: center;
-
       gap: 8px;
+      align-items: center;
     }
 
 
-    .browser-search-row input {
-
+    .browser-search input {
       flex: 1;
-
       min-width: 0;
+      height: 46px;
+      padding: 0 15px;
 
-      height: 45px;
-
-      padding:
-        0
-        12px;
-
-      border:
-        1px solid #dfe5ee;
-
-      border-radius: 12px;
-
-      background: #fff;
-
-      color: #172033;
+      border: 1px solid #dfe5ef;
+      border-radius: 14px;
 
       outline: none;
 
-      font-size: 13px;
+      font-size: 15px;
+      font-family: inherit;
+
+      background: #ffffff;
+      color: #222;
     }
 
 
-    .browser-search-row input:focus {
-
+    .browser-search input:focus {
       border-color: #1769e0;
-
-      box-shadow:
-        0 0 0 3px
-        rgba(23,105,224,.08);
+      box-shadow: 0 0 0 3px rgba(23,105,224,.08);
     }
 
 
-    .browser-search-btn {
-
-      width: 45px;
-      height: 45px;
-
-      flex: 0 0 45px;
+    .browser-search button {
+      width: 48px;
+      height: 46px;
 
       border: 0;
+      border-radius: 14px;
 
-      border-radius: 12px;
+      background: linear-gradient(
+        135deg,
+        #1769e0,
+        #3289ed
+      );
 
-      background:
-        linear-gradient(
-          135deg,
-          #1769e0,
-          #247cf0
-        );
+      color: #ffffff;
 
-      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
 
-      font-size: 18px;
-
-      box-shadow:
-        0 5px 14px
-        rgba(23,105,224,.18);
+      box-shadow: 0 5px 14px rgba(23,105,224,.20);
     }
 
 
@@ -243,306 +93,237 @@
        QUICK SEARCH
     ===================================================== */
 
-    .quick-search {
-
+    .browser-tools {
       display: flex;
-
-      gap: 7px;
+      gap: 8px;
 
       margin-top: 10px;
 
       overflow-x: auto;
-
       scrollbar-width: none;
     }
 
 
-    .quick-search::-webkit-scrollbar {
+    .browser-tools::-webkit-scrollbar {
       display: none;
     }
 
 
-    .quick-search button {
-
+    .browser-tools button {
       flex: 0 0 auto;
 
-      min-height: 33px;
-
-      padding:
-        0
-        11px;
+      min-width: 82px;
+      height: 38px;
 
       border: 0;
-
-      border-radius: 10px;
+      border-radius: 12px;
 
       background: #edf4ff;
-
       color: #1769e0;
 
-      font-size: 10px;
+      font-size: 12px;
       font-weight: 700;
+
+      padding: 0 14px;
+
+      cursor: pointer;
+    }
+
+
+    .browser-tools button:active {
+      transform: scale(.97);
     }
 
 
     /* =====================================================
-       BROWSER CONTENT CARD
+       BROWSER STATUS
     ===================================================== */
 
-    .browser-content-card {
+    .browser-status {
+      margin: 12px 12px 0;
 
-      margin:
-        12px
-        15px
-        0;
+      padding: 11px 14px;
 
-      background: #fff;
+      border-radius: 12px;
+
+      background: #ffffff;
+
+      color: #7c8799;
+
+      font-size: 13px;
+
+      box-shadow: 0 3px 12px rgba(0,0,0,.05);
+    }
+
+
+    /* =====================================================
+       BROWSER CONTENT
+    ===================================================== */
+
+    .browser-frame-wrap {
+
+      margin: 12px;
+
+      background: #ffffff;
 
       border-radius: 18px;
 
       overflow: hidden;
 
-      box-shadow:
-        0 6px 18px rgba(24,55,100,.07);
-    }
+      box-shadow: 0 5px 20px rgba(20,50,90,.08);
 
-
-    .browser-content-top {
-
-      min-height: 40px;
-
-      padding:
-        0
-        12px;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: space-between;
-
-      border-bottom:
-        1px solid #edf1f6;
-    }
-
-
-    .browser-status {
-
-      color: #788397;
-
-      font-size: 10px;
-
-      overflow: hidden;
-
-      text-overflow: ellipsis;
-
-      white-space: nowrap;
-
-      max-width: 80%;
-    }
-
-
-    .browser-refresh {
-
-      width: 30px;
-      height: 30px;
-
-      padding: 0;
-
-      border: 0;
-
-      border-radius: 9px;
-
-      background: #edf4ff;
-
-      color: #1769e0;
-
-      font-size: 15px;
-    }
-
-
-    /* =====================================================
-       FRAME
-    ===================================================== */
-
-    .browser-frame-wrap {
-
-      width: 100%;
-
-      height:
-        calc(100vh - 355px);
-
-      min-height: 430px;
-
-      max-height: 650px;
-
-      background: #fff;
-
-      overflow: hidden;
+      min-height: 420px;
     }
 
 
     #browserFrame {
 
+      display: block;
+
       width: 100%;
-      height: 100%;
+
+      height: 58vh;
+
+      min-height: 420px;
 
       border: 0;
 
-      display: block;
-
-      background: #fff;
+      background: #ffffff;
     }
 
 
     /* =====================================================
-       BLOCKED / INFO MESSAGE
+       FALLBACK MESSAGE
     ===================================================== */
 
-    .browser-message {
+    .browser-fallback {
 
       display: none;
 
-      margin:
-        10px
-        12px;
+      min-height: 420px;
 
-      padding:
-        11px
-        12px;
-
-      border-radius: 11px;
-
-      background: #f5f8fc;
-
-      color: #788397;
-
-      font-size: 11px;
-
-      line-height: 1.5;
+      padding: 45px 25px;
 
       text-align: center;
+
+      background: #ffffff;
+    }
+
+
+    .browser-fallback-icon {
+
+      width: 72px;
+      height: 72px;
+
+      margin: 0 auto 18px;
+
+      border-radius: 22px;
+
+      background: #edf4ff;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 32px;
+    }
+
+
+    .browser-fallback h3 {
+
+      margin: 0 0 9px;
+
+      color: #26364a;
+
+      font-size: 19px;
+    }
+
+
+    .browser-fallback p {
+
+      margin: 0 auto 20px;
+
+      max-width: 290px;
+
+      color: #8993a3;
+
+      font-size: 13px;
+
+      line-height: 1.6;
+    }
+
+
+    .browser-fallback button {
+
+      border: 0;
+
+      border-radius: 12px;
+
+      padding: 12px 20px;
+
+      background: #1769e0;
+
+      color: #ffffff;
+
+      font-family: inherit;
+
+      font-weight: 700;
+
+      cursor: pointer;
     }
 
 
     /* =====================================================
-       FIXED BOTTOM BANNER
+       FIXED BOTTOM 320x50
     ===================================================== */
 
-    .browser-fixed-ad {
+    .fixed-banner {
 
       position: fixed;
 
       left: 50%;
+      bottom: 68px;
 
-      bottom: 70px;
-
-      transform:
-        translateX(-50%);
+      transform: translateX(-50%);
 
       width: 320px;
-
-      max-width:
-        calc(100vw - 10px);
-
       height: 50px;
 
-      z-index: 900;
+      max-width: calc(100vw - 10px);
+
+      background: #ffffff;
+
+      z-index: 9998;
 
       display: flex;
 
-      align-items: center;
-
       justify-content: center;
+      align-items: center;
 
       overflow: hidden;
 
-      background: transparent;
+      box-shadow:
+        0 -2px 12px rgba(0,0,0,.12);
     }
 
 
     /* =====================================================
-       FULLSCREEN VIDEO
+       MOBILE
     ===================================================== */
 
-    #videoFullscreen {
+    @media (max-width: 480px) {
 
-      display: none;
-
-      position: fixed;
-
-      inset: 0;
-
-      z-index: 99999;
-
-      background: #000;
-
-      align-items: center;
-
-      justify-content: center;
-    }
-
-
-    #videoFullscreen video {
-
-      width: 100%;
-
-      height: 100%;
-
-      object-fit: contain;
-
-      background: #000;
-    }
-
-
-    #closeVideoFullscreen {
-
-      position: absolute;
-
-      top: 12px;
-
-      right: 12px;
-
-      z-index: 100000;
-
-      width: 42px;
-
-      height: 42px;
-
-      border: 0;
-
-      border-radius: 50%;
-
-      background:
-        rgba(0,0,0,.65);
-
-      color: #fff;
-
-      font-size: 21px;
-    }
-
-
-    /* =====================================================
-       SMALL SCREEN
-    ===================================================== */
-
-    @media (max-width: 360px) {
-
-      .browser-search-card {
-
-        margin-left: 12px;
-        margin-right: 12px;
-      }
-
-      .browser-content-card {
-
-        margin-left: 12px;
-        margin-right: 12px;
+      #browserFrame {
+        height: 56vh;
+        min-height: 390px;
       }
 
       .browser-frame-wrap {
+        min-height: 390px;
+      }
 
-        min-height: 400px;
+      .browser-fallback {
+        min-height: 390px;
       }
 
     }
@@ -555,17 +336,14 @@
 <body>
 
 
-<div
-  id="app"
-  class="browser-page"
->
+<div id="app" class="browser-page">
 
 
   <!-- =====================================================
        TOP 320x50 AD
-  ====================================================== -->
+  ===================================================== -->
 
-  <div class="browser-top-ad">
+  <div class="ad-area top-ad">
 
     <script>
       atOptions = {
@@ -577,181 +355,164 @@
       };
     </script>
 
-    <script
-      src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js">
-    </script>
+    <script src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js"></script>
 
   </div>
 
 
   <!-- =====================================================
        HEADER
-  ====================================================== -->
+  ===================================================== -->
 
-  <header class="browser-header">
+  <div class="page-header">
 
     <button
-      class="browser-back"
-      type="button"
-      onclick="window.location.href='index.html'"
-      aria-label="Back"
-    >
+      class="back-btn"
+      onclick="window.location.href='index.html'">
       ←
     </button>
 
+    <div>
 
-    <div class="browser-header-text">
+      <h1>Browser</h1>
 
-      <strong>
-        Browser
-      </strong>
-
-      <span>
+      <p style="
+        margin:4px 0 0;
+        color:rgba(255,255,255,.88);
+        font-size:13px;
+      ">
         Search and browse inside Infinix Worker
-      </span>
+      </p>
 
     </div>
 
-  </header>
+  </div>
 
 
   <!-- =====================================================
        SEARCH
-  ====================================================== -->
+  ===================================================== -->
 
-  <section class="browser-search-card">
-
-    <div class="browser-search-title">
-      Search anything with Google
-    </div>
-
+  <div class="browser-bar">
 
     <form
-      class="browser-search-row"
-      onsubmit="searchWeb(event)"
-    >
+      class="browser-search"
+      onsubmit="searchWeb(event)">
 
       <input
         id="urlInput"
         type="text"
-        inputmode="url"
-        autocomplete="off"
-        autocapitalize="none"
-        spellcheck="false"
-        placeholder="Type something"
-      >
+        placeholder="Search or enter website"
+        autocomplete="off">
 
-
-      <button
-        class="browser-search-btn"
-        type="submit"
-        aria-label="Search"
-      >
+      <button type="submit">
         🔎
       </button>
 
     </form>
 
 
-    <!-- QUICK SEARCH -->
+    <div class="browser-tools">
 
-    <div class="quick-search">
-
-      <button
-        type="button"
-        onclick="quickSearch('youtube')"
-      >
+      <button onclick="quickSearch('youtube')">
         YouTube
       </button>
 
-      <button
-        type="button"
-        onclick="quickSearch('best football news')"
-      >
+      <button onclick="quickSearch('best football news')">
         Football News
       </button>
 
-      <button
-        type="button"
-        onclick="quickSearch('facebook')"
-      >
+      <button onclick="quickSearch('facebook')">
         Facebook
       </button>
 
-      <button
-        type="button"
-        onclick="quickSearch('instagram')"
-      >
+      <button onclick="quickSearch('instagram')">
         Instagram
       </button>
 
+      <button onclick="reloadPage()">
+        ↻ Reload
+      </button>
+
     </div>
 
-  </section>
+  </div>
 
 
   <!-- =====================================================
-       CONTENT
-  ====================================================== -->
+       STATUS
+  ===================================================== -->
 
-  <section class="browser-content-card">
+  <div
+    id="browserStatus"
+    class="browser-status">
 
+    Ready to search
 
-    <div class="browser-content-top">
-
-      <span
-        id="browserStatus"
-        class="browser-status"
-      >
-        Ready
-      </span>
+  </div>
 
 
-      <button
-        type="button"
-        class="browser-refresh"
-        onclick="reloadPage()"
-        aria-label="Refresh"
-      >
-        ↻
+  <!-- =====================================================
+       BROWSER CONTENT
+  ===================================================== -->
+
+  <div class="browser-frame-wrap">
+
+
+    <iframe
+      id="browserFrame"
+      title="Infinix Worker Browser"
+
+      src="https://www.google.com/search?igu=1&q=Infinix%20Worker"
+
+      allow="
+        autoplay;
+        fullscreen;
+        picture-in-picture;
+        encrypted-media;
+        clipboard-read;
+        clipboard-write
+      "
+
+      referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
+
+
+    <!-- FALLBACK -->
+
+    <div
+      id="browserFallback"
+      class="browser-fallback">
+
+      <div class="browser-fallback-icon">
+        🌐
+      </div>
+
+      <h3>
+        This website cannot be displayed here
+      </h3>
+
+      <p>
+        The website is blocking embedded viewing.
+        Try another search or use the Open button
+        to view the website directly.
+      </p>
+
+      <button onclick="openCurrentExternal()">
+        Open Website
       </button>
 
     </div>
 
 
-    <div class="browser-frame-wrap">
-
-      <iframe
-        id="browserFrame"
-        title="Infinix Worker Browser"
-        src="https://www.google.com/search?q=Infinix+Worker"
-        allow="
-          autoplay;
-          fullscreen;
-          picture-in-picture;
-          encrypted-media;
-          clipboard-read;
-          clipboard-write
-        "
-        referrerpolicy="no-referrer-when-downgrade"
-      ></iframe>
-
-    </div>
-
-
-    <div
-      id="browserMessage"
-      class="browser-message"
-    ></div>
-
-  </section>
+  </div>
 
 
   <!-- =====================================================
-       FIXED BOTTOM 320x50
-  ====================================================== -->
+       FIXED BOTTOM 320x50 AD
+  ===================================================== -->
 
-  <div class="browser-fixed-ad">
+  <div class="fixed-banner">
 
     <script>
       atOptions = {
@@ -763,44 +524,31 @@
       };
     </script>
 
-    <script
-      src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js">
-    </script>
+    <script src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js"></script>
 
   </div>
 
 
   <!-- =====================================================
-       BOTTOM NAVIGATION
-  ====================================================== -->
+       BOTTOM NAV
+  ===================================================== -->
 
   <nav class="bottom-nav">
 
-
     <a href="index.html">
 
-      <span class="nav-icon">
-        ⌂
-      </span>
+      <span class="nav-icon">⌂</span>
 
-      <span>
-        Home
-      </span>
+      <span>Home</span>
 
     </a>
 
 
-    <a
-      href="https://lsr-video-downloaders.vercel.app/"
-    >
+    <a href="https://lsr-video-downloaders.vercel.app/">
 
-      <span class="nav-icon">
-        🌐
-      </span>
+      <span class="nav-icon">🌐</span>
 
-      <span>
-        Website
-      </span>
+      <span>Website</span>
 
     </a>
 
@@ -808,51 +556,31 @@
     <a
       href="https://t.me/bitbytee_bot"
       target="_blank"
-      rel="noopener noreferrer"
-    >
+      rel="noopener noreferrer">
 
-      <span class="nav-icon">
-        ✈
-      </span>
+      <span class="nav-icon">✈</span>
 
-      <span>
-        Telegram
-      </span>
+      <span>Telegram</span>
 
     </a>
 
 
-    <button
-      type="button"
-      onclick="openProfile()"
-    >
+    <button onclick="openProfile()">
 
-      <span class="nav-icon">
-        👤
-      </span>
+      <span class="nav-icon">👤</span>
 
-      <span>
-        Profile
-      </span>
+      <span>Profile</span>
 
     </button>
 
 
-    <button
-      type="button"
-      onclick="openMore()"
-    >
+    <button onclick="openMore()">
 
-      <span class="nav-icon">
-        ☰
-      </span>
+      <span class="nav-icon">☰</span>
 
-      <span>
-        More
-      </span>
+      <span>More</span>
 
     </button>
-
 
   </nav>
 
@@ -860,30 +588,9 @@
 </div>
 
 
-<!-- =====================================================
-     FULLSCREEN VIDEO
-====================================================== -->
-
-<div id="videoFullscreen">
-
-  <button
-    id="closeVideoFullscreen"
-    type="button"
-    onclick="closeVideoFullscreen()"
-  >
-    ✕
-  </button>
-
-
-  <video
-    id="fullscreenVideo"
-    controls
-    playsinline
-    webkit-playsinline
-  ></video>
-
-</div>
-
+<!-- =======================================================
+     APP JS
+======================================================== -->
 
 <script src="app.js"></script>
 
@@ -891,84 +598,74 @@
 <script>
 
 /* =========================================================
-   GET ELEMENTS
+   ELEMENTS
 ========================================================= */
 
 const browserFrame =
   document.getElementById("browserFrame");
 
-const urlInput =
-  document.getElementById("urlInput");
-
 const browserStatus =
   document.getElementById("browserStatus");
 
-const browserMessage =
-  document.getElementById("browserMessage");
+const browserFallback =
+  document.getElementById("browserFallback");
+
+
+let currentURL =
+  browserFrame.src;
 
 
 /* =========================================================
-   SEARCH / URL HANDLER
+   UPDATE STATUS
 ========================================================= */
 
-function searchWeb(event) {
+function setStatus(text) {
 
-  event.preventDefault();
+  browserStatus.textContent =
+    text;
 
-  let value =
-    urlInput.value.trim();
-
-  if (!value) return;
+}
 
 
-  let targetUrl;
+/* =========================================================
+   SHOW FRAME
+========================================================= */
+
+function showFrame() {
+
+  browserFrame.style.display =
+    "block";
+
+  browserFallback.style.display =
+    "none";
+
+}
 
 
-  /*
-    Full URL
-  */
+/* =========================================================
+   SHOW FALLBACK
+========================================================= */
 
-  if (
-    value.startsWith("https://") ||
-    value.startsWith("http://")
-  ) {
+function showFallback() {
 
-    targetUrl = value;
+  browserFrame.style.display =
+    "none";
 
-  }
+  browserFallback.style.display =
+    "block";
 
-
-  /*
-    Domain / website
-  */
-
-  else if (
-    value.includes(".") &&
-    !value.includes(" ")
-  ) {
-
-    targetUrl =
-      "https://" + value;
-
-  }
+}
 
 
-  /*
-    Normal search
-  */
+/* =========================================================
+   GOOGLE SEARCH URL
+========================================================= */
 
-  else {
+function googleSearch(query) {
 
-    targetUrl =
-      "https://www.google.com/search?q=" +
-      encodeURIComponent(value);
-
-  }
-
-
-  loadBrowserPage(
-    targetUrl,
-    value
+  return (
+    "https://www.google.com/search?igu=1&q=" +
+    encodeURIComponent(query)
   );
 
 }
@@ -978,13 +675,95 @@ function searchWeb(event) {
    QUICK SEARCH
 ========================================================= */
 
-function quickSearch(value) {
+function quickSearch(query) {
 
-  urlInput.value = value;
+  const input =
+    document.getElementById("urlInput");
 
-  loadBrowserPage(
-    "https://www.google.com/search?q=" +
-    encodeURIComponent(value),
+  input.value =
+    query;
+
+  searchWeb(null);
+
+}
+
+
+/* =========================================================
+   SEARCH / URL
+========================================================= */
+
+function searchWeb(event) {
+
+  if (event) {
+
+    event.preventDefault();
+
+  }
+
+
+  const input =
+    document.getElementById("urlInput");
+
+
+  let value =
+    input.value.trim();
+
+
+  if (!value) {
+
+    return;
+
+  }
+
+
+  let url;
+
+
+  /* -------------------------------------------------------
+     FULL URL
+  ------------------------------------------------------- */
+
+  if (
+    value.startsWith("https://") ||
+    value.startsWith("http://")
+  ) {
+
+    url =
+      value;
+
+  }
+
+
+  /* -------------------------------------------------------
+     DOMAIN
+  ------------------------------------------------------- */
+
+  else if (
+    value.includes(".") &&
+    !value.includes(" ")
+  ) {
+
+    url =
+      "https://" +
+      value;
+
+  }
+
+
+  /* -------------------------------------------------------
+     NORMAL SEARCH
+  ------------------------------------------------------- */
+
+  else {
+
+    url =
+      googleSearch(value);
+
+  }
+
+
+  loadBrowserURL(
+    url,
     value
   );
 
@@ -992,45 +771,151 @@ function quickSearch(value) {
 
 
 /* =========================================================
-   LOAD PAGE
+   LOAD URL
 ========================================================= */
 
-function loadBrowserPage(
+function loadBrowserURL(
   url,
   label
 ) {
 
-  browserMessage.style.display = "none";
-
-  browserMessage.textContent = "";
-
-  browserStatus.textContent =
-    label || url;
+  currentURL =
+    url;
 
 
-  browserFrame.src = url;
+  showFrame();
+
+
+  setStatus(
+    "Loading " +
+    (label || url)
+  );
+
+
+  browserFrame.src =
+    url;
+
+
+  /*
+    Some blocked websites won't fire a useful
+    iframe error event. Give them a reasonable
+    fallback after a delay.
+  */
+
+  clearTimeout(
+    window.browserFallbackTimer
+  );
+
+
+  window.browserFallbackTimer =
+    setTimeout(
+      function() {
+
+        /*
+          Do not hide Google immediately.
+          Google normally loads within this period.
+        */
+
+        if (
+          browserFrame.src === url
+        ) {
+
+          setStatus(
+            "Page loaded"
+          );
+
+        }
+
+      },
+      3500
+    );
 
 }
 
 
 /* =========================================================
-   REFRESH
+   BACK
 ========================================================= */
 
-function reloadPage() {
+function goBack() {
 
   try {
 
-    browserFrame.src =
-      browserFrame.src;
+    browserFrame.contentWindow.history.back();
+
+    setStatus(
+      "Going back..."
+    );
 
   }
   catch(error) {
 
-    browserFrame.src =
-      "https://www.google.com/";
+    setStatus(
+      "Back is unavailable for this page"
+    );
 
   }
+
+}
+
+
+/* =========================================================
+   FORWARD
+========================================================= */
+
+function goForward() {
+
+  try {
+
+    browserFrame.contentWindow.history.forward();
+
+    setStatus(
+      "Going forward..."
+    );
+
+  }
+  catch(error) {
+
+    setStatus(
+      "Forward is unavailable for this page"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   RELOAD
+========================================================= */
+
+function reloadPage() {
+
+  showFrame();
+
+
+  browserFrame.src =
+    currentURL;
+
+
+  setStatus(
+    "Reloading..."
+  );
+
+}
+
+
+/* =========================================================
+   OPEN EXTERNAL
+========================================================= */
+
+function openCurrentExternal() {
+
+  window.open(
+    currentURL,
+    "_blank",
+    "noopener,noreferrer"
+  );
 
 }
 
@@ -1043,220 +928,28 @@ browserFrame.addEventListener(
   "load",
   function() {
 
-    browserStatus.textContent =
-      "Page loaded";
-
-    /*
-      Cross-origin iframe pages cannot be inspected
-      from this app because of browser security.
-    */
-
-    try {
-
-      const frameDocument =
-        browserFrame.contentDocument ||
-        browserFrame.contentWindow.document;
-
-
-      const videos =
-        frameDocument.querySelectorAll("video");
-
-
-      videos.forEach(
-        function(video) {
-
-          video.addEventListener(
-            "dblclick",
-            function() {
-
-              requestVideoFullscreen(video);
-
-            }
-          );
-
-        }
-      );
-
-    }
-    catch(error) {
-
-      /*
-        Normal for cross-origin pages.
-      */
-
-    }
+    setStatus(
+      "Page loaded"
+    );
 
   }
 );
 
 
 /* =========================================================
-   IFRAME ERROR
+   INITIAL STATE
 ========================================================= */
 
-browserFrame.addEventListener(
-  "error",
+window.addEventListener(
+  "load",
   function() {
 
-    browserStatus.textContent =
-      "Unable to load page";
+    currentURL =
+      browserFrame.src;
 
-  }
-);
-
-
-/* =========================================================
-   NATIVE VIDEO FULLSCREEN
-========================================================= */
-
-function requestVideoFullscreen(video) {
-
-  if (!video) return;
-
-
-  if (
-    typeof video.requestFullscreen ===
-    "function"
-  ) {
-
-    video.requestFullscreen();
-
-    return;
-
-  }
-
-
-  if (
-    typeof video.webkitEnterFullscreen ===
-    "function"
-  ) {
-
-    video.webkitEnterFullscreen();
-
-  }
-
-}
-
-
-/* =========================================================
-   CUSTOM FULLSCREEN VIDEO
-========================================================= */
-
-function openCustomVideoFullscreen(src) {
-
-  if (!src) return;
-
-
-  const box =
-    document.getElementById(
-      "videoFullscreen"
+    setStatus(
+      "Ready"
     );
-
-  const video =
-    document.getElementById(
-      "fullscreenVideo"
-    );
-
-
-  video.src = src;
-
-  box.style.display = "flex";
-
-
-  video.play().catch(
-    function() {}
-  );
-
-
-  if (
-    screen.orientation &&
-    screen.orientation.lock
-  ) {
-
-    screen.orientation
-      .lock("landscape")
-      .catch(
-        function() {}
-      );
-
-  }
-
-}
-
-
-/* =========================================================
-   CLOSE FULLSCREEN
-========================================================= */
-
-function closeVideoFullscreen() {
-
-  const box =
-    document.getElementById(
-      "videoFullscreen"
-    );
-
-  const video =
-    document.getElementById(
-      "fullscreenVideo"
-    );
-
-
-  video.pause();
-
-  video.removeAttribute("src");
-
-  video.load();
-
-  box.style.display = "none";
-
-
-  if (
-    screen.orientation &&
-    screen.orientation.unlock
-  ) {
-
-    try {
-
-      screen.orientation.unlock();
-
-    }
-    catch(error) {}
-
-  }
-
-}
-
-
-/* =========================================================
-   ENTER KEY
-========================================================= */
-
-urlInput.addEventListener(
-  "keydown",
-  function(event) {
-
-    if (event.key === "Enter") {
-
-      event.preventDefault();
-
-      searchWeb(event);
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   INITIAL STATUS
-========================================================= */
-
-document.addEventListener(
-  "DOMContentLoaded",
-  function() {
-
-    browserStatus.textContent =
-      "Ready";
 
   }
 );
@@ -1265,5 +958,4 @@ document.addEventListener(
 
 
 </body>
-
 </html>

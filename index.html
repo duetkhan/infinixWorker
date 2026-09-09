@@ -1,77 +1,161 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Infinix Worker</title>
-<link rel="stylesheet" href="style.css">
-<script src="ads.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="theme-color" content="#2563eb">
+  <meta name="description" content="Micro Tasks Web App">
+
+  <title>Infinix Worker</title>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
 </head>
+
 <body>
 
-<div class="container">
+  <div id="app">
 
-<h2>Infinix Worker</h2>
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">IW</div>
 
-<!-- TOP BANNER -->
-<div class="banner-box" id="topBanner"></div>
+        <div>
+          <h1>Infinix Worker</h1>
+          <span>Earn by completing tasks</span>
+        </div>
+      </div>
 
-<div class="card">
-    <button id="start-work">Start Work</button>
-    <button id="watch-ad">Watch Ad For Reward</button>
-    <p>Balance: <span id="balance">0</span> TK</p>
-    <button onclick="location.href='withdraw.html'">Withdraw</button>
-</div>
+      <button class="notification-btn" aria-label="Notifications">
+        🔔
+      </button>
+    </header>
 
-<!-- MULTI BANNER ZONE -->
-<div class="card">
-    <h4>Developed by "Bulbul Ahmed Riyan"</h4>
-    <div class="multi-banner">
-        <div id="b1"></div>
-        <div id="b2"></div>
-        <div id="b3"></div>
-        <div id="b4"></div>
-    </div>
-</div>
 
-</div>
+    <!-- Main Content -->
+    <main class="main-content">
 
-<script>
-let balance = Number(localStorage.getItem("balance")||0);
-document.getElementById("balance").innerText = balance;
+      <!-- Balance Card -->
+      <section class="balance-card">
 
-/* Load banners */
-loadBanner(document.getElementById("topBanner"));
+        <div class="balance-info">
+          <span class="balance-label">Available Balance</span>
+          <strong id="balance">0.00</strong>
+          <small>Coins</small>
+        </div>
 
-setTimeout(()=>loadBanner(document.getElementById("b1")),300);
-setTimeout(()=>loadBanner(document.getElementById("b2")),600);
-setTimeout(()=>loadBanner(document.getElementById("b3")),900);
-setTimeout(()=>loadBanner(document.getElementById("b4")),1200);
+        <div class="balance-icon">
+          💰
+        </div>
 
-/* Buttons */
-document.getElementById("start-work").onclick=()=>{
-    showPopunderAd();
-    window.open(SMARTLINK1,"_blank");
-    setTimeout(()=>location.href="balance.html",400);
-};
+      </section>
 
-document.getElementById("watch-ad").onclick=()=>{
-    const start=Date.now();
-    const w=window.open(SMARTLINK2,"_blank");
-    const t=setInterval(()=>{
-        if(w.closed){
-            const s=(Date.now()-start)/1000;
-            if(s>=60){
-                const r=Math.floor(Math.random()*3)+2;
-                balance+=r;
-                localStorage.setItem("balance",balance);
-                alert("You earned "+r+" TK");
-            }else alert("Too early closed");
-            document.getElementById("balance").innerText=balance;
-            clearInterval(t);
-        }
-    },1000);
-};
-</script>
+
+      <!-- Welcome -->
+      <section class="welcome-section">
+        <h2>Start earning today</h2>
+        <p>Complete simple tasks and earn rewards.</p>
+      </section>
+
+
+      <!-- Main Actions -->
+      <section class="action-grid">
+
+        <button class="action-card" onclick="startWork()">
+          <div class="action-icon">🚀</div>
+          <div>
+            <h3>Start Work</h3>
+            <p>Complete available tasks</p>
+          </div>
+        </button>
+
+
+        <button class="action-card" onclick="watchAd()">
+          <div class="action-icon">▶️</div>
+          <div>
+            <h3>Watch Ad</h3>
+            <p>Watch ads and earn</p>
+          </div>
+        </button>
+
+
+        <button class="action-card" onclick="openWithdraw()">
+          <div class="action-icon">💳</div>
+          <div>
+            <h3>Withdraw</h3>
+            <p>Withdraw your balance</p>
+          </div>
+        </button>
+
+
+        <button class="action-card" onclick="openProfile()">
+          <div class="action-icon">👤</div>
+          <div>
+            <h3>Profile</h3>
+            <p>Manage your account</p>
+          </div>
+        </button>
+
+      </section>
+
+
+      <!-- Native Ad -->
+      <section class="native-ad">
+        <div class="ad-label">Advertisement</div>
+
+        <!-- Adsterra Native Banner will go here -->
+        <div id="native-ad-container"></div>
+      </section>
+
+
+      <!-- 320x50 Banner -->
+      <section class="banner-ad">
+        <div class="ad-label">Advertisement</div>
+
+        <div id="banner-ad-container"></div>
+      </section>
+
+    </main>
+
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+
+      <button class="nav-item active" onclick="goHome()">
+        <span>⌂</span>
+        <small>Home</small>
+      </button>
+
+      <button class="nav-item" onclick="startWork()">
+        <span>⚡</span>
+        <small>Work</small>
+      </button>
+
+      <button class="nav-item" onclick="watchAd()">
+        <span>▶</span>
+        <small>Ads</small>
+      </button>
+
+      <button class="nav-item" onclick="openWithdraw()">
+        <span>💳</span>
+        <small>Withdraw</small>
+      </button>
+
+      <button class="nav-item" onclick="openProfile()">
+        <span>👤</span>
+        <small>Profile</small>
+      </button>
+
+    </nav>
+
+  </div>
+
+
+  <!-- Smartlink / Popunder scripts will be integrated in Step 3 -->
+
+  <script src="app.js"></script>
 
 </body>
 </html>

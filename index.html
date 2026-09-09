@@ -1,610 +1,487 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#075dcc">
+  <meta charset="UTF-8">
 
-<title>Infinix Worker</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  >
 
-<link rel="stylesheet" href="style.css">
+  <meta name="theme-color" content="#0755c9">
+
+  <title>Infinix Worker</title>
+
+  <link rel="stylesheet" href="style.css">
 </head>
+
 
 <body>
 
 <div id="app">
 
-<!-- HEADER -->
-<header class="worker-header">
 
-    <button class="menu-btn"
-            onclick="location.href='more.html'">
-        ☰
+  <!-- =====================================================
+       HOME HEADER
+  ====================================================== -->
+
+  <header class="home-header">
+
+    <!-- Menu -->
+    <button
+      class="menu-btn"
+      type="button"
+      onclick="openMore()"
+      aria-label="Open menu"
+    >
+      ☰
     </button>
 
-    <div class="worker-brand">
 
-        <div class="worker-logo">
-            IW
-        </div>
+    <!-- Right empty space -->
+    <div class="header-space"></div>
 
-        <div class="worker-title">
-            <strong>Infinix Worker</strong>
-            <small>Work • Earn • Rewards</small>
-        </div>
+
+    <!-- Brand -->
+    <div class="home-brand">
+
+      <div class="logo-box">
+        IW
+      </div>
+
+      <div class="brand-title">
+
+        <strong>
+          Infinix Worker
+        </strong>
+
+        <small>
+          WORK • EARN • REWARD
+        </small>
+
+      </div>
 
     </div>
 
-    <div class="header-balance">
-        <span>Balance</span>
-        <strong id="homeBalance">0.00</strong>
+
+    <!-- Tagline -->
+    <div class="home-tagline">
+      Complete activities and earn rewards
     </div>
 
-</header>
+  </header>
 
 
-<!-- MAIN -->
-<main class="home-content">
 
-    <!-- WELCOME -->
-    <section class="welcome-card">
+  <!-- =====================================================
+       HOME CONTENT
+  ====================================================== -->
 
-        <div class="welcome-text">
+  <main class="home-content">
 
-            <span>Welcome back</span>
 
-            <strong id="homeUsername">
-                Guest User
-            </strong>
+    <!-- ===================================================
+         MAIN FOUR OPTIONS
+    ==================================================== -->
 
-            <small>
-                Complete activities and earn rewards
-            </small>
+    <section class="home-grid">
 
+
+      <!-- =================================================
+           BROWSER
+      ================================================== -->
+
+      <a
+        href="browser.html"
+        class="home-feature"
+        onclick="
+          event.preventDefault();
+          openBrowser();
+        "
+      >
+
+        <div class="feature-icon">
+          🌐
         </div>
 
-        <div class="welcome-icon">
-            ★
+        <strong>
+          Browser
+        </strong>
+
+        <span>
+          Browse websites easily
+        </span>
+
+      </a>
+
+
+
+      <!-- =================================================
+           VIDEO DOWNLOADER
+      ================================================== -->
+
+      <a
+        href="video-downloader.html"
+        class="home-feature"
+        onclick="
+          event.preventDefault();
+          openVideoDownloader();
+        "
+      >
+
+        <div class="feature-icon">
+          ↓
         </div>
+
+        <strong>
+          Video Downloader
+        </strong>
+
+        <span>
+          Download videos and media
+        </span>
+
+      </a>
+
+
+
+      <!-- =================================================
+           TASK
+      ================================================== -->
+
+      <a
+        href="task.html"
+        class="home-feature"
+        onclick="
+          event.preventDefault();
+          openTask();
+        "
+      >
+
+        <div class="feature-icon">
+          ✓
+        </div>
+
+        <strong>
+          Task
+        </strong>
+
+        <span>
+          Complete tasks &amp; earn rewards
+        </span>
+
+      </a>
+
+
+
+      <!-- =================================================
+           MICRO TASK
+      ================================================== -->
+
+      <a
+        href="https://lsr-video-downloaders.vercel.app/offerwall.html"
+        class="home-feature"
+        onclick="
+          event.preventDefault();
+          openMicroTask();
+        "
+      >
+
+        <div class="feature-icon">
+          💰
+        </div>
+
+        <strong>
+          Micro Task
+        </strong>
+
+        <span>
+          Complete micro tasks &amp; earn
+        </span>
+
+      </a>
+
 
     </section>
 
 
-    <!-- ACTIONS -->
-    <section class="action-grid">
 
-        <!-- TASK -->
-        <button class="action-card"
-                onclick="location.href='tasks.html'">
+    <!-- =====================================================
+         BOTTOM BANNER 1
+    ====================================================== -->
 
-            <div class="action-icon">
-                ✓
-            </div>
+    <div class="banner-ad">
 
-            <strong>
-                Complete Task &amp;<br>
-                Earn Rewards
-            </strong>
-
-            <span>
-                Complete available tasks<br>
-                and earn coins
-            </span>
-
-        </button>
+      <div class="ad-label">
+        Advertisement
+      </div>
 
 
-        <!-- VISIT -->
-        <button class="action-card"
-                onclick="startVisitTask()">
-
-            <div class="action-icon">
-                ◎
-            </div>
-
-            <strong>
-                Visit Web &amp;<br>
-                Earn
-            </strong>
-
-            <span>
-                Visit the website and<br>
-                complete the activity
-            </span>
-
-        </button>
-
-
-        <!-- WATCH -->
-        <button class="action-card"
-                onclick="startWatchTask()">
-
-            <div class="action-icon">
-                ▶
-            </div>
-
-            <strong>
-                Watch &amp;<br>
-                Earn
-            </strong>
-
-            <span>
-                Watch sponsored content<br>
-                and complete the timer
-            </span>
-
-        </button>
-
-
-        <!-- PROFILE -->
-        <button class="action-card"
-                onclick="location.href='profile.html'">
-
-            <div class="action-icon">
-                ★
-            </div>
-
-            <strong>
-                Rewards &amp;<br>
-                Balance
-            </strong>
-
-            <span>
-                Check your balance<br>
-                and withdrawal
-            </span>
-
-        </button>
-
-    </section>
-
-
-    <!-- NATIVE AD -->
-    <section class="native-ad">
-
-        <div class="ad-label">
-            Advertisement
-        </div>
-
-        <script async="async"
-        data-cfasync="false"
-        src="https://pl28546803.profitableratecpmnetwork.com/80507bc8e3d998279cd413247931169e/invoke.js">
-        </script>
-
-        <div id="container-80507bc8e3d998279cd413247931169e">
-        </div>
-
-    </section>
-
-
-    <!-- BANNER -->
-    <section class="banner-ad">
-
-        <div class="ad-label">
-            Advertisement
-        </div>
+      <div id="banner-ad-container">
 
         <script>
-        atOptions = {
-            'key' : 'b529261b98306ae1169a6bf5b991c3d4',
-            'format' : 'iframe',
-            'height' : 50,
-            'width' : 320,
-            'params' : {}
-        };
+          atOptions = {
+            'key': 'b529261b98306ae1169a6bf5b991c3d4',
+            'format': 'iframe',
+            'height': 50,
+            'width': 320,
+            'params': {}
+          };
         </script>
 
-        <script src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js">
+
+        <script
+          src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js">
         </script>
 
-    </section>
-
-</main>
-
-
-<!-- BOTTOM NAVIGATION -->
-<nav class="bottom-nav">
-
-    <button class="nav-item active"
-            onclick="location.href='index.html'">
-
-        <span>⌂</span>
-        <small>Home</small>
-
-    </button>
-
-
-    <button class="nav-item"
-            onclick="window.open(
-            'https://lsr-video-downloaders.vercel.app/',
-            '_blank'
-            )">
-
-        <span>◎</span>
-        <small>Web</small>
-
-    </button>
-
-
-    <button class="nav-item"
-            onclick="window.open(
-            'https://t.me/bitbytee_bot',
-            '_blank'
-            )">
-
-        <span>✈</span>
-        <small>Telegram</small>
-
-    </button>
-
-
-    <button class="nav-item"
-            onclick="location.href='profile.html'">
-
-        <span>●</span>
-        <small>Profile</small>
-
-    </button>
-
-
-    <button class="nav-item"
-            onclick="location.href='more.html'">
-
-        <span>•••</span>
-        <small>More</small>
-
-    </button>
-
-</nav>
-
-</div>
-
-
-<!-- VISIT MODAL -->
-<div id="visitModal"
-     class="task-modal">
-
-    <div class="task-modal-box">
-
-        <button class="modal-close"
-                onclick="closeVisitTask()">
-            ×
-        </button>
-
-        <div class="modal-icon">
-            ◎
-        </div>
-
-        <h2>
-            Visit Web &amp; Earn
-        </h2>
-
-        <p>
-            Open the website and complete the
-            required activity.
-        </p>
-
-
-        <div class="timer-circle">
-
-            <strong id="visitTimer">
-                30
-            </strong>
-
-            <small>
-                seconds
-            </small>
-
-        </div>
-
-
-        <button id="visitOpenBtn"
-                class="modal-primary"
-                onclick="openVisitSite()">
-
-            Visit Website
-
-        </button>
-
-
-        <p id="visitStatus"
-           class="modal-status">
-
-            Tap Visit Website to begin.
-
-        </p>
+      </div>
 
     </div>
 
-</div>
 
 
-<!-- WATCH MODAL -->
-<div id="watchModal"
-     class="task-modal">
+    <!-- =====================================================
+         BOTTOM BANNER 2
+    ====================================================== -->
 
-    <div class="task-modal-box">
+    <div class="native-ad">
 
-        <button class="modal-close"
-                onclick="closeWatchTask()">
-            ×
-        </button>
+      <div class="ad-label">
+        Advertisement
+      </div>
 
-        <div class="modal-icon">
-            ▶
+
+      <div id="native-ad-container">
+
+        <script
+          async="async"
+          data-cfasync="false"
+          src="https://pl28546803.profitableratecpmnetwork.com/80507bc8e3d998279cd413247931169e/invoke.js">
+        </script>
+
+
+        <div
+          id="container-80507bc8e3d998279cd413247931169e">
         </div>
 
-        <h2>
-            Watch &amp; Earn
-        </h2>
-
-        <p>
-            Complete the sponsored viewing
-            activity.
-        </p>
-
-
-        <div class="timer-circle">
-
-            <strong id="watchTimer">
-                15
-            </strong>
-
-            <small>
-                seconds
-            </small>
-
-        </div>
-
-
-        <button id="watchContinueBtn"
-                class="modal-primary"
-                disabled>
-
-            Continue
-
-        </button>
-
-
-        <p id="watchStatus"
-           class="modal-status">
-
-            Sponsored activity will start first.
-
-        </p>
+      </div>
 
     </div>
 
+
+  </main>
+
+
+
+  <!-- =====================================================
+       BOTTOM NAVIGATION
+       5 ITEMS
+  ====================================================== -->
+
+  <nav class="bottom-nav">
+
+
+    <!-- HOME -->
+
+    <a
+      href="index.html"
+      class="nav-item active"
+    >
+
+      <span>
+        ⌂
+      </span>
+
+      <small>
+        Home
+      </small>
+
+    </a>
+
+
+
+    <!-- WEBSITE -->
+
+    <a
+      href="https://lsr-video-downloaders.vercel.app/"
+      class="nav-item"
+    >
+
+      <span>
+        🌐
+      </span>
+
+      <small>
+        Website
+      </small>
+
+    </a>
+
+
+
+    <!-- TELEGRAM -->
+
+    <a
+      href="https://t.me/bitbytee_bot"
+      class="nav-item"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+
+      <span>
+        ✈
+      </span>
+
+      <small>
+        Telegram
+      </small>
+
+    </a>
+
+
+
+    <!-- PROFILE -->
+
+    <a
+      href="profile.html"
+      class="nav-item"
+      onclick="
+        event.preventDefault();
+        openProfile();
+      "
+    >
+
+      <span>
+        👤
+      </span>
+
+      <small>
+        Profile
+      </small>
+
+    </a>
+
+
+
+    <!-- MORE -->
+
+    <a
+      href="more.html"
+      class="nav-item"
+    >
+
+      <span>
+        ☰
+      </span>
+
+      <small>
+        More
+      </small>
+
+    </a>
+
+
+  </nav>
+
+
 </div>
 
 
-<script src="app.js"></script>
 
-
-<!-- SOCIAL BAR -->
-<script src="https://pl31263667.profitableratecpmnetwork.com/b0/c5/21/b0c5218558b6cd7043e11407e07289b1.js">
-</script>
-
+<!-- =======================================================
+     HOME JAVASCRIPT
+======================================================== -->
 
 <script>
 
-let visitInterval = null;
+  /*
+   * These functions are normally provided by app.js.
+   * The fallback functions below prevent navigation
+   * from breaking if app.js has not loaded yet.
+   */
 
-let visitSeconds = 30;
 
-let visitStarted = false;
+  function openMore() {
 
+    window.location.href = "more.html";
 
-function startVisitTask(){
+  }
 
-    visitSeconds = 30;
 
-    visitStarted = false;
+  function openTask() {
 
-    document.getElementById(
-        "visitTimer"
-    ).textContent = "30";
+    window.location.href = "task.html";
 
-    document.getElementById(
-        "visitOpenBtn"
-    ).disabled = false;
+  }
 
-    document.getElementById(
-        "visitOpenBtn"
-    ).textContent = "Visit Website";
 
-    document.getElementById(
-        "visitStatus"
-    ).textContent =
-        "Tap Visit Website to begin.";
+  function openMicroTask() {
 
-    document.getElementById(
-        "visitModal"
-    ).classList.add("show");
+    window.location.href =
+      "https://lsr-video-downloaders.vercel.app/offerwall.html";
 
-}
+  }
 
 
-function openVisitSite(){
+  /*
+   * Browser
+   *
+   * app.js version will trigger the controlled
+   * Smartlink and then navigate to Browser.
+   */
 
-    if(visitStarted){
-        return;
-    }
+  if (typeof openBrowser !== "function") {
 
-    visitStarted = true;
+    window.openBrowser = function () {
 
-    window.open(
-        "https://www.profitableratecpmnetwork.com/xujhdqwep?key=a7974e14e4446b0e7745df0efe2ed3e9",
-        "_blank"
-    );
+      window.location.href = "browser.html";
 
+    };
 
-    document.getElementById(
-        "visitStatus"
-    ).textContent =
-        "Complete the required activity. Timer running...";
+  }
 
 
-    clearInterval(visitInterval);
+  /*
+   * Video Downloader
+   */
 
+  if (typeof openVideoDownloader !== "function") {
 
-    visitInterval = setInterval(function(){
+    window.openVideoDownloader = function () {
 
-        visitSeconds--;
+      window.location.href =
+        "video-downloader.html";
 
-        document.getElementById(
-            "visitTimer"
-        ).textContent = visitSeconds;
+    };
 
+  }
 
-        if(visitSeconds <= 0){
 
-            clearInterval(visitInterval);
+  /*
+   * Profile
+   */
 
-            document.getElementById(
-                "visitStatus"
-            ).textContent =
-                "Activity timer completed. Rewards are granted only after the required activity is genuinely completed.";
+  if (typeof openProfile !== "function") {
 
-            document.getElementById(
-                "visitOpenBtn"
-            ).textContent =
-                "Activity Completed";
+    window.openProfile = function () {
 
-            document.getElementById(
-                "visitOpenBtn"
-            ).disabled = true;
+      window.location.href =
+        "profile.html";
 
-        }
+    };
 
-    },1000);
-
-}
-
-
-function closeVisitTask(){
-
-    clearInterval(visitInterval);
-
-    document.getElementById(
-        "visitModal"
-    ).classList.remove("show");
-
-}
-
-
-
-/* WATCH */
-
-let watchInterval = null;
-
-let watchSeconds = 15;
-
-
-function startWatchTask(){
-
-    watchSeconds = 15;
-
-    document.getElementById(
-        "watchTimer"
-    ).textContent = "15";
-
-    document.getElementById(
-        "watchContinueBtn"
-    ).disabled = true;
-
-    document.getElementById(
-        "watchStatus"
-    ).textContent =
-        "Sponsored activity will start first.";
-
-    document.getElementById(
-        "watchModal"
-    ).classList.add("show");
-
-
-    /*
-       MONETAG INTERSTITIAL
-       --------------------
-       Add your Monetag code here later.
-    */
-
-
-    setTimeout(function(){
-
-        document.getElementById(
-            "watchStatus"
-        ).textContent =
-            "Complete the 15 second countdown.";
-
-
-        clearInterval(watchInterval);
-
-
-        watchInterval = setInterval(function(){
-
-            watchSeconds--;
-
-            document.getElementById(
-                "watchTimer"
-            ).textContent = watchSeconds;
-
-
-            if(watchSeconds <= 0){
-
-                clearInterval(watchInterval);
-
-                document.getElementById(
-                    "watchContinueBtn"
-                ).disabled = false;
-
-                document.getElementById(
-                    "watchStatus"
-                ).textContent =
-                    "You may continue.";
-
-            }
-
-        },1000);
-
-    },1000);
-
-}
-
-
-function closeWatchTask(){
-
-    clearInterval(watchInterval);
-
-    document.getElementById(
-        "watchModal"
-    ).classList.remove("show");
-
-}
-
-
-document.getElementById(
-    "watchContinueBtn"
-).addEventListener(
-    "click",
-    function(){
-
-        if(
-            this.disabled
-        ){
-            return;
-        }
-
-        closeWatchTask();
-
-        alert(
-            "Activity completed successfully."
-        );
-
-    }
-);
+  }
 
 </script>
+
+
+
+<!-- =======================================================
+     LOAD APP.JS LAST
+======================================================== -->
+
+<script src="app.js"></script>
+
 
 </body>
 </html>

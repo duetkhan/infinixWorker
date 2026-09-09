@@ -1,80 +1,385 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Withdraw</title>
-<link rel="stylesheet" href="style.css">
-<script src="ads.js"></script>
-</head>
-<body>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<div class="container">
+  <meta name="theme-color" content="#2563eb">
 
-<h2>Withdraw Zone</h2>
+  <title>Withdraw - Infinix Worker</title>
 
-<div class="card">
-    <p>Balance: <span id="balance">0</span> TK</p>
-</div>
+  <link rel="stylesheet" href="style.css">
 
-<div class="card">
-    <input type="text" id="account" placeholder="Bkash / Nagad Number">
-    <input type="number" id="amount" placeholder="Amount (110 - 5000)">
-    <button id="withdraw-btn">Submit Withdraw</button>
-</div>
-
-<div class="card">
-    <h4>Withdraw History</h4>
-    <ul id="history"></ul>
-</div>
-
-<!-- Bottom Banner -->
-<div class="card">
-    <div id="withdrawBottomBanner"></div>
-</div>
-
-</div>
-
-<script>
-let balance = Number(localStorage.getItem("balance") || 0);
-document.getElementById("balance").innerText = balance;
-
-let history = JSON.parse(localStorage.getItem("history") || "[]");
-
-function renderHistory(){
-    const ul = document.getElementById("history");
-    ul.innerHTML = "";
-    history.forEach(h=>{
-        const li = document.createElement("li");
-        li.innerText = `${h.amount} TK → ${h.account}`;
-        ul.appendChild(li);
-    });
-}
-renderHistory();
-
-/* Bottom banner */
-setTimeout(()=>{
-    loadBanner(document.getElementById("withdrawBottomBanner"));
-},600);
-
-document.getElementById("withdraw-btn").onclick = ()=>{
-    const acc = document.getElementById("account").value;
-    const amt = Number(document.getElementById("amount").value);
-
-    if(!acc || amt<110 || amt>5000 || amt>balance){
-        alert("Invalid Withdraw");
-        return;
+  <style>
+    .page-header {
+      height: 72px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
     }
 
-    showNativeAd();   // Native banner trigger
+    .back-button {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: #eef4ff;
+      color: #2563eb;
+      font-size: 22px;
+    }
 
-    balance -= amt;
-    localStorage.setItem("balance", balance);
-    document.getElementById("balance").innerText = balance;
+    .page-title h1 {
+      font-size: 18px;
+      font-weight: 750;
+    }
 
-    history.push({account:acc, amount:amt});
-    localStorage.setItem("history", JSON.stringify(history));
-    renderHistory();
-};
+    .page-title p {
+      margin-top: 2px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .withdraw-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(20, 30, 50, 0.04);
+    }
+
+    .withdraw-balance {
+      padding: 18px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      color: #fff;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .withdraw-balance span {
+      display: block;
+      font-size: 11px;
+      opacity: .9;
+    }
+
+    .withdraw-balance strong {
+      display: block;
+      margin-top: 5px;
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .input-label {
+      display: block;
+      margin: 14px 0 7px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .withdraw-input {
+      width: 100%;
+      height: 48px;
+      padding: 0 14px;
+
+      border: 1px solid #dbe2ec;
+      border-radius: 12px;
+
+      outline: none;
+      background: #f8fafc;
+      color: #172033;
+
+      font-size: 13px;
+    }
+
+    .withdraw-input:focus {
+      border-color: #2563eb;
+      background: #fff;
+    }
+
+    .withdraw-submit {
+      width: 100%;
+      height: 48px;
+      margin-top: 20px;
+
+      border-radius: 13px;
+
+      background: #2563eb;
+      color: #fff;
+
+      font-size: 14px;
+      font-weight: 750;
+
+      box-shadow: 0 7px 18px rgba(37, 99, 235, .18);
+    }
+
+    .withdraw-submit:active {
+      transform: scale(.98);
+    }
+
+    .withdraw-note {
+      margin-top: 13px;
+      padding: 12px;
+
+      border-radius: 11px;
+      background: #f5f8ff;
+
+      color: #68758a;
+      font-size: 10px;
+      line-height: 16px;
+      text-align: center;
+    }
+
+    .history-title {
+      margin: 23px 2px 12px;
+      font-size: 16px;
+      font-weight: 750;
+    }
+
+    .history-empty {
+      padding: 25px 15px;
+      text-align: center;
+
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .history-empty-icon {
+      font-size: 25px;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="app">
+
+  <!-- Header -->
+  <header class="page-header">
+
+    <button
+      class="back-button"
+      onclick="history.back()"
+      aria-label="Go back"
+    >
+      ←
+    </button>
+
+    <div class="page-title">
+      <h1>Withdraw</h1>
+      <p>Withdraw your earned balance</p>
+    </div>
+
+  </header>
+
+
+  <main class="main-content">
+
+    <!-- Withdraw Card -->
+    <section class="withdraw-card">
+
+      <div class="withdraw-balance">
+        <span>Available Balance</span>
+        <strong id="withdrawBalance">0.00</strong>
+      </div>
+
+
+      <label class="input-label" for="payment">
+        Payment Method / Number
+      </label>
+
+      <input
+        id="payment"
+        class="withdraw-input"
+        type="text"
+        placeholder="bKash / Nagad Number"
+        autocomplete="off"
+      >
+
+
+      <label class="input-label" for="amount">
+        Withdrawal Amount
+      </label>
+
+      <input
+        id="amount"
+        class="withdraw-input"
+        type="number"
+        min="110"
+        max="5000"
+        placeholder="Amount (110 - 5000)"
+      >
+
+
+      <button
+        class="withdraw-submit"
+        onclick="submitWithdraw()"
+      >
+        Submit Withdraw
+      </button>
+
+
+      <div class="withdraw-note">
+        Minimum withdrawal: 110 coins.<br>
+        Please make sure your payment number is correct.
+      </div>
+
+    </section>
+
+
+    <!-- History -->
+    <h2 class="history-title">
+      Withdrawal History
+    </h2>
+
+    <div class="history-empty">
+
+      <div class="history-empty-icon">
+        💳
+      </div>
+
+      <div>
+        No withdrawal history yet.
+      </div>
+
+    </div>
+
+
+    <!-- Native Ad -->
+    <section class="native-ad">
+
+      <div class="ad-label">
+        Advertisement
+      </div>
+
+      <div id="native-ad-container"></div>
+
+    </section>
+
+
+    <!-- 320x50 Banner -->
+    <section class="banner-ad">
+
+      <div class="ad-label">
+        Advertisement
+      </div>
+
+      <div id="banner-ad-container"></div>
+
+    </section>
+
+  </main>
+
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+
+    <button
+      class="nav-item"
+      onclick="window.location.href='index.html'"
+    >
+      <span>⌂</span>
+      <small>Home</small>
+    </button>
+
+    <button
+      class="nav-item"
+      onclick="window.location.href='tasks.html'"
+    >
+      <span>⚡</span>
+      <small>Work</small>
+    </button>
+
+    <button
+      class="nav-item"
+      onclick="window.location.href='index.html'"
+    >
+      <span>▶</span>
+      <small>Ads</small>
+    </button>
+
+    <button class="nav-item active">
+      <span>💳</span>
+      <small>Withdraw</small>
+    </button>
+
+    <button
+      class="nav-item"
+      onclick="window.location.href='profile.html'"
+    >
+      <span>👤</span>
+      <small>Profile</small>
+    </button>
+
+  </nav>
+
+</div>
+
+
+<script src="app.js"></script>
+
+<script>
+  /* Show current local balance */
+  document.addEventListener("DOMContentLoaded", function () {
+
+    const balance =
+      Number(localStorage.getItem("worker_balance") || "0");
+
+    const element =
+      document.getElementById("withdrawBalance");
+
+    if (element) {
+      element.textContent = balance.toFixed(2);
+    }
+
+  });
+
+
+  function submitWithdraw() {
+
+    const payment =
+      document.getElementById("payment").value.trim();
+
+    const amount =
+      Number(document.getElementById("amount").value);
+
+    if (!payment) {
+      alert("Please enter your bKash / Nagad number.");
+      return;
+    }
+
+    if (!amount || amount < 110 || amount > 5000) {
+      alert("Withdrawal amount must be between 110 and 5000 coins.");
+      return;
+    }
+
+    const balance =
+      Number(localStorage.getItem("worker_balance") || "0");
+
+    if (amount > balance) {
+      alert("Insufficient balance.");
+      return;
+    }
+
+    /*
+      Smartlink is triggered by the user's
+      explicit Submit Withdraw action.
+    */
+
+    if (typeof openSmartlink === "function") {
+      openSmartlink();
+    }
+
+    alert(
+      "Withdrawal request submitted successfully."
+    );
+  }
 </script>
 
 </body>

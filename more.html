@@ -3,172 +3,433 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>More - Infinix Worker</title>
+
   <link rel="stylesheet" href="style.css">
+
+  <style>
+    .more-page {
+      min-height: 100vh;
+      padding-bottom: 145px;
+    }
+
+    .more-intro {
+      background: #fff;
+      border-radius: 18px;
+      padding: 17px;
+      margin-bottom: 14px;
+      box-shadow: 0 5px 18px rgba(25,35,60,.07);
+    }
+
+    .more-intro h2 {
+      font-size: 19px;
+      margin-bottom: 6px;
+    }
+
+    .more-intro p {
+      color: #737b8d;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .more-list {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .more-item {
+      width: 100%;
+      min-height: 62px;
+      padding: 11px 14px;
+      border: 0;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 14px rgba(25,35,60,.06);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+      cursor: pointer;
+      color: #172033;
+    }
+
+    .more-icon {
+      width: 42px;
+      height: 42px;
+      flex: 0 0 42px;
+      border-radius: 12px;
+      background: #f0edff;
+      color: #5b3df5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .more-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .more-text strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 3px;
+    }
+
+    .more-text small {
+      display: block;
+      color: #858c9b;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .more-arrow {
+      color: #9aa1af;
+      font-size: 18px;
+    }
+
+    .fixed-banner {
+      position: fixed;
+      left: 50%;
+      bottom: 68px;
+      transform: translateX(-50%);
+      width: 320px;
+      height: 50px;
+      max-width: calc(100vw - 10px);
+      background: #fff;
+      z-index: 9998;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      box-shadow: 0 -2px 12px rgba(0,0,0,.12);
+    }
+  </style>
 </head>
 
 <body>
 
-  <!-- Header -->
-  <header class="top-header">
-    <div>
-      <h1>More</h1>
-      <p>Settings & Tools</p>
+<div id="app" class="more-page">
+
+
+  <!-- TOP BANNER -->
+
+  <div class="ad-area top-ad">
+
+    <script>
+      atOptions = {
+        'key' : 'b529261b98306ae1169a6bf5b991c3d4',
+        'format' : 'iframe',
+        'height' : 50,
+        'width' : 320,
+        'params' : {}
+      };
+    </script>
+
+    <script src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js"></script>
+
+  </div>
+
+
+  <!-- SOCIAL BAR -->
+
+  <div class="social-bar">
+
+    <script src="https://pl31263667.profitableratecpmnetwork.com/b0/c5/21/b0c5218558b6cd7043e11407e07289b1.js"></script>
+
+  </div>
+
+
+  <!-- HEADER -->
+
+  <div class="page-header">
+
+    <button
+      class="back-btn"
+      onclick="window.location.href='index.html'">
+      ←
+    </button>
+
+    <h1>More</h1>
+
+  </div>
+
+
+  <main class="page-content">
+
+
+    <div class="more-intro">
+
+      <h2>More Options</h2>
+
+      <p>
+        Access additional tools, downloads and support
+        from here.
+      </p>
+
     </div>
-  </header>
 
-  <main class="page-container">
 
-    <!-- Brand Card -->
-    <section class="brand-card">
-      <div class="brand-icon">IW</div>
-      <div>
-        <h2>Infinix Worker</h2>
-        <p>Earn rewards by completing activities</p>
-      </div>
-    </section>
+    <div class="more-list">
 
-    <!-- Tools -->
-    <section class="more-section">
 
-      <a href="tasks.html" class="more-item">
-        <div class="more-icon">✓</div>
-        <div class="more-text">
-          <h3>Micro Task</h3>
-          <p>Complete tasks and earn rewards</p>
-        </div>
-        <span class="more-arrow">›</span>
-      </a>
+      <!-- SETTINGS -->
 
-      <a href="https://lsr-video-downloaders.vercel.app/" class="more-item">
-        <div class="more-icon">↓</div>
-        <div class="more-text">
-          <h3>Downloader</h3>
-          <p>Download videos and media</p>
-        </div>
-        <span class="more-arrow">›</span>
-      </a>
+      <button
+        class="more-item"
+        onclick="openSettings()">
 
-      <a href="https://lsr-video-downloaders.vercel.app/" class="more-item">
-        <div class="more-icon">🌐</div>
-        <div class="more-text">
-          <h3>Browser</h3>
-          <p>Browse supported websites</p>
-        </div>
-        <span class="more-arrow">›</span>
-      </a>
+        <span class="more-icon">
+          ⚙️
+        </span>
 
-      <a href="https://lsr-video-downloaders.vercel.app/" class="more-item">
-        <div class="more-icon">📁</div>
-        <div class="more-text">
-          <h3>My Downloads</h3>
-          <p>View your downloaded files</p>
-        </div>
-        <span class="more-arrow">›</span>
-      </a>
+        <span class="more-text">
 
-      <a href="profile.html" class="more-item">
-        <div class="more-icon">👤</div>
-        <div class="more-text">
-          <h3>Profile & Withdraw</h3>
-          <p>Manage your account and balance</p>
-        </div>
-        <span class="more-arrow">›</span>
-      </a>
+          <strong>Settings</strong>
 
-      <a href="https://t.me/bitbytee_bot" target="_blank" class="more-item">
-        <div class="more-icon">✈</div>
-        <div class="more-text">
-          <h3>Telegram Bot</h3>
-          <p>Open our Telegram bot</p>
-        </div>
-        <span class="more-arrow">›</span>
-      </a>
+          <small>
+            Manage browser and app preferences
+          </small>
 
-      <a href="#" class="more-item" onclick="showHelp(); return false;">
-        <div class="more-icon">?</div>
-        <div class="more-text">
-          <h3>Help & Support</h3>
-          <p>Get help with Infinix Worker</p>
-        </div>
-        <span class="more-arrow">›</span>
-      </a>
+        </span>
 
-      <a href="#" class="more-item" onclick="showAbout(); return false;">
-        <div class="more-icon">ℹ</div>
-        <div class="more-text">
-          <h3>About</h3>
-          <p>About Infinix Worker</p>
-        </div>
-        <span class="more-arrow">›</span>
-      </a>
+        <span class="more-arrow">
+          ›
+        </span>
 
-    </section>
+      </button>
 
-    <!-- Banner Ad -->
-    <div class="ad-container">
-      <script>
-        atOptions = {
-          'key' : 'b529261b98306ae1169a6bf5b991c3d4',
-          'format' : 'iframe',
-          'height' : 50,
-          'width' : 320,
-          'params' : {}
-        };
-      </script>
-      <script src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js"></script>
+
+      <!-- MY DOWNLOADS -->
+
+      <button
+        class="more-item"
+        onclick="openDownloads()">
+
+        <span class="more-icon">
+          📥
+        </span>
+
+        <span class="more-text">
+
+          <strong>My Downloads</strong>
+
+          <small>
+            View your downloaded files
+          </small>
+
+        </span>
+
+        <span class="more-arrow">
+          ›
+        </span>
+
+      </button>
+
+
+      <!-- HELP -->
+
+      <button
+        class="more-item"
+        onclick="openHelp()">
+
+        <span class="more-icon">
+          ❓
+        </span>
+
+        <span class="more-text">
+
+          <strong>Help & Support</strong>
+
+          <small>
+            Get help with Infinix Worker
+          </small>
+
+        </span>
+
+        <span class="more-arrow">
+          ›
+        </span>
+
+      </button>
+
+
+      <!-- TELEGRAM -->
+
+      <button
+        class="more-item"
+        onclick="openTelegram()">
+
+        <span class="more-icon">
+          ✈️
+        </span>
+
+        <span class="more-text">
+
+          <strong>Telegram</strong>
+
+          <small>
+            Contact or follow our Telegram bot
+          </small>
+
+        </span>
+
+        <span class="more-arrow">
+          ›
+        </span>
+
+      </button>
+
+
+      <!-- ABOUT -->
+
+      <button
+        class="more-item"
+        onclick="openAbout()">
+
+        <span class="more-icon">
+          ℹ️
+        </span>
+
+        <span class="more-text">
+
+          <strong>About Infinix Worker</strong>
+
+          <small>
+            Information about this website
+          </small>
+
+        </span>
+
+        <span class="more-arrow">
+          ›
+        </span>
+
+      </button>
+
+
     </div>
 
   </main>
 
-  <!-- Social Bar -->
-  <script src="https://pl31263667.profitableratecpmnetwork.com/b0/c5/21/b0c5218558b6cd7043e11407e07289b1.js"></script>
 
-  <!-- Bottom Navigation -->
+  <!-- FIXED BANNER -->
+
+  <div class="fixed-banner">
+
+    <script>
+      atOptions = {
+        'key' : 'b529261b98306ae1169a6bf5b991c3d4',
+        'format' : 'iframe',
+        'height' : 50,
+        'width' : 320,
+        'params' : {}
+      };
+    </script>
+
+    <script src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js"></script>
+
+  </div>
+
+
+  <!-- BOTTOM NAV -->
+
   <nav class="bottom-nav">
 
     <a href="index.html">
-      <span>⌂</span>
-      <small>Home</small>
+      <span class="nav-icon">⌂</span>
+      <span>Home</span>
     </a>
 
     <a href="https://lsr-video-downloaders.vercel.app/">
-      <span>🌐</span>
-      <small>Web</small>
+      <span class="nav-icon">🌐</span>
+      <span>Website</span>
     </a>
 
-    <a href="https://t.me/bitbytee_bot" target="_blank">
-      <span>✈</span>
-      <small>Telegram</small>
+    <a
+      href="https://t.me/bitbytee_bot"
+      target="_blank"
+      rel="noopener noreferrer">
+      <span class="nav-icon">✈</span>
+      <span>Telegram</span>
     </a>
 
-    <a href="profile.html">
-      <span>👤</span>
-      <small>Profile</small>
-    </a>
+    <button onclick="openProfile()">
+      <span class="nav-icon">👤</span>
+      <span>Profile</span>
+    </button>
 
-    <a href="more.html" class="active">
-      <span>☰</span>
-      <small>More</small>
-    </a>
+    <button onclick="openMore()">
+      <span class="nav-icon">☰</span>
+      <span>More</span>
+    </button>
 
   </nav>
 
-  <script>
-    function showHelp() {
-      alert(
-        "Infinix Worker Support\\n\\n" +
-        "For help, please contact us through our Telegram bot."
-      );
-    }
+</div>
 
-    function showAbout() {
-      alert(
-        "Infinix Worker\\n\\n" +
-        "Complete activities, earn rewards and manage your balance from your profile."
-      );
-    }
-  </script>
+
+<script src="app.js"></script>
+
+
+<script>
+
+/* =========================================================
+   MORE NAVIGATION
+========================================================= */
+
+function openSettings() {
+
+  alert(
+    "Settings will be available here."
+  );
+
+}
+
+
+function openDownloads() {
+
+  alert(
+    "Your downloaded files will appear here."
+  );
+
+}
+
+
+function openHelp() {
+
+  alert(
+    "For support, please contact us through Telegram."
+  );
+
+}
+
+
+function openTelegram() {
+
+  window.open(
+    "https://t.me/bitbytee_bot",
+    "_blank",
+    "noopener,noreferrer"
+  );
+
+}
+
+
+function openAbout() {
+
+  alert(
+    "Infinix Worker\n\n" +
+    "A simple platform for browsing, " +
+    "video tools and task-based activities."
+  );
+
+}
+
+</script>
 
 </body>
 </html>

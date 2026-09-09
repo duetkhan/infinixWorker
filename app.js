@@ -1,5 +1,6 @@
 /* =========================================================
    INFINIX WORKER - APP.JS
+   Core App System
    Login + Signup + Device User + Balance + Smartlink
 ========================================================= */
 
@@ -17,13 +18,17 @@ const SMARTLINK_KEY =
 /*
   Smartlink minimum interval:
   30 minutes
+
+  This means Smartlink will not repeatedly
+  open on every page/button click.
 */
+
 const SMARTLINK_COOLDOWN =
   30 * 60 * 1000;
 
 
 /* =========================================================
-   USER KEYS
+   USER STORAGE KEYS
 ========================================================= */
 
 const USER_KEY =
@@ -34,7 +39,7 @@ const LOGIN_KEY =
 
 
 /* =========================================================
-   USER STATUS
+   LOGIN STATUS
 ========================================================= */
 
 function isLoggedIn() {
@@ -47,7 +52,7 @@ function isLoggedIn() {
 
 
 /* =========================================================
-   GET USER
+   GET STORED USER
 ========================================================= */
 
 function getStoredUser() {
@@ -56,14 +61,18 @@ function getStoredUser() {
     localStorage.getItem(USER_KEY);
 
   if (!data) {
+
     return null;
+
   }
+
 
   try {
 
     return JSON.parse(data);
 
-  } catch (error) {
+  }
+  catch (error) {
 
     return null;
 
@@ -73,7 +82,7 @@ function getStoredUser() {
 
 
 /* =========================================================
-   USERNAME
+   GET USERNAME
 ========================================================= */
 
 function getUsername() {
@@ -81,11 +90,16 @@ function getUsername() {
   const user =
     getStoredUser();
 
-  if (user && user.username) {
+
+  if (
+    user &&
+    user.username
+  ) {
 
     return user.username;
 
   }
+
 
   return (
     localStorage.getItem(
@@ -97,7 +111,7 @@ function getUsername() {
 
 
 /* =========================================================
-   EMAIL
+   GET EMAIL
 ========================================================= */
 
 function getUserEmail() {
@@ -105,11 +119,16 @@ function getUserEmail() {
   const user =
     getStoredUser();
 
-  if (user && user.email) {
+
+  if (
+    user &&
+    user.email
+  ) {
 
     return user.email;
 
   }
+
 
   return (
     localStorage.getItem(
@@ -121,7 +140,7 @@ function getUserEmail() {
 
 
 /* =========================================================
-   BALANCE
+   GET BALANCE
 ========================================================= */
 
 function getBalance() {
@@ -133,11 +152,15 @@ function getBalance() {
       ) || "0"
     );
 
-  if (isNaN(value)) {
+
+  if (
+    !Number.isFinite(value)
+  ) {
 
     return 0;
 
   }
+
 
   return value;
 
@@ -152,6 +175,7 @@ function setBalance(amount) {
 
   let value =
     Number(amount);
+
 
   if (
     !Number.isFinite(value) ||
@@ -183,6 +207,7 @@ function addBalance(amount) {
   const reward =
     Number(amount);
 
+
   if (
     !Number.isFinite(reward) ||
     reward <= 0
@@ -205,7 +230,7 @@ function addBalance(amount) {
 
 
 /* =========================================================
-   USER DISPLAY
+   UPDATE USER DISPLAYS
 ========================================================= */
 
 function updateUserDisplays() {
@@ -213,8 +238,10 @@ function updateUserDisplays() {
   const username =
     getUsername();
 
+
   const email =
     getUserEmail();
+
 
   const balance =
     getBalance().toFixed(2);
@@ -225,7 +252,7 @@ function updateUserDisplays() {
       "[data-username]"
     )
     .forEach(
-      element => {
+      function(element) {
 
         element.textContent =
           username;
@@ -239,7 +266,7 @@ function updateUserDisplays() {
       "[data-email]"
     )
     .forEach(
-      element => {
+      function(element) {
 
         element.textContent =
           email;
@@ -253,7 +280,7 @@ function updateUserDisplays() {
       "[data-balance]"
     )
     .forEach(
-      element => {
+      function(element) {
 
         element.textContent =
           balance;
@@ -265,7 +292,7 @@ function updateUserDisplays() {
 
 
 /* =========================================================
-   BALANCE DISPLAY
+   UPDATE BALANCE ONLY
 ========================================================= */
 
 function updateBalanceDisplays() {
@@ -279,7 +306,7 @@ function updateBalanceDisplays() {
       "[data-balance]"
     )
     .forEach(
-      element => {
+      function(element) {
 
         element.textContent =
           balance;
@@ -291,7 +318,7 @@ function updateBalanceDisplays() {
 
 
 /* =========================================================
-   INITIAL BALANCE
+   INITIALIZE BALANCE
 ========================================================= */
 
 function initializeBalance() {
@@ -313,7 +340,7 @@ function initializeBalance() {
 
 
 /* =========================================================
-   SMARTLINK - CHECK COOLDOWN
+   SMARTLINK COOLDOWN CHECK
 ========================================================= */
 
 function canOpenSmartlink() {
@@ -332,18 +359,23 @@ function canOpenSmartlink() {
 
 
   return (
-    now - lastOpen
-    >= SMARTLINK_COOLDOWN
+    now - lastOpen >=
+    SMARTLINK_COOLDOWN
   );
 
 }
 
 
 /* =========================================================
-   SMARTLINK - OPEN
+   OPEN SMARTLINK
 ========================================================= */
 
 function openSmartlink() {
+
+  /*
+    If cooldown has not expired,
+    do not open Smartlink again.
+  */
 
   if (
     !canOpenSmartlink()
@@ -377,8 +409,8 @@ function openSmartlink() {
 
 
   /*
-    Some browsers may block popup.
-    Navigation still continues.
+    Return whether browser allowed
+    the popup.
   */
 
   return !!newWindow;
@@ -393,12 +425,18 @@ function openSmartlink() {
 function smartNavigate(url) {
 
   /*
-    Smartlink is controlled by cooldown.
-    It is NOT connected to rewards.
+    Smartlink is independent from
+    rewards or task completion.
+
+    It only opens when cooldown allows it.
   */
 
   openSmartlink();
 
+
+  /*
+    Continue to requested page.
+  */
 
   setTimeout(
     function() {
@@ -414,7 +452,7 @@ function smartNavigate(url) {
 
 
 /* =========================================================
-   BROWSER
+   OPEN BROWSER
 ========================================================= */
 
 function openBrowser() {
@@ -427,7 +465,7 @@ function openBrowser() {
 
 
 /* =========================================================
-   VIDEO DOWNLOADER
+   OPEN VIDEO DOWNLOADER
 ========================================================= */
 
 function openVideoDownloader() {
@@ -440,7 +478,7 @@ function openVideoDownloader() {
 
 
 /* =========================================================
-   PROFILE
+   OPEN PROFILE
 ========================================================= */
 
 function openProfile() {
@@ -453,7 +491,7 @@ function openProfile() {
 
 
 /* =========================================================
-   MORE
+   OPEN MORE
 ========================================================= */
 
 function openMore() {
@@ -465,7 +503,7 @@ function openMore() {
 
 
 /* =========================================================
-   TASK
+   OPEN TASK
 ========================================================= */
 
 function openTask() {
@@ -477,7 +515,7 @@ function openTask() {
 
 
 /* =========================================================
-   MICRO TASK
+   OPEN MICRO TASK
 ========================================================= */
 
 function openMicroTask() {
@@ -489,7 +527,7 @@ function openMicroTask() {
 
 
 /* =========================================================
-   LOGIN PAGE
+   OPEN LOGIN
 ========================================================= */
 
 function openLogin() {
@@ -501,7 +539,7 @@ function openLogin() {
 
 
 /* =========================================================
-   SIGNUP PAGE
+   OPEN SIGNUP
 ========================================================= */
 
 function openSignup() {
@@ -519,9 +557,11 @@ function openSignup() {
 function logout() {
 
   /*
-    Remove login session.
-    Keep device account so another
-    account cannot be created.
+    Remove active login session.
+
+    IMPORTANT:
+    Device account remains stored so the
+    same device cannot create another account.
   */
 
   localStorage.removeItem(
@@ -540,11 +580,12 @@ function logout() {
 
 
   /*
-    IMPORTANT:
-    iw_device_user is NOT removed.
+    DO NOT remove:
 
-    This keeps:
-    1 device = 1 user
+      iw_device_user
+
+    This preserves:
+      1 device = 1 account
   */
 
 
@@ -555,7 +596,7 @@ function logout() {
 
 
 /* =========================================================
-   AUTH BUTTON DISPLAY
+   UPDATE AUTH BUTTONS
 ========================================================= */
 
 function updateAuthButtons() {
@@ -564,16 +605,16 @@ function updateAuthButtons() {
     isLoggedIn();
 
 
-  /*
-    Login buttons
-  */
+  /* -------------------------------------------------------
+     LOGIN BUTTONS
+  ------------------------------------------------------- */
 
   document
     .querySelectorAll(
       "[data-login-button]"
     )
     .forEach(
-      element => {
+      function(element) {
 
         element.style.display =
           loggedIn
@@ -584,16 +625,16 @@ function updateAuthButtons() {
     );
 
 
-  /*
-    Signup buttons
-  */
+  /* -------------------------------------------------------
+     SIGNUP BUTTONS
+  ------------------------------------------------------- */
 
   document
     .querySelectorAll(
       "[data-signup-button]"
     )
     .forEach(
-      element => {
+      function(element) {
 
         element.style.display =
           loggedIn
@@ -604,16 +645,16 @@ function updateAuthButtons() {
     );
 
 
-  /*
-    Logout buttons
-  */
+  /* -------------------------------------------------------
+     LOGOUT BUTTONS
+  ------------------------------------------------------- */
 
   document
     .querySelectorAll(
       "[data-logout-button]"
     )
     .forEach(
-      element => {
+      function(element) {
 
         element.style.display =
           loggedIn
@@ -624,16 +665,16 @@ function updateAuthButtons() {
     );
 
 
-  /*
-    Logged-in user sections
-  */
+  /* -------------------------------------------------------
+     LOGGED-IN SECTIONS
+  ------------------------------------------------------- */
 
   document
     .querySelectorAll(
       "[data-logged-in]"
     )
     .forEach(
-      element => {
+      function(element) {
 
         element.style.display =
           loggedIn
@@ -644,16 +685,16 @@ function updateAuthButtons() {
     );
 
 
-  /*
-    Guest sections
-  */
+  /* -------------------------------------------------------
+     GUEST SECTIONS
+  ------------------------------------------------------- */
 
   document
     .querySelectorAll(
       "[data-guest]"
     )
     .forEach(
-      element => {
+      function(element) {
 
         element.style.display =
           loggedIn
@@ -691,7 +732,7 @@ function requireLogin() {
 
 
 /* =========================================================
-   LOGOUT ALL SESSION DATA
+   CLEAR LOGIN SESSION
 ========================================================= */
 
 function clearLoginSession() {
@@ -700,9 +741,11 @@ function clearLoginSession() {
     LOGIN_KEY
   );
 
+
   localStorage.removeItem(
     "worker_username"
   );
+
 
   localStorage.removeItem(
     "worker_email"
@@ -712,7 +755,7 @@ function clearLoginSession() {
 
 
 /* =========================================================
-   INITIALIZE
+   APP INITIALIZATION
 ========================================================= */
 
 document.addEventListener(

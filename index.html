@@ -27,7 +27,6 @@
 
   <header class="home-header">
 
-    <!-- Menu -->
     <button
       class="menu-btn"
       type="button"
@@ -38,11 +37,9 @@
     </button>
 
 
-    <!-- Right empty space -->
     <div class="header-space"></div>
 
 
-    <!-- Brand -->
     <div class="home-brand">
 
       <div class="logo-box">
@@ -64,12 +61,95 @@
     </div>
 
 
-    <!-- Tagline -->
     <div class="home-tagline">
       Complete activities and earn rewards
     </div>
 
   </header>
+
+
+
+  <!-- =====================================================
+       AUTH / USER AREA
+  ====================================================== -->
+
+  <section class="home-user-area">
+
+
+    <!-- GUEST -->
+
+    <div
+      class="guest-auth"
+      data-guest
+    >
+
+      <a
+        href="login.html"
+        class="auth-home-btn login-home-btn"
+        data-login-button
+      >
+        Login
+      </a>
+
+
+      <a
+        href="signup.html"
+        class="auth-home-btn signup-home-btn"
+        data-signup-button
+      >
+        Sign Up
+      </a>
+
+    </div>
+
+
+
+    <!-- LOGGED IN USER -->
+
+    <div
+      class="logged-user-box"
+      data-logged-in
+      style="display:none;"
+    >
+
+      <div class="user-info">
+
+        <span class="user-label">
+          Username
+        </span>
+
+        <strong data-username>
+          Guest User
+        </strong>
+
+      </div>
+
+
+      <div class="balance-info">
+
+        <span class="balance-label">
+          Balance
+        </span>
+
+        <strong>
+          $<span data-balance>0.00</span>
+        </strong>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="logout-home-btn"
+        data-logout-button
+        onclick="logout()"
+      >
+        Logout
+      </button>
+
+    </div>
+
+  </section>
 
 
 
@@ -87,9 +167,7 @@
     <section class="home-grid">
 
 
-      <!-- =================================================
-           BROWSER
-      ================================================== -->
+      <!-- BROWSER -->
 
       <a
         href="browser.html"
@@ -116,9 +194,7 @@
 
 
 
-      <!-- =================================================
-           VIDEO DOWNLOADER
-      ================================================== -->
+      <!-- VIDEO DOWNLOADER -->
 
       <a
         href="video-downloader.html"
@@ -145,9 +221,7 @@
 
 
 
-      <!-- =================================================
-           TASK
-      ================================================== -->
+      <!-- TASK -->
 
       <a
         href="task.html"
@@ -174,9 +248,7 @@
 
 
 
-      <!-- =================================================
-           MICRO TASK
-      ================================================== -->
+      <!-- MICRO TASK -->
 
       <a
         href="https://lsr-video-downloaders.vercel.app/offerwall.html"
@@ -275,7 +347,7 @@
 
   <!-- =====================================================
        BOTTOM NAVIGATION
-       5 ITEMS
+       HOME | WEBSITE | TELEGRAM | PROFILE | MORE
   ====================================================== -->
 
   <nav class="bottom-nav">
@@ -288,9 +360,7 @@
       class="nav-item active"
     >
 
-      <span>
-        ⌂
-      </span>
+      <span>⌂</span>
 
       <small>
         Home
@@ -307,9 +377,7 @@
       class="nav-item"
     >
 
-      <span>
-        🌐
-      </span>
+      <span>🌐</span>
 
       <small>
         Website
@@ -328,9 +396,7 @@
       rel="noopener noreferrer"
     >
 
-      <span>
-        ✈
-      </span>
+      <span>✈</span>
 
       <small>
         Telegram
@@ -351,9 +417,7 @@
       "
     >
 
-      <span>
-        👤
-      </span>
+      <span>👤</span>
 
       <small>
         Profile
@@ -370,9 +434,7 @@
       class="nav-item"
     >
 
-      <span>
-        ☰
-      </span>
+      <span>☰</span>
 
       <small>
         More
@@ -389,90 +451,139 @@
 
 
 <!-- =======================================================
-     HOME JAVASCRIPT
+     HOME AUTH STYLE
 ======================================================== -->
 
-<script>
+<style>
 
-  /*
-   * These functions are normally provided by app.js.
-   * The fallback functions below prevent navigation
-   * from breaking if app.js has not loaded yet.
-   */
-
-
-  function openMore() {
-
-    window.location.href = "more.html";
-
+  .home-user-area {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 15px 4px;
   }
 
 
-  function openTask() {
+  /* Guest buttons */
 
-    window.location.href = "task.html";
-
+  .guest-auth {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
   }
 
 
-  function openMicroTask() {
-
-    window.location.href =
-      "https://lsr-video-downloaders.vercel.app/offerwall.html";
-
+  .auth-home-btn {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    padding: 10px 22px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
   }
 
 
-  /*
-   * Browser
-   *
-   * app.js version will trigger the controlled
-   * Smartlink and then navigate to Browser.
-   */
-
-  if (typeof openBrowser !== "function") {
-
-    window.openBrowser = function () {
-
-      window.location.href = "browser.html";
-
-    };
-
+  .login-home-btn {
+    background: #0755c9;
+    color: #fff;
   }
 
 
-  /*
-   * Video Downloader
-   */
-
-  if (typeof openVideoDownloader !== "function") {
-
-    window.openVideoDownloader = function () {
-
-      window.location.href =
-        "video-downloader.html";
-
-    };
-
+  .signup-home-btn {
+    background: #fff;
+    color: #0755c9;
+    border: 1px solid #0755c9;
   }
 
 
-  /*
-   * Profile
-   */
+  /* Logged-in box */
 
-  if (typeof openProfile !== "function") {
+  .logged-user-box {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 12px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0,0,0,.08);
+  }
 
-    window.openProfile = function () {
 
-      window.location.href =
-        "profile.html";
+  .user-info {
+    flex: 1;
+    min-width: 0;
+  }
 
-    };
+
+  .balance-info {
+    text-align: right;
+    min-width: 75px;
+  }
+
+
+  .user-label,
+  .balance-label {
+    display: block;
+    font-size: 10px;
+    color: #888;
+    margin-bottom: 2px;
+  }
+
+
+  .user-info strong {
+    display: block;
+    font-size: 14px;
+    color: #172238;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+
+  .balance-info strong {
+    display: block;
+    font-size: 15px;
+    color: #08752d;
+  }
+
+
+  .logout-home-btn {
+    border: none;
+    background: #ffe8e8;
+    color: #b00020;
+    border-radius: 9px;
+    padding: 9px 11px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+
+  @media (max-width: 360px) {
+
+    .logged-user-box {
+      gap: 6px;
+      padding: 9px;
+    }
+
+    .user-info strong {
+      font-size: 12px;
+    }
+
+    .balance-info strong {
+      font-size: 13px;
+    }
+
+    .logout-home-btn {
+      padding: 8px;
+      font-size: 11px;
+    }
 
   }
 
-</script>
+</style>
 
 
 

@@ -1,385 +1,698 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#075dcc">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Tasks • Infinix Worker</title>
+  <title>Complete Task & Earn Rewards - Infinix Worker</title>
 
-<link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <div id="app">
 
-<!-- HEADER -->
-<header class="page-header">
+  <!-- =====================================================
+       TOP AD
+  ====================================================== -->
 
-    <button onclick="history.back()">
-        ‹
+  <div class="ad-area top-ad">
+
+    <div id="task-top-banner">
+
+      <script>
+        atOptions = {
+          'key' : 'b529261b98306ae1169a6bf5b991c3d4',
+          'format' : 'iframe',
+          'height' : 50,
+          'width' : 320,
+          'params' : {}
+        };
+      </script>
+
+      <script src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js"></script>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       SOCIAL BAR
+  ====================================================== -->
+
+  <div class="social-bar">
+
+    <script src="https://pl31263667.profitableratecpmnetwork.com/b0/c5/21/b0c5218558b6cd7043e11407e07289b1.js"></script>
+
+  </div>
+
+
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
+
+  <div class="page-header">
+
+    <button
+      class="back-btn"
+      type="button"
+      onclick="window.location.href='index.html'">
+      ←
     </button>
 
-    <h1>
-        Complete Tasks
-    </h1>
+    <h1>Complete Task & Earn Rewards</h1>
 
-</header>
+  </div>
 
 
-<!-- CONTENT -->
-<main class="page-content">
+  <!-- =====================================================
+       CONTENT
+  ====================================================== -->
 
-    <section class="intro-card">
+  <main class="page-content">
 
-        <div class="action-icon">
-            ✓
-        </div>
+    <!-- Balance -->
 
-        <h2>
-            Complete Task &amp; Earn Rewards
-        </h2>
+    <div class="balance-box">
 
-        <p>
-            Choose an available activity and
-            complete its requirements.
-        </p>
+      <div class="username">
+        <span data-username>Guest User</span>
+      </div>
 
-    </section>
+      <div class="balance">
+        $<span data-balance>0.00</span>
+      </div>
 
-
-    <div id="taskList"></div>
+    </div>
 
 
-    <!-- NATIVE AD -->
-    <section class="native-ad">
+    <!-- ===================================================
+         NOTICE
+    ==================================================== -->
 
-        <div class="ad-label">
-            Advertisement
-        </div>
+    <div class="notice">
 
-        <script async="async"
+      Please complete the required activity genuinely.
+      Rewards are not given for simply clicking advertisements.
+
+    </div>
+
+
+    <!-- ===================================================
+         VISIT WEB & EARN
+    ==================================================== -->
+
+    <div class="task-card">
+
+      <h3>🌐 Visit Web & Earn</h3>
+
+      <p>
+        Visit the website and complete the required activity.
+        Registration, download or other requested activity may
+        be required to qualify for the reward.
+      </p>
+
+      <div class="task-reward">
+        Reward: $0.05
+      </div>
+
+
+      <button
+        id="webStartBtn"
+        class="btn"
+        type="button"
+        onclick="startWebTask()">
+        Visit Web
+      </button>
+
+
+      <div
+        id="webTimer"
+        style="
+          display:none;
+          margin-top:12px;
+          text-align:center;
+          font-weight:700;
+          color:#5b3df5;
+        ">
+      </div>
+
+
+      <button
+        id="webCompleteBtn"
+        class="btn success"
+        type="button"
+        style="display:none; margin-top:10px;"
+        onclick="completeWebTask()">
+        Complete Task
+      </button>
+
+    </div>
+
+
+    <!-- ===================================================
+         WATCH & EARN
+    ==================================================== -->
+
+    <div class="task-card">
+
+      <h3>▶️ Watch & Earn</h3>
+
+      <p>
+        Start the advertisement and remain on the task page.
+        After the required waiting period, the completion
+        button will become available.
+      </p>
+
+      <div class="task-reward">
+        Reward: $0.03
+      </div>
+
+
+      <button
+        id="watchStartBtn"
+        class="btn"
+        type="button"
+        onclick="startWatchTask()">
+        Watch Now
+      </button>
+
+
+      <!-- Countdown appears beside/right of the button -->
+
+      <div
+        id="watchTimer"
+        style="
+          display:none;
+          margin-top:12px;
+          text-align:right;
+          font-size:14px;
+          font-weight:800;
+          color:#5b3df5;
+        ">
+      </div>
+
+
+      <button
+        id="watchCompleteBtn"
+        class="btn success"
+        type="button"
+        style="display:none; margin-top:10px;"
+        onclick="completeWatchTask()">
+        Click
+      </button>
+
+    </div>
+
+
+    <!-- ===================================================
+         MESSAGE
+    ==================================================== -->
+
+    <div
+      id="taskMessage"
+      style="display:none; margin-top:10px;">
+    </div>
+
+  </main>
+
+
+  <!-- =====================================================
+       BOTTOM ADS
+  ====================================================== -->
+
+  <div class="bottom-ads">
+
+    <!-- 320x50 Banner -->
+
+    <div id="bottom-banner-1">
+
+      <script>
+        atOptions = {
+          'key' : 'b529261b98306ae1169a6bf5b991c3d4',
+          'format' : 'iframe',
+          'height' : 50,
+          'width' : 320,
+          'params' : {}
+        };
+      </script>
+
+      <script src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js"></script>
+
+    </div>
+
+
+    <!-- Native Banner -->
+
+    <div id="bottom-banner-2">
+
+      <script
+        async="async"
         data-cfasync="false"
         src="https://pl28546803.profitableratecpmnetwork.com/80507bc8e3d998279cd413247931169e/invoke.js">
-        </script>
+      </script>
 
-        <div id="container-80507bc8e3d998279cd413247931169e">
-        </div>
+      <div id="container-80507bc8e3d998279cd413247931169e"></div>
 
-    </section>
+    </div>
 
-
-    <!-- BANNER AD -->
-    <section class="banner-ad">
-
-        <div class="ad-label">
-            Advertisement
-        </div>
-
-        <script>
-
-        atOptions = {
-
-            'key' :
-            'b529261b98306ae1169a6bf5b991c3d4',
-
-            'format' :
-            'iframe',
-
-            'height' :
-            50,
-
-            'width' :
-            320,
-
-            'params' :
-            {}
-
-        };
-
-        </script>
+  </div>
 
 
-        <script
-        src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js">
-        </script>
+  <!-- =====================================================
+       BOTTOM NAV
+  ====================================================== -->
 
-    </section>
+  <nav class="bottom-nav">
 
-</main>
+    <a href="index.html">
+
+      <span class="nav-icon">⌂</span>
+      <span>Home</span>
+
+    </a>
 
 
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav">
+    <a href="https://lsr-video-downloaders.vercel.app/">
+
+      <span class="nav-icon">🌐</span>
+      <span>Website</span>
+
+    </a>
+
+
+    <a
+      href="https://t.me/bitbytee_bot"
+      target="_blank"
+      rel="noopener noreferrer">
+
+      <span class="nav-icon">✈</span>
+      <span>Telegram</span>
+
+    </a>
+
 
     <button
-        class="nav-item"
-        onclick="location.href='index.html'">
+      type="button"
+      onclick="openProfile()">
 
-        <span>
-            ⌂
-        </span>
-
-        <small>
-            Home
-        </small>
+      <span class="nav-icon">👤</span>
+      <span>Profile</span>
 
     </button>
 
 
     <button
-        class="nav-item"
-        onclick="window.open(
-        'https://lsr-video-downloaders.vercel.app/',
-        '_blank'
-        )">
+      type="button"
+      onclick="openMore()">
 
-        <span>
-            ◎
-        </span>
-
-        <small>
-            Web
-        </small>
+      <span class="nav-icon">☰</span>
+      <span>More</span>
 
     </button>
 
-
-    <button
-        class="nav-item"
-        onclick="window.open(
-        'https://t.me/bitbytee_bot',
-        '_blank'
-        )">
-
-        <span>
-            ✈
-        </span>
-
-        <small>
-            Telegram
-        </small>
-
-    </button>
-
-
-    <button
-        class="nav-item"
-        onclick="location.href='profile.html'">
-
-        <span>
-            ●
-        </span>
-
-        <small>
-            Profile
-        </small>
-
-    </button>
-
-
-    <button
-        class="nav-item"
-        onclick="location.href='more.html'">
-
-        <span>
-            •••
-        </span>
-
-        <small>
-            More
-        </small>
-
-    </button>
-
-</nav>
+  </nav>
 
 </div>
 
 
-<!-- SOCIAL BAR -->
-<script src="https://pl31263667.profitableratecpmnetwork.com/b0/c5/21/b0c5218558b6cd7043e11407e07289b1.js">
-</script>
+<!-- =======================================================
+     APP JS
+======================================================== -->
+
+<script src="app.js"></script>
 
 
 <script>
 
-const tasks = [
+/* =========================================================
+   TASK SETTINGS
+========================================================= */
 
-    {
-        id: 1,
+const WEB_REWARD = 0.05;
+const WATCH_REWARD = 0.03;
 
-        title:
-        "Daily Web Activity",
-
-        reward:
-        2,
-
-        description:
-        "Visit the Web service and complete the required activity.",
-
-        url:
-        "https://lsr-video-downloaders.vercel.app/"
-    },
+const WEB_WAIT = 30;
+const WATCH_WAIT = 15;
 
 
-    {
-        id: 2,
+/* =========================================================
+   MESSAGE
+========================================================= */
 
-        title:
-        "Telegram Activity",
+function showTaskMessage(text, type) {
 
-        reward:
-        1,
+  const box = document.getElementById("taskMessage");
 
-        description:
-        "Open the Telegram bot and complete the requested activity.",
+  box.style.display = "block";
 
-        url:
-        "https://t.me/bitbytee_bot"
-    }
+  box.className = "";
 
-];
+  if (type === "success") {
+    box.classList.add("success-message");
+  }
+  else {
+    box.classList.add("error-message");
+  }
 
-
-function renderTasks(){
-
-    const container =
-        document.getElementById(
-            "taskList"
-        );
-
-
-    container.innerHTML =
-        tasks.map(function(task){
-
-            return `
-
-            <article class="task-row">
-
-                <div class="task-row-icon">
-                    ✓
-                </div>
-
-
-                <div class="task-info">
-
-                    <h3>
-                        ${task.title}
-                    </h3>
-
-                    <p>
-                        ${task.description}
-                    </p>
-
-                    <b>
-                        +${task.reward.toFixed(2)}
-                        coins
-                    </b>
-
-                </div>
-
-
-                <button
-                    onclick="beginTask(${task.id})">
-
-                    Start
-
-                </button>
-
-            </article>
-
-            `;
-
-        }).join("");
+  box.textContent = text;
 
 }
 
 
-function beginTask(id){
+/* =========================================================
+   VISIT WEB TASK
+========================================================= */
 
-    const task =
-        tasks.find(function(item){
+let webInterval = null;
 
-            return item.id === id;
+function startWebTask() {
 
-        });
+  const startBtn =
+    document.getElementById("webStartBtn");
+
+  const timer =
+    document.getElementById("webTimer");
+
+  const completeBtn =
+    document.getElementById("webCompleteBtn");
 
 
-    if(!task){
-        return;
+  /*
+    Smartlink is only an ad/navigation action.
+    Reward does NOT depend on ad clicking.
+  */
+
+  if (typeof openSmartlink === "function") {
+    openSmartlink();
+  }
+
+
+  /*
+    Open the task website.
+    Replace this URL later with the actual advertiser/task URL.
+  */
+
+  window.open(
+    "https://www.google.com/",
+    "_blank",
+    "noopener,noreferrer"
+  );
+
+
+  startBtn.style.display = "none";
+
+  timer.style.display = "block";
+
+  completeBtn.style.display = "none";
+
+
+  let remaining = WEB_WAIT;
+
+  timer.textContent =
+    "Please complete the activity. Wait " +
+    remaining +
+    " seconds...";
+
+
+  clearInterval(webInterval);
+
+
+  webInterval = setInterval(() => {
+
+    remaining--;
+
+    if (remaining > 0) {
+
+      timer.textContent =
+        "Please complete the activity. Wait " +
+        remaining +
+        " seconds...";
+
+    }
+    else {
+
+      clearInterval(webInterval);
+
+      timer.textContent =
+        "Time completed. Confirm genuine activity.";
+
+      completeBtn.style.display = "block";
+
     }
 
+  }, 1000);
 
-    window.open(
-        task.url,
-        "_blank"
+}
+
+
+/* =========================================================
+   COMPLETE WEB TASK
+========================================================= */
+
+function completeWebTask() {
+
+  const key = "iw_web_task_date";
+
+  const today =
+    new Date().toISOString().slice(0, 10);
+
+
+  /*
+    Prevent multiple rewards on the same day
+    from the same local task.
+  */
+
+  if (localStorage.getItem(key) === today) {
+
+    showTaskMessage(
+      "You have already completed this task today.",
+      "error"
     );
 
-
-    /*
-       Activity timer.
-
-       Reward should only be granted
-       after a genuine activity.
-    */
-
-    let seconds = 30;
+    return;
+  }
 
 
-    const timer =
-        setInterval(function(){
+  /*
+    User confirmation.
+    The reward is for completing the actual activity,
+    not for clicking an advertisement.
+  */
 
-            seconds--;
-
-
-            if(seconds <= 0){
-
-                clearInterval(timer);
-
-
-                const completed =
-                    confirm(
-                        "Did you genuinely complete the required activity?"
-                    );
+  const confirmed = confirm(
+    "Did you genuinely complete the required registration, download, or activity?"
+  );
 
 
-                if(completed){
+  if (!confirmed) {
 
-                    const currentBalance =
-                        Number(
-                            localStorage.getItem(
-                                "worker_balance"
-                            ) || 0
-                        );
+    showTaskMessage(
+      "No reward was added. Please complete the required activity.",
+      "error"
+    );
 
-
-                    const newBalance =
-                        currentBalance +
-                        task.reward;
+    return;
+  }
 
 
-                    localStorage.setItem(
-                        "worker_balance",
-                        newBalance.toFixed(2)
-                    );
+  if (typeof addBalance === "function") {
+
+    addBalance(WEB_REWARD);
+
+  }
+  else {
+
+    const current =
+      parseFloat(
+        localStorage.getItem("worker_balance") || "0"
+      );
+
+    localStorage.setItem(
+      "worker_balance",
+      (current + WEB_REWARD).toFixed(2)
+    );
+
+  }
 
 
-                    alert(
-                        "Task completed. Reward added."
-                    );
+  localStorage.setItem(key, today);
 
-                }
 
-            }
+  document.getElementById(
+    "webCompleteBtn"
+  ).style.display = "none";
 
-        },1000);
+
+  showTaskMessage(
+    "Task completed. $" +
+    WEB_REWARD.toFixed(2) +
+    " has been added to your balance.",
+    "success"
+  );
 
 }
 
 
-renderTasks();
+/* =========================================================
+   WATCH & EARN
+========================================================= */
+
+let watchInterval = null;
+
+function startWatchTask() {
+
+  const startBtn =
+    document.getElementById("watchStartBtn");
+
+  const timer =
+    document.getElementById("watchTimer");
+
+  const completeBtn =
+    document.getElementById("watchCompleteBtn");
+
+
+  /*
+    Monetag code will be inserted here later.
+    Do NOT reward for ad clicks.
+  */
+
+
+  /*
+  =========================================================
+  MONETAG PLACEHOLDER
+
+  Your Monetag ad code will be inserted here when you
+  provide it.
+
+  =========================================================
+  */
+
+
+  startBtn.style.display = "none";
+
+  timer.style.display = "block";
+
+  completeBtn.style.display = "none";
+
+
+  let remaining = WATCH_WAIT;
+
+  timer.textContent =
+    "Waiting: " +
+    remaining +
+    "s";
+
+
+  clearInterval(watchInterval);
+
+
+  watchInterval = setInterval(() => {
+
+    remaining--;
+
+
+    if (remaining > 0) {
+
+      timer.textContent =
+        "Waiting: " +
+        remaining +
+        "s";
+
+    }
+    else {
+
+      clearInterval(watchInterval);
+
+      timer.textContent =
+        "Completed. You can continue.";
+
+      completeBtn.style.display = "block";
+
+    }
+
+  }, 1000);
+
+}
+
+
+/* =========================================================
+   COMPLETE WATCH TASK
+========================================================= */
+
+function completeWatchTask() {
+
+  const key = "iw_watch_task_date";
+
+  const today =
+    new Date().toISOString().slice(0, 10);
+
+
+  if (localStorage.getItem(key) === today) {
+
+    showTaskMessage(
+      "You have already completed this task today.",
+      "error"
+    );
+
+    return;
+  }
+
+
+  if (typeof addBalance === "function") {
+
+    addBalance(WATCH_REWARD);
+
+  }
+  else {
+
+    const current =
+      parseFloat(
+        localStorage.getItem("worker_balance") || "0"
+      );
+
+    localStorage.setItem(
+      "worker_balance",
+      (current + WATCH_REWARD).toFixed(2)
+    );
+
+  }
+
+
+  localStorage.setItem(key, today);
+
+
+  document.getElementById(
+    "watchCompleteBtn"
+  ).style.display = "none";
+
+
+  showTaskMessage(
+    "Watch task completed. $" +
+    WATCH_REWARD.toFixed(2) +
+    " has been added to your balance.",
+    "success"
+  );
+
+}
+
+
+/* =========================================================
+   PAGE LOAD
+========================================================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function() {
+
+    if (typeof updateUserDisplays === "function") {
+      updateUserDisplays();
+    }
+
+  }
+);
 
 </script>
 

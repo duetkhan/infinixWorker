@@ -14,6 +14,55 @@
       padding-bottom: 145px;
     }
 
+    .top-ad {
+      width: 320px;
+      height: 50px;
+      max-width: calc(100vw - 10px);
+      margin: 8px auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .more-header {
+      background: linear-gradient(135deg, #1769e0, #0755c9);
+      color: #fff;
+      padding: 15px 16px 18px;
+      border-radius: 0 0 24px 24px;
+      box-shadow: 0 5px 18px rgba(23,105,224,.20);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-button {
+      width: 39px;
+      height: 39px;
+      border: 0;
+      border-radius: 12px;
+      background: rgba(255,255,255,.16);
+      color: #fff;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .more-header h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .more-header p {
+      margin: 3px 0 0;
+      font-size: 11px;
+      opacity: .9;
+    }
+
+    .more-content {
+      padding: 16px;
+    }
+
     .more-intro {
       background: #fff;
       border-radius: 18px;
@@ -23,11 +72,14 @@
     }
 
     .more-intro h2 {
+      margin: 0 0 6px;
+      color: #20283a;
       font-size: 19px;
-      margin-bottom: 6px;
+      font-weight: 800;
     }
 
     .more-intro p {
+      margin: 0;
       color: #737b8d;
       font-size: 13px;
       line-height: 1.5;
@@ -41,12 +93,12 @@
 
     .more-item {
       width: 100%;
-      min-height: 62px;
+      min-height: 65px;
       padding: 11px 14px;
       border: 0;
       background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 4px 14px rgba(25,35,60,.06);
+      border-radius: 17px;
+      box-shadow: 0 5px 16px rgba(25,35,60,.07);
       display: flex;
       align-items: center;
       gap: 12px;
@@ -55,13 +107,17 @@
       color: #172033;
     }
 
+    .more-item:active {
+      transform: scale(.985);
+    }
+
     .more-icon {
-      width: 42px;
-      height: 42px;
-      flex: 0 0 42px;
-      border-radius: 12px;
-      background: #f0edff;
-      color: #5b3df5;
+      width: 43px;
+      height: 43px;
+      flex: 0 0 43px;
+      border-radius: 13px;
+      background: #eaf2ff;
+      color: #1769e0;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -75,8 +131,10 @@
 
     .more-text strong {
       display: block;
+      color: #20283a;
       font-size: 14px;
       margin-bottom: 3px;
+      font-weight: 800;
     }
 
     .more-text small {
@@ -88,36 +146,39 @@
 
     .more-arrow {
       color: #9aa1af;
-      font-size: 18px;
+      font-size: 21px;
+      flex: 0 0 auto;
     }
 
-    .fixed-banner {
-      position: fixed;
-      left: 50%;
-      bottom: 68px;
-      transform: translateX(-50%);
+    .native-ad {
+      width: 100%;
+      min-height: 100px;
+      margin: 12px 0;
+      border-radius: 15px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .below-banner {
       width: 320px;
       height: 50px;
       max-width: calc(100vw - 10px);
-      background: #fff;
-      z-index: 9998;
+      margin: 10px auto 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      box-shadow: 0 -2px 12px rgba(0,0,0,.12);
     }
   </style>
 </head>
 
 <body>
 
-<div id="app" class="more-page">
+<div class="more-page">
 
 
-  <!-- TOP BANNER -->
-
-  <div class="ad-area top-ad">
+  <!-- TOP 320x50 AD -->
+  <div class="top-ad">
 
     <script>
       atOptions = {
@@ -134,52 +195,55 @@
   </div>
 
 
-  <!-- SOCIAL BAR -->
-
-  <div class="social-bar">
-
-    <script src="https://pl31263667.profitableratecpmnetwork.com/b0/c5/21/b0c5218558b6cd7043e11407e07289b1.js"></script>
-
-  </div>
-
-
   <!-- HEADER -->
-
-  <div class="page-header">
+  <header class="more-header">
 
     <button
-      class="back-btn"
+      class="back-button"
+      type="button"
       onclick="window.location.href='index.html'">
       ←
     </button>
 
-    <h1>More</h1>
+    <div>
 
-  </div>
-
-
-  <main class="page-content">
-
-
-    <div class="more-intro">
-
-      <h2>More Options</h2>
+      <h1>More</h1>
 
       <p>
-        Access additional tools, downloads and support
-        from here.
+        Additional options & support
       </p>
 
     </div>
 
+  </header>
 
+
+  <main class="more-content">
+
+
+    <!-- INTRO -->
+    <section class="more-intro">
+
+      <h2>
+        More Options
+      </h2>
+
+      <p>
+        Access additional tools, downloads and support
+        from Infinix Worker.
+      </p>
+
+    </section>
+
+
+    <!-- OPTIONS -->
     <div class="more-list">
 
 
       <!-- SETTINGS -->
-
       <button
         class="more-item"
+        type="button"
         onclick="openSettings()">
 
         <span class="more-icon">
@@ -188,7 +252,9 @@
 
         <span class="more-text">
 
-          <strong>Settings</strong>
+          <strong>
+            Settings
+          </strong>
 
           <small>
             Manage browser and app preferences
@@ -204,9 +270,9 @@
 
 
       <!-- MY DOWNLOADS -->
-
       <button
         class="more-item"
+        type="button"
         onclick="openDownloads()">
 
         <span class="more-icon">
@@ -215,7 +281,9 @@
 
         <span class="more-text">
 
-          <strong>My Downloads</strong>
+          <strong>
+            My Downloads
+          </strong>
 
           <small>
             View your downloaded files
@@ -231,9 +299,9 @@
 
 
       <!-- HELP -->
-
       <button
         class="more-item"
+        type="button"
         onclick="openHelp()">
 
         <span class="more-icon">
@@ -242,7 +310,9 @@
 
         <span class="more-text">
 
-          <strong>Help & Support</strong>
+          <strong>
+            Help & Support
+          </strong>
 
           <small>
             Get help with Infinix Worker
@@ -258,9 +328,9 @@
 
 
       <!-- TELEGRAM -->
-
       <button
         class="more-item"
+        type="button"
         onclick="openTelegram()">
 
         <span class="more-icon">
@@ -269,7 +339,9 @@
 
         <span class="more-text">
 
-          <strong>Telegram</strong>
+          <strong>
+            Telegram
+          </strong>
 
           <small>
             Contact or follow our Telegram bot
@@ -285,9 +357,9 @@
 
 
       <!-- ABOUT -->
-
       <button
         class="more-item"
+        type="button"
         onclick="openAbout()">
 
         <span class="more-icon">
@@ -296,7 +368,9 @@
 
         <span class="more-text">
 
-          <strong>About Infinix Worker</strong>
+          <strong>
+            About Infinix Worker
+          </strong>
 
           <small>
             Information about this website
@@ -313,30 +387,42 @@
 
     </div>
 
+
+    <!-- NATIVE 2:1 -->
+    <div class="native-ad">
+
+      <script
+        async="async"
+        data-cfasync="false"
+        src="https://pl28546803.profitableratecpmnetwork.com/80507bc8e3d998279cd413247931169e/invoke.js">
+      </script>
+
+      <div id="container-80507bc8e3d998279cd413247931169e"></div>
+
+    </div>
+
+
+    <!-- BELOW NATIVE 320x50 -->
+    <div class="below-banner">
+
+      <script>
+        atOptions = {
+          'key' : 'b529261b98306ae1169a6bf5b991c3d4',
+          'format' : 'iframe',
+          'height' : 50,
+          'width' : 320,
+          'params' : {}
+        };
+      </script>
+
+      <script src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js"></script>
+
+    </div>
+
   </main>
 
 
-  <!-- FIXED BANNER -->
-
-  <div class="fixed-banner">
-
-    <script>
-      atOptions = {
-        'key' : 'b529261b98306ae1169a6bf5b991c3d4',
-        'format' : 'iframe',
-        'height' : 50,
-        'width' : 320,
-        'params' : {}
-      };
-    </script>
-
-    <script src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js"></script>
-
-  </div>
-
-
   <!-- BOTTOM NAV -->
-
   <nav class="bottom-nav">
 
     <a href="index.html">
@@ -379,6 +465,7 @@
 
 /* =========================================================
    MORE NAVIGATION
+   Existing functionality preserved
 ========================================================= */
 
 function openSettings() {

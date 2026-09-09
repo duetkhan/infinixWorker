@@ -11,27 +11,82 @@
   <style>
     .downloader-page {
       min-height: 100vh;
-      padding-bottom: 145px;
+      padding-bottom: 150px;
+    }
+
+    .downloader-header {
+      background: linear-gradient(135deg, #1769e0, #0755c9);
+      color: #fff;
+      padding: 18px 16px 20px;
+      border-radius: 0 0 24px 24px;
+      box-shadow: 0 5px 18px rgba(23,105,224,.20);
+    }
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-button {
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 12px;
+      background: rgba(255,255,255,.18);
+      color: #fff;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .header-title {
+      font-size: 21px;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .header-subtitle {
+      margin: 4px 0 0 52px;
+      font-size: 12px;
+      opacity: .88;
+    }
+
+    .downloader-content {
+      padding: 16px;
     }
 
     .download-box {
       background: #fff;
-      border-radius: 18px;
+      border-radius: 20px;
       padding: 18px;
-      box-shadow: 0 5px 18px rgba(25,35,60,.07);
+      box-shadow: 0 6px 20px rgba(25,35,60,.08);
       margin-bottom: 15px;
     }
 
+    .download-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 15px;
+      background: #eaf2ff;
+      color: #1769e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 25px;
+      margin-bottom: 13px;
+    }
+
     .download-box h2 {
+      margin: 0 0 7px;
       font-size: 19px;
-      margin-bottom: 8px;
+      color: #20283a;
     }
 
     .download-box p {
       color: #737b8d;
       font-size: 13px;
       line-height: 1.5;
-      margin-bottom: 15px;
+      margin: 0 0 15px;
     }
 
     .url-input {
@@ -42,11 +97,31 @@
       padding: 0 13px;
       font-size: 14px;
       outline: none;
+      background: #fafbfe;
+      box-sizing: border-box;
       margin-bottom: 10px;
     }
 
     .url-input:focus {
-      border-color: #5b3df5;
+      border-color: #1769e0;
+      background: #fff;
+    }
+
+    .download-button {
+      width: 100%;
+      height: 48px;
+      border: 0;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #1769e0, #0755c9);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 5px 14px rgba(23,105,224,.20);
+    }
+
+    .download-button:active {
+      transform: scale(.98);
     }
 
     .download-result {
@@ -64,40 +139,77 @@
       text-align: center;
       font-size: 14px;
       font-weight: 700;
+      text-decoration: none;
+      box-sizing: border-box;
+    }
+
+    .supported-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 17px;
+      box-shadow: 0 6px 20px rgba(25,35,60,.07);
+      margin-bottom: 15px;
+    }
+
+    .supported-card h3 {
+      margin: 0 0 12px;
+      font-size: 16px;
+      color: #20283a;
     }
 
     .supported {
       display: grid;
-      grid-template-columns: repeat(2,1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 10px;
-      margin-top: 15px;
     }
 
     .supported div {
-      background: #f5f3ff;
-      border-radius: 12px;
-      padding: 12px;
+      background: #f4f7fc;
+      border-radius: 13px;
+      padding: 12px 8px;
       text-align: center;
-      color: #5b3df5;
+      color: #1769e0;
       font-size: 13px;
       font-weight: 700;
     }
 
-    .fixed-banner {
-      position: fixed;
-      left: 50%;
-      bottom: 68px;
-      transform: translateX(-50%);
-      width: 320px;
-      height: 50px;
-      max-width: calc(100vw - 10px);
-      background: #fff;
-      z-index: 9998;
+    .notice {
+      background: #eef5ff;
+      color: #5f6b7d;
+      border-radius: 15px;
+      padding: 13px;
+      font-size: 12px;
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
+
+    .top-ad {
+      min-height: 50px;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      box-shadow: 0 -2px 12px rgba(0,0,0,.12);
+      margin: 8px auto 10px;
+    }
+
+    .native-ad {
+      width: 100%;
+      min-height: 100px;
+      margin: 10px 0 12px;
+      border-radius: 15px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .below-banner {
+      width: 320px;
+      height: 50px;
+      max-width: calc(100vw - 10px);
+      margin: 10px auto 85px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
     }
   </style>
 </head>
@@ -106,7 +218,7 @@
 
 <div id="app" class="downloader-page">
 
-  <!-- TOP BANNER -->
+  <!-- TOP 320x50 AD -->
   <div class="ad-area top-ad">
 
     <script>
@@ -124,31 +236,40 @@
   </div>
 
 
-  <!-- SOCIAL BAR -->
-  <div class="social-bar">
-
-    <script src="https://pl31263667.profitableratecpmnetwork.com/b0/c5/21/b0c5218558b6cd7043e11407e07289b1.js"></script>
-
-  </div>
-
-
   <!-- HEADER -->
-  <div class="page-header">
+  <header class="downloader-header">
 
-    <button
-      class="back-btn"
-      onclick="window.location.href='index.html'">
-      ←
-    </button>
+    <div class="header-row">
 
-    <h1>Video Downloader</h1>
+      <button
+        class="back-button"
+        type="button"
+        onclick="window.location.href='index.html'">
+        ←
+      </button>
 
-  </div>
+      <div>
+        <h1 class="header-title">Video Downloader</h1>
+      </div>
+
+    </div>
+
+    <div class="header-subtitle">
+      Download your videos easily
+    </div>
+
+  </header>
 
 
-  <main class="page-content">
+  <main class="downloader-content">
 
-    <div class="download-box">
+
+    <!-- DOWNLOADER -->
+    <section class="download-box">
+
+      <div class="download-icon">
+        ⬇
+      </div>
 
       <h2>Download Video</h2>
 
@@ -165,7 +286,7 @@
       >
 
       <button
-        class="btn"
+        class="download-button"
         type="button"
         onclick="startDownload()">
         Download
@@ -195,11 +316,25 @@
 
       </div>
 
+    </section>
+
+
+    <!-- NATIVE 2:1 AD -->
+    <div class="native-ad">
+
+      <script
+        async="async"
+        data-cfasync="false"
+        src="https://pl28546803.profitableratecpmnetwork.com/80507bc8e3d998279cd413247931169e/invoke.js">
+      </script>
+
+      <div id="container-80507bc8e3d998279cd413247931169e"></div>
+
     </div>
 
 
-    <!-- SUPPORTED -->
-    <div class="card">
+    <!-- SUPPORTED PLATFORMS -->
+    <section class="supported-card">
 
       <h3>Supported Platforms</h3>
 
@@ -212,7 +347,7 @@
 
       </div>
 
-    </div>
+    </section>
 
 
     <div class="notice">
@@ -222,25 +357,26 @@
 
     </div>
 
+
+    <!-- BELOW NATIVE 320x50 -->
+    <div class="below-banner">
+
+      <script>
+        atOptions = {
+          'key' : 'b529261b98306ae1169a6bf5b991c3d4',
+          'format' : 'iframe',
+          'height' : 50,
+          'width' : 320,
+          'params' : {}
+        };
+      </script>
+
+      <script src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js"></script>
+
+    </div>
+
+
   </main>
-
-
-  <!-- FIXED 320x50 BANNER -->
-  <div class="fixed-banner">
-
-    <script>
-      atOptions = {
-        'key' : 'b529261b98306ae1169a6bf5b991c3d4',
-        'format' : 'iframe',
-        'height' : 50,
-        'width' : 320,
-        'params' : {}
-      };
-    </script>
-
-    <script src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js"></script>
-
-  </div>
 
 
   <!-- BOTTOM NAV -->
@@ -260,8 +396,10 @@
       href="https://t.me/bitbytee_bot"
       target="_blank"
       rel="noopener noreferrer">
+
       <span class="nav-icon">✈</span>
       <span>Telegram</span>
+
     </a>
 
     <button onclick="openProfile()">
@@ -297,6 +435,7 @@ function showDownloadMessage(text, type) {
       : "error-message";
 
   box.textContent = text;
+
 }
 
 
@@ -317,6 +456,7 @@ function startDownload() {
     );
 
     return;
+
   }
 
 
@@ -332,9 +472,7 @@ function startDownload() {
 
   /*
     Downloader backend is not connected yet.
-    This keeps the interface ready without pretending
-    that a client-side HTML page can download every
-    external platform's video by itself.
+    Do not pretend that a download link exists.
   */
 
   showDownloadMessage(

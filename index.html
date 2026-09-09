@@ -15,11 +15,9 @@
   <link rel="stylesheet" href="style.css">
 </head>
 
-
 <body>
 
 <div id="app">
-
 
   <!-- =====================================================
        HOME HEADER
@@ -36,10 +34,6 @@
       ☰
     </button>
 
-
-    <div class="header-space"></div>
-
-
     <div class="home-brand">
 
       <div class="logo-box">
@@ -48,9 +42,7 @@
 
       <div class="brand-title">
 
-        <strong>
-          Infinix Worker
-        </strong>
+        <strong>Infinix Worker</strong>
 
         <small>
           WORK • EARN • REWARD
@@ -60,7 +52,6 @@
 
     </div>
 
-
     <div class="home-tagline">
       Complete activities and earn rewards
     </div>
@@ -68,13 +59,11 @@
   </header>
 
 
-
   <!-- =====================================================
        AUTH / USER AREA
   ====================================================== -->
 
   <section class="home-user-area">
-
 
     <!-- GUEST -->
 
@@ -91,7 +80,6 @@
         Login
       </a>
 
-
       <a
         href="signup.html"
         class="auth-home-btn signup-home-btn"
@@ -103,33 +91,32 @@
     </div>
 
 
-
-    <!-- LOGGED IN USER -->
+    <!-- LOGGED IN -->
 
     <div
-      class="logged-user-box"
+      class="user-info-box"
       data-logged-in
       style="display:none;"
     >
 
-      <div class="user-info">
-
-        <span class="user-label">
-          Username
-        </span>
+      <div class="user-info-left">
 
         <strong data-username>
           Guest User
         </strong>
 
+        <small>
+          Username
+        </small>
+
       </div>
 
 
-      <div class="balance-info">
+      <div class="user-info-right">
 
-        <span class="balance-label">
+        <small>
           Balance
-        </span>
+        </small>
 
         <strong>
           $<span data-balance>0.00</span>
@@ -137,48 +124,34 @@
 
       </div>
 
-
-      <button
-        type="button"
-        class="logout-home-btn"
-        data-logout-button
-        onclick="logout()"
-      >
-        Logout
-      </button>
-
     </div>
 
   </section>
 
 
-
   <!-- =====================================================
-       HOME CONTENT
+       MAIN HOME OPTIONS
   ====================================================== -->
 
-  <main class="home-content">
+  <main class="page-content">
+
+    <section class="action-grid">
 
 
-    <!-- ===================================================
-         MAIN FOUR OPTIONS
-    ==================================================== -->
-
-    <section class="home-grid">
-
-
-      <!-- BROWSER -->
+      <!-- =================================================
+           BROWSER
+      ================================================== -->
 
       <a
         href="browser.html"
-        class="home-feature"
+        class="action-card"
         onclick="
           event.preventDefault();
           openBrowser();
         "
       >
 
-        <div class="feature-icon">
+        <div class="action-icon">
           🌐
         </div>
 
@@ -193,19 +166,20 @@
       </a>
 
 
-
-      <!-- VIDEO DOWNLOADER -->
+      <!-- =================================================
+           VIDEO DOWNLOADER
+      ================================================== -->
 
       <a
         href="video-downloader.html"
-        class="home-feature"
+        class="action-card"
         onclick="
           event.preventDefault();
           openVideoDownloader();
         "
       >
 
-        <div class="feature-icon">
+        <div class="action-icon">
           ↓
         </div>
 
@@ -220,19 +194,20 @@
       </a>
 
 
-
-      <!-- TASK -->
+      <!-- =================================================
+           TASK
+      ================================================== -->
 
       <a
         href="task.html"
-        class="home-feature"
+        class="action-card"
         onclick="
           event.preventDefault();
           openTask();
         "
       >
 
-        <div class="feature-icon">
+        <div class="action-icon">
           ✓
         </div>
 
@@ -241,25 +216,26 @@
         </strong>
 
         <span>
-          Complete tasks &amp; earn rewards
+          Complete tasks &amp; earn
         </span>
 
       </a>
 
 
-
-      <!-- MICRO TASK -->
+      <!-- =================================================
+           MICRO TASK
+      ================================================== -->
 
       <a
         href="https://lsr-video-downloaders.vercel.app/offerwall.html"
-        class="home-feature"
+        class="action-card"
         onclick="
           event.preventDefault();
           openMicroTask();
         "
       >
 
-        <div class="feature-icon">
+        <div class="action-icon">
           💰
         </div>
 
@@ -277,30 +253,23 @@
     </section>
 
 
-
     <!-- =====================================================
-         BOTTOM BANNER 1
+         HOME BOTTOM BANNER — 320x50
     ====================================================== -->
 
-    <div class="banner-ad">
+    <div class="ad-area top-ad">
 
-      <div class="ad-label">
-        Advertisement
-      </div>
-
-
-      <div id="banner-ad-container">
+      <div class="banner-ad">
 
         <script>
           atOptions = {
-            'key': 'b529261b98306ae1169a6bf5b991c3d4',
-            'format': 'iframe',
-            'height': 50,
-            'width': 320,
-            'params': {}
+            'key' : 'b529261b98306ae1169a6bf5b991c3d4',
+            'format' : 'iframe',
+            'height' : 50,
+            'width' : 320,
+            'params' : {}
           };
         </script>
-
 
         <script
           src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js">
@@ -311,38 +280,25 @@
     </div>
 
 
-
     <!-- =====================================================
-         BOTTOM BANNER 2
+         HOME NATIVE 2:1
     ====================================================== -->
 
     <div class="native-ad">
 
-      <div class="ad-label">
-        Advertisement
-      </div>
+      <script
+        async="async"
+        data-cfasync="false"
+        src="https://pl28546803.profitableratecpmnetwork.com/80507bc8e3d998279cd413247931169e/invoke.js">
+      </script>
 
-
-      <div id="native-ad-container">
-
-        <script
-          async="async"
-          data-cfasync="false"
-          src="https://pl28546803.profitableratecpmnetwork.com/80507bc8e3d998279cd413247931169e/invoke.js">
-        </script>
-
-
-        <div
-          id="container-80507bc8e3d998279cd413247931169e">
-        </div>
-
+      <div
+        id="container-80507bc8e3d998279cd413247931169e">
       </div>
 
     </div>
 
-
   </main>
-
 
 
   <!-- =====================================================
@@ -357,10 +313,12 @@
 
     <a
       href="index.html"
-      class="nav-item active"
+      class="active"
     >
 
-      <span>⌂</span>
+      <span class="nav-icon">
+        ⌂
+      </span>
 
       <small>
         Home
@@ -369,15 +327,15 @@
     </a>
 
 
-
     <!-- WEBSITE -->
 
     <a
       href="https://lsr-video-downloaders.vercel.app/"
-      class="nav-item"
     >
 
-      <span>🌐</span>
+      <span class="nav-icon">
+        🌐
+      </span>
 
       <small>
         Website
@@ -386,17 +344,17 @@
     </a>
 
 
-
     <!-- TELEGRAM -->
 
     <a
       href="https://t.me/bitbytee_bot"
-      class="nav-item"
       target="_blank"
       rel="noopener noreferrer"
     >
 
-      <span>✈</span>
+      <span class="nav-icon">
+        ✈
+      </span>
 
       <small>
         Telegram
@@ -405,19 +363,19 @@
     </a>
 
 
-
     <!-- PROFILE -->
 
     <a
       href="profile.html"
-      class="nav-item"
       onclick="
         event.preventDefault();
         openProfile();
       "
     >
 
-      <span>👤</span>
+      <span class="nav-icon">
+        👤
+      </span>
 
       <small>
         Profile
@@ -426,15 +384,15 @@
     </a>
 
 
-
     <!-- MORE -->
 
     <a
       href="more.html"
-      class="nav-item"
     >
 
-      <span>☰</span>
+      <span class="nav-icon">
+        ☰
+      </span>
 
       <small>
         More
@@ -445,154 +403,14 @@
 
   </nav>
 
-
 </div>
 
 
-
-<!-- =======================================================
-     HOME AUTH STYLE
-======================================================== -->
-
-<style>
-
-  .home-user-area {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 12px 15px 4px;
-  }
-
-
-  /* Guest buttons */
-
-  .guest-auth {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-  }
-
-
-  .auth-home-btn {
-    display: block;
-    text-align: center;
-    text-decoration: none;
-    padding: 10px 22px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 700;
-  }
-
-
-  .login-home-btn {
-    background: #0755c9;
-    color: #fff;
-  }
-
-
-  .signup-home-btn {
-    background: #fff;
-    color: #0755c9;
-    border: 1px solid #0755c9;
-  }
-
-
-  /* Logged-in box */
-
-  .logged-user-box {
-    width: 100%;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 11px 12px;
-    background: #fff;
-    border-radius: 14px;
-    box-shadow: 0 4px 18px rgba(0,0,0,.08);
-  }
-
-
-  .user-info {
-    flex: 1;
-    min-width: 0;
-  }
-
-
-  .balance-info {
-    text-align: right;
-    min-width: 75px;
-  }
-
-
-  .user-label,
-  .balance-label {
-    display: block;
-    font-size: 10px;
-    color: #888;
-    margin-bottom: 2px;
-  }
-
-
-  .user-info strong {
-    display: block;
-    font-size: 14px;
-    color: #172238;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-
-  .balance-info strong {
-    display: block;
-    font-size: 15px;
-    color: #08752d;
-  }
-
-
-  .logout-home-btn {
-    border: none;
-    background: #ffe8e8;
-    color: #b00020;
-    border-radius: 9px;
-    padding: 9px 11px;
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-  }
-
-
-  @media (max-width: 360px) {
-
-    .logged-user-box {
-      gap: 6px;
-      padding: 9px;
-    }
-
-    .user-info strong {
-      font-size: 12px;
-    }
-
-    .balance-info strong {
-      font-size: 13px;
-    }
-
-    .logout-home-btn {
-      padding: 8px;
-      font-size: 11px;
-    }
-
-  }
-
-</style>
-
-
-
-<!-- =======================================================
-     LOAD APP.JS LAST
-======================================================== -->
+<!-- =====================================================
+     APP.JS
+====================================================== -->
 
 <script src="app.js"></script>
-
 
 </body>
 </html>

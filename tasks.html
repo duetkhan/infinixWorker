@@ -1,177 +1,387 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#075dcc">
 
-  <meta name="theme-color" content="#2563eb">
+<title>Tasks • Infinix Worker</title>
 
-  <title>Tasks - Infinix Worker</title>
-
-  <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <div id="app">
+<div id="app">
 
-    <!-- Header -->
-    <header class="app-header">
+<!-- HEADER -->
+<header class="page-header">
 
-      <div class="brand">
+    <button onclick="history.back()">
+        ‹
+    </button>
 
-        <button
-          onclick="history.back()"
-          style="
-            width:36px;
-            height:36px;
-            border-radius:10px;
-            background:#eef4ff;
-            font-size:18px;
-          "
-        >
-          ←
-        </button>
+    <h1>
+        Complete Tasks
+    </h1>
 
-        <div>
-          <h1>Tasks</h1>
-          <span>Available earning tasks</span>
+</header>
+
+
+<!-- CONTENT -->
+<main class="page-content">
+
+    <section class="intro-card">
+
+        <div class="action-icon">
+            ✓
         </div>
 
-      </div>
+        <h2>
+            Complete Task &amp; Earn Rewards
+        </h2>
 
-    </header>
+        <p>
+            Choose an available activity and
+            complete its requirements.
+        </p>
 
-
-    <!-- Content -->
-    <main class="main-content">
-
-      <section class="welcome-section">
-        <h2>Available Tasks</h2>
-        <p>Complete tasks and earn coins.</p>
-      </section>
+    </section>
 
 
-      <!-- Task 1 -->
-      <div class="task-box">
-
-        <div class="task-icon">
-          ⚡
-        </div>
-
-        <div class="task-content">
-
-          <h3>Daily Task</h3>
-
-          <p>
-            Complete the task to receive your reward.
-          </p>
-
-          <div class="task-bottom">
-
-            <span class="task-reward">
-              +10 Coins
-            </span>
-
-            <button
-              class="task-button"
-              onclick="startTask()"
-            >
-              Start
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
+    <div id="taskList"></div>
 
 
-      <!-- Native Advertisement -->
-      <section class="native-ad">
+    <!-- NATIVE AD -->
+    <section class="native-ad">
 
         <div class="ad-label">
-          Advertisement
+            Advertisement
         </div>
 
-        <div id="native-ad-container"></div>
+        <script async="async"
+        data-cfasync="false"
+        src="https://pl28546803.profitableratecpmnetwork.com/80507bc8e3d998279cd413247931169e/invoke.js">
+        </script>
 
-      </section>
+        <div id="container-80507bc8e3d998279cd413247931169e">
+        </div>
+
+    </section>
 
 
-      <!-- Banner Advertisement -->
-      <section class="banner-ad">
+    <!-- BANNER AD -->
+    <section class="banner-ad">
 
         <div class="ad-label">
-          Advertisement
+            Advertisement
         </div>
 
-        <div id="banner-ad-container"></div>
+        <script>
 
-      </section>
+        atOptions = {
 
-    </main>
+            'key' :
+            'b529261b98306ae1169a6bf5b991c3d4',
+
+            'format' :
+            'iframe',
+
+            'height' :
+            50,
+
+            'width' :
+            320,
+
+            'params' :
+            {}
+
+        };
+
+        </script>
 
 
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
+        <script
+        src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js">
+        </script>
 
-      <button
+    </section>
+
+</main>
+
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+
+    <button
         class="nav-item"
-        onclick="window.location.href='index.html'"
-      >
-        <span>⌂</span>
-        <small>Home</small>
-      </button>
+        onclick="location.href='index.html'">
 
-      <button class="nav-item active">
-        <span>⚡</span>
-        <small>Work</small>
-      </button>
+        <span>
+            ⌂
+        </span>
 
-      <button
+        <small>
+            Home
+        </small>
+
+    </button>
+
+
+    <button
         class="nav-item"
-        onclick="window.location.href='index.html'"
-      >
-        <span>▶</span>
-        <small>Ads</small>
-      </button>
+        onclick="window.open(
+        'https://lsr-video-downloaders.vercel.app/',
+        '_blank'
+        )">
 
-      <button
+        <span>
+            ◎
+        </span>
+
+        <small>
+            Web
+        </small>
+
+    </button>
+
+
+    <button
         class="nav-item"
-        onclick="window.location.href='withdraw.html'"
-      >
-        <span>💳</span>
-        <small>Withdraw</small>
-      </button>
+        onclick="window.open(
+        'https://t.me/bitbytee_bot',
+        '_blank'
+        )">
 
-      <button
+        <span>
+            ✈
+        </span>
+
+        <small>
+            Telegram
+        </small>
+
+    </button>
+
+
+    <button
         class="nav-item"
-        onclick="window.location.href='profile.html'"
-      >
-        <span>👤</span>
-        <small>Profile</small>
-      </button>
+        onclick="location.href='profile.html'">
 
-    </nav>
+        <span>
+            ●
+        </span>
 
-  </div>
+        <small>
+            Profile
+        </small>
+
+    </button>
 
 
-  <script src="app.js"></script>
+    <button
+        class="nav-item"
+        onclick="location.href='more.html'">
 
-  <script>
-    function startTask() {
+        <span>
+            •••
+        </span>
 
-      if (typeof openSmartlink === "function") {
-        openSmartlink();
-      }
+        <small>
+            More
+        </small>
 
-      alert(
-        "Task started. Complete the task to receive your reward."
-      );
+    </button>
+
+</nav>
+
+</div>
+
+
+<!-- SOCIAL BAR -->
+<script src="https://pl31263667.profitableratecpmnetwork.com/b0/c5/21/b0c5218558b6cd7043e11407e07289b1.js">
+</script>
+
+
+<script>
+
+const tasks = [
+
+    {
+        id: 1,
+
+        title:
+        "Daily Web Activity",
+
+        reward:
+        2,
+
+        description:
+        "Visit the Web service and complete the required activity.",
+
+        url:
+        "https://lsr-video-downloaders.vercel.app/"
+    },
+
+
+    {
+        id: 2,
+
+        title:
+        "Telegram Activity",
+
+        reward:
+        1,
+
+        description:
+        "Open the Telegram bot and complete the requested activity.",
+
+        url:
+        "https://t.me/bitbytee_bot"
     }
-  </script>
+
+];
+
+
+function renderTasks(){
+
+    const container =
+        document.getElementById(
+            "taskList"
+        );
+
+
+    container.innerHTML =
+        tasks.map(function(task){
+
+            return `
+
+            <article class="task-row">
+
+                <div class="task-row-icon">
+                    ✓
+                </div>
+
+
+                <div class="task-info">
+
+                    <h3>
+                        ${task.title}
+                    </h3>
+
+                    <p>
+                        ${task.description}
+                    </p>
+
+                    <b>
+                        +${task.reward.toFixed(2)}
+                        coins
+                    </b>
+
+                </div>
+
+
+                <button
+                    onclick="beginTask(${task.id})">
+
+                    Start
+
+                </button>
+
+            </article>
+
+            `;
+
+        }).join("");
+
+}
+
+
+function beginTask(id){
+
+    const task =
+        tasks.find(function(item){
+
+            return item.id === id;
+
+        });
+
+
+    if(!task){
+        return;
+    }
+
+
+    window.open(
+        task.url,
+        "_blank"
+    );
+
+
+    /*
+       Activity timer.
+
+       Reward should only be granted
+       after a genuine activity.
+    */
+
+    let seconds = 30;
+
+
+    const timer =
+        setInterval(function(){
+
+            seconds--;
+
+
+            if(seconds <= 0){
+
+                clearInterval(timer);
+
+
+                const completed =
+                    confirm(
+                        "Did you genuinely complete the required activity?"
+                    );
+
+
+                if(completed){
+
+                    const currentBalance =
+                        Number(
+                            localStorage.getItem(
+                                "worker_balance"
+                            ) || 0
+                        );
+
+
+                    const newBalance =
+                        currentBalance +
+                        task.reward;
+
+
+                    localStorage.setItem(
+                        "worker_balance",
+                        newBalance.toFixed(2)
+                    );
+
+
+                    alert(
+                        "Task completed. Reward added."
+                    );
+
+                }
+
+            }
+
+        },1000);
+
+}
+
+
+renderTasks();
+
+</script>
 
 </body>
 </html>

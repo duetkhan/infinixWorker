@@ -8,6 +8,9 @@
 
   <link rel="stylesheet" href="style.css">
 
+  <!-- Monetag Rewarded Interstitial SDK -->
+  <script src='//libtl.com/sdk.js' data-zone='11761461' data-sdk='show_11761461'></script>
+
   <style>
     .task-page {
       min-height: 100vh;
@@ -140,6 +143,12 @@
 
     .btn:active {
       transform: scale(.98);
+    }
+
+    .btn:disabled {
+      opacity: .75;
+      cursor: not-allowed;
+      transform: none;
     }
 
     .task-timer {
@@ -333,15 +342,15 @@
     </div>
 
 
-    <!-- WATCH -->
+    <!-- WATCH & EARN -->
     <div class="task-card">
 
       <h3>▶️ Watch & Earn</h3>
 
       <p>
-        Start the available task and remain on the task page.
-        After the required waiting period, the completion
-        button will become available.
+        Watch the available advertisement to earn your reward.
+        Your reward is added only after the rewarded advertisement
+        is successfully completed.
       </p>
 
       <div class="task-reward">
@@ -360,15 +369,6 @@
         id="watchTimer"
         class="task-timer">
       </div>
-
-      <button
-        id="watchCompleteBtn"
-        class="btn success"
-        type="button"
-        style="display:none; margin-top:10px;"
-        onclick="completeWatchTask()">
-        Complete
-      </button>
 
     </div>
 
@@ -449,7 +449,6 @@ const WEB_REWARD = 0.05;
 const WATCH_REWARD = 0.03;
 
 const WEB_WAIT = 30;
-const WATCH_WAIT = 15;
 
 
 /* =========================================================
@@ -659,9 +658,11 @@ function completeWebTask() {
 
 /* =========================================================
    WATCH & EARN
+   MONETAG REWARDED INTERSTITIAL
 ========================================================= */
 
-let watchInterval = null;
+let watchAdRunning = false;
+
 
 function startWatchTask() {
 
@@ -680,77 +681,6 @@ function startWatchTask() {
   const timer =
     document.getElementById("watchTimer");
 
-  const completeBtn =
-    document.getElementById("watchCompleteBtn");
-
-
-  /*
-    Monetag code can be inserted here later.
-    Reward is never based on clicking an ad.
-  */
-
-
-  startBtn.style.display = "none";
-
-  timer.style.display = "block";
-
-  completeBtn.style.display = "none";
-
-
-  let remaining = WATCH_WAIT;
-
-  timer.textContent =
-    "Waiting: " +
-    remaining +
-    "s";
-
-
-  clearInterval(watchInterval);
-
-
-  watchInterval = setInterval(function() {
-
-    remaining--;
-
-
-    if (remaining > 0) {
-
-      timer.textContent =
-        "Waiting: " +
-        remaining +
-        "s";
-
-    }
-    else {
-
-      clearInterval(watchInterval);
-
-      timer.textContent =
-        "Time completed. You can continue.";
-
-      completeBtn.style.display = "block";
-
-    }
-
-  }, 1000);
-
-}
-
-
-/* =========================================================
-   COMPLETE WATCH TASK
-========================================================= */
-
-function completeWatchTask() {
-
-  if (typeof requireLogin === "function") {
-
-    if (!requireLogin()) {
-      return;
-    }
-
-  }
-
 
   const key =
     "iw_watch_task_date";
@@ -758,6 +688,11 @@ function completeWatchTask() {
   const today =
     new Date().toISOString().slice(0, 10);
 
+
+  /*
+    Prevent completing the Watch & Earn
+    task more than once per day.
+  */
 
   if (localStorage.getItem(key) === today) {
 
@@ -771,6 +706,122 @@ function completeWatchTask() {
   }
 
 
+  /*
+    Prevent multiple simultaneous clicks.
+  */
+
+  if (watchAdRunning) {
+    return;
+  }
+
+
+  /*
+    Check whether Monetag SDK is loaded.
+  */
+
+  if (typeof show_11761461 !== "function") {
+
+    showTaskMessage(
+      "Advertisement is not ready yet. Please try again.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  watchAdRunning = true;
+
+  startBtn.disabled = true;
+
+  startBtn.textContent =
+    "Loading Ad...";
+
+  timer.style.display = "block";
+
+  timer.textContent =
+    "Please watch the advertisement...";
+
+
+  /*
+    Monetag Rewarded Interstitial
+
+    The reward is given only after the
+    Monetag promise resolves.
+  */
+
+  show_11761461()
+
+    .then(function() {
+
+      /*
+        Rewarded ad completed successfully.
+        Now add the reward.
+      */
+
+      addWatchReward();
+
+    })
+
+    .catch(function(error) {
+
+      console.error(
+        "Monetag Rewarded Interstitial error:",
+        error
+      );
+
+
+      watchAdRunning = false;
+
+      startBtn.disabled = false;
+
+      startBtn.textContent =
+        "Watch Now";
+
+      timer.style.display = "none";
+
+
+      showTaskMessage(
+        "The advertisement could not be completed. No reward was added.",
+        "error"
+      );
+
+    });
+
+}
+
+
+/* =========================================================
+   ADD WATCH REWARD
+========================================================= */
+
+function addWatchReward() {
+
+  const key =
+    "iw_watch_task_date";
+
+  const today =
+    new Date().toISOString().slice(0, 10);
+
+
+  /*
+    Double protection against duplicate reward.
+  */
+
+  if (localStorage.getItem(key) === today) {
+
+    watchAdRunning = false;
+
+    return;
+
+  }
+
+
+  /*
+    Use the existing app.js balance function.
+  */
+
   if (typeof addBalance === "function") {
 
     addBalance(WATCH_REWARD);
@@ -783,6 +834,7 @@ function completeWatchTask() {
         localStorage.getItem("worker_balance") || "0"
       );
 
+
     localStorage.setItem(
       "worker_balance",
       (current + WATCH_REWARD).toFixed(2)
@@ -791,19 +843,42 @@ function completeWatchTask() {
   }
 
 
+  /*
+    Mark today's Watch & Earn task as completed.
+  */
+
   localStorage.setItem(
     key,
     today
   );
 
 
-  document.getElementById(
-    "watchCompleteBtn"
-  ).style.display = "none";
+  watchAdRunning = false;
+
+
+  const startBtn =
+    document.getElementById("watchStartBtn");
+
+  const timer =
+    document.getElementById("watchTimer");
+
+
+  startBtn.disabled = true;
+
+  startBtn.textContent =
+    "Completed ✓";
+
+  startBtn.classList.add("success");
+
+
+  timer.style.display = "block";
+
+  timer.textContent =
+    "Today's Watch & Earn task is completed.";
 
 
   showTaskMessage(
-    "Watch task completed. $" +
+    "Advertisement completed. $" +
     WATCH_REWARD.toFixed(2) +
     " has been added to your balance.",
     "success"

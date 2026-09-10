@@ -2,15 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Sign Up - Infinix Worker</title>
 
   <link rel="stylesheet" href="style.css">
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
 
   <style>
     .signup-page {
@@ -328,8 +330,7 @@
         <button
           type="submit"
           class="signup-btn"
-          id="signupBtn"
-        >
+          id="signupBtn">
           Create Account
         </button>
 
@@ -338,8 +339,8 @@
 
       <div
         id="signupMessage"
-        class="signup-message"
-      ></div>
+        class="signup-message">
+      </div>
 
 
       <div class="login-link">
@@ -399,8 +400,7 @@
 
     <a
       href="https://lsr-video-downloaders.vercel.app/"
-      class="nav-item"
-    >
+      class="nav-item">
       <span>🌐</span>
       <small>Website</small>
     </a>
@@ -409,24 +409,21 @@
       href="https://t.me/bitbytee_bot"
       class="nav-item"
       target="_blank"
-      rel="noopener noreferrer"
-    >
+      rel="noopener noreferrer">
       <span>✈</span>
       <small>Telegram</small>
     </a>
 
     <a
       href="profile.html"
-      class="nav-item"
-    >
+      class="nav-item">
       <span>👤</span>
       <small>Profile</small>
     </a>
 
     <a
       href="more.html"
-      class="nav-item"
-    >
+      class="nav-item">
       <span>☰</span>
       <small>More</small>
     </a>
@@ -434,19 +431,6 @@
   </nav>
 
 </div>
-
-
-<!-- =========================================================
-     FIREBASE SDK
-========================================================= -->
-
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
-
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
-
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
-
-<script src="firebase-config.js"></script>
 
 
 <script>
@@ -457,6 +441,10 @@ const USER_KEY =
 const LOGIN_KEY =
   "worker_logged_in";
 
+
+/* =========================================================
+   MESSAGE
+========================================================= */
 
 function showSignupMessage(text, type) {
 
@@ -472,43 +460,7 @@ function showSignupMessage(text, type) {
 
 
 /* =========================================================
-   FIREBASE ERROR MESSAGE
-========================================================= */
-
-function getFirebaseErrorMessage(error) {
-
-  if (!error || !error.code) {
-    return "Account creation failed. Please try again.";
-  }
-
-  switch (error.code) {
-
-    case "auth/email-already-in-use":
-      return "This email is already registered. Please login.";
-
-    case "auth/invalid-email":
-      return "Please enter a valid email address.";
-
-    case "auth/weak-password":
-      return "Password must be at least 6 characters.";
-
-    case "auth/network-request-failed":
-      return "Network error. Please check your internet connection.";
-
-    case "auth/operation-not-allowed":
-      return "Email/password registration is not enabled in Firebase.";
-
-    default:
-      return error.message ||
-        "Account creation failed. Please try again.";
-
-  }
-
-}
-
-
-/* =========================================================
-   CHECK EXISTING ACCOUNT / LOGIN
+   CHECK DEVICE ACCOUNT
 ========================================================= */
 
 document.addEventListener(
@@ -522,7 +474,10 @@ document.addEventListener(
       localStorage.getItem(LOGIN_KEY);
 
 
-    /* Already logged in → Home */
+    /*
+      If already logged in,
+      go to Home.
+    */
 
     if (loggedIn === "true") {
 
@@ -535,15 +490,21 @@ document.addEventListener(
 
 
     /*
-      Device already has an account.
-      Block creating another account.
+      One-device rule.
+
+      If this browser already has a registered
+      Infinix Worker account, do not create
+      another account here.
     */
 
     if (existingUser) {
 
-      document
-        .getElementById("signupBtn")
-        .disabled = true;
+      const signupBtn =
+        document.getElementById(
+          "signupBtn"
+        );
+
+      signupBtn.disabled = true;
 
 
       showSignupMessage(
@@ -561,132 +522,6 @@ document.addEventListener(
    FIREBASE SIGNUP
 ========================================================= */
 
-async function createFirebaseAccount(
-  username,
-  email,
-  password
-) {
-
-  try {
-
-    /*
-      Create Firebase Authentication account.
-    */
-
-    const result =
-      await firebaseAuth.createUserWithEmailAndPassword(
-        email,
-        password
-      );
-
-
-    const firebaseUser =
-      result.user;
-
-
-    /*
-      Create user profile in Firestore.
-    */
-
-    await firebaseDb
-      .collection("profiles")
-      .doc(firebaseUser.uid)
-      .set({
-
-        username: username,
-
-        email: email,
-
-        balance: 0.00,
-
-        createdAt:
-          firebase.firestore.FieldValue.serverTimestamp()
-
-      });
-
-
-    /*
-      Keep the existing local session system
-      temporarily so the current app.js
-      continues working without changes.
-    */
-
-    const localUser = {
-
-      username: username,
-
-      email: email,
-
-      createdAt:
-        new Date().toISOString(),
-
-      firebaseUid:
-        firebaseUser.uid
-
-    };
-
-
-    localStorage.setItem(
-      USER_KEY,
-      JSON.stringify(localUser)
-    );
-
-
-    localStorage.setItem(
-      "worker_username",
-      username
-    );
-
-
-    localStorage.setItem(
-      "worker_email",
-      email
-    );
-
-
-    localStorage.setItem(
-      LOGIN_KEY,
-      "true"
-    );
-
-
-    /*
-      Initial balance.
-    */
-
-    localStorage.setItem(
-      "worker_balance",
-      "0.00"
-    );
-
-
-    return true;
-
-  }
-
-  catch (error) {
-
-    console.error(
-      "Firebase signup error:",
-      error
-    );
-
-    showSignupMessage(
-      getFirebaseErrorMessage(error),
-      "error"
-    );
-
-    return false;
-
-  }
-
-}
-
-
-/* =========================================================
-   SIGNUP
-========================================================= */
-
 document
   .getElementById("signupForm")
   .addEventListener(
@@ -697,18 +532,7 @@ document
 
 
       /*
-        Disable button immediately
-        to prevent duplicate submissions.
-      */
-
-      const signupBtn =
-        document.getElementById("signupBtn");
-
-      signupBtn.disabled = true;
-
-
-      /*
-        Double-check device restriction.
+        Device account check
       */
 
       if (
@@ -719,8 +543,6 @@ document
           "Only one account is allowed on this device.",
           "error"
         );
-
-        signupBtn.disabled = true;
 
         return;
 
@@ -762,6 +584,16 @@ document
           .value;
 
 
+      const signupBtn =
+        document.getElementById(
+          "signupBtn"
+        );
+
+
+      /* =====================================================
+         VALIDATION
+      ===================================================== */
+
       if (username.length < 3) {
 
         showSignupMessage(
@@ -769,7 +601,17 @@ document
           "error"
         );
 
-        signupBtn.disabled = false;
+        return;
+
+      }
+
+
+      if (username.length > 30) {
+
+        showSignupMessage(
+          "Username must be 30 characters or less.",
+          "error"
+        );
 
         return;
 
@@ -782,8 +624,6 @@ document
           "Password must be at least 6 characters.",
           "error"
         );
-
-        signupBtn.disabled = false;
 
         return;
 
@@ -799,59 +639,231 @@ document
           "error"
         );
 
-        signupBtn.disabled = false;
-
         return;
 
       }
 
 
-      /*
-        Firebase account creation.
-      */
+      signupBtn.disabled = true;
 
-      showSignupMessage(
-        "Creating your account...",
-        "success"
-      );
+      signupBtn.textContent =
+        "Creating account...";
 
 
-      const created =
-        await createFirebaseAccount(
-          username,
-          email,
-          password
+      try {
+
+        /* ===================================================
+           CREATE FIREBASE AUTH USER
+        =================================================== */
+
+        const result =
+          await firebaseAuth
+            .createUserWithEmailAndPassword(
+              email,
+              password
+            );
+
+
+        const firebaseUser =
+          result.user;
+
+
+        /* ===================================================
+           CREATE FIRESTORE PROFILE
+        =================================================== */
+
+        await firebaseDb
+          .collection("profiles")
+          .doc(firebaseUser.uid)
+          .set({
+
+            username: username,
+
+            email: email,
+
+            balance: 0,
+
+            createdAt:
+              firebase.firestore.FieldValue
+                .serverTimestamp()
+
+          });
+
+
+        /* ===================================================
+           LOCAL COMPATIBILITY SESSION
+
+           IMPORTANT:
+           Password is NOT stored.
+        =================================================== */
+
+        const deviceUser = {
+
+          username: username,
+
+          email: email,
+
+          firebaseUid:
+            firebaseUser.uid,
+
+          createdAt:
+            new Date().toISOString()
+
+        };
+
+
+        localStorage.setItem(
+          USER_KEY,
+          JSON.stringify(deviceUser)
         );
 
 
-      if (!created) {
+        localStorage.setItem(
+          "worker_username",
+          username
+        );
+
+
+        localStorage.setItem(
+          "worker_email",
+          email
+        );
+
+
+        localStorage.setItem(
+          "worker_balance",
+          "0.00"
+        );
+
+
+        localStorage.setItem(
+          LOGIN_KEY,
+          "true"
+        );
+
+
+        /* ===================================================
+           SUCCESS
+        =================================================== */
+
+        showSignupMessage(
+          "Account created successfully. Redirecting...",
+          "success"
+        );
+
+
+        setTimeout(
+          function() {
+
+            window.location.href =
+              "index.html";
+
+          },
+          900
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Firebase signup error:",
+          error
+        );
+
+
+        /*
+          If Firebase account was created but
+          Firestore profile failed, sign the user
+          out instead of leaving a half-completed
+          local session.
+        */
+
+        try {
+
+          await firebaseAuth.signOut();
+
+        } catch (signOutError) {
+
+          console.log(
+            "Sign-out cleanup warning:",
+            signOutError
+          );
+
+        }
+
+
+        let message =
+          "Account creation failed. Please try again.";
+
+
+        if (
+          error.code ===
+          "auth/email-already-in-use"
+        ) {
+
+          message =
+            "This email is already registered. Please login instead.";
+
+        }
+        else if (
+          error.code ===
+          "auth/invalid-email"
+        ) {
+
+          message =
+            "Please enter a valid email address.";
+
+        }
+        else if (
+          error.code ===
+          "auth/weak-password"
+        ) {
+
+          message =
+            "Password is too weak. Use at least 6 characters.";
+
+        }
+        else if (
+          error.code ===
+          "auth/operation-not-allowed"
+        ) {
+
+          message =
+            "Email/Password authentication is not enabled in Firebase.";
+
+        }
+        else if (
+          error.code ===
+          "auth/network-request-failed"
+        ) {
+
+          message =
+            "Network error. Please check your internet connection.";
+
+        }
+        else if (
+          error.code ===
+          "permission-denied"
+        ) {
+
+          message =
+            "Firestore permission denied. Please check Firebase rules.";
+
+        }
+
+
+        showSignupMessage(
+          message,
+          "error"
+        );
+
 
         signupBtn.disabled = false;
 
-        return;
+        signupBtn.textContent =
+          "Create Account";
 
       }
-
-
-      showSignupMessage(
-        "Account created successfully. Redirecting...",
-        "success"
-      );
-
-
-      /*
-        Redirect to Home.
-      */
-
-      setTimeout(
-        function() {
-
-          window.location.href =
-            "index.html";
-
-        },
-        900
-      );
 
     }
   );

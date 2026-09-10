@@ -287,6 +287,7 @@
 
   <!-- TOP 320x50 -->
   <div class="top-ad">
+
     <script>
       atOptions = {
         'key' : 'b529261b98306ae1169a6bf5b991c3d4',
@@ -298,6 +299,7 @@
     </script>
 
     <script src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js"></script>
+
   </div>
 
 
@@ -317,6 +319,7 @@
 
 
   <main class="profile-content">
+
 
     <!-- USER + BALANCE -->
     <section class="profile-card">
@@ -558,117 +561,231 @@
 </div>
 
 
-<!-- Firebase SDK -->
+<!-- EXISTING APP -->
+<script src="app.js"></script>
+
+
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 
-<!-- Existing App -->
-<script src="app.js"></script>
-
 
 <script>
 
 /* =========================================================
-   PROFILE DATA
+   FIREBASE PROFILE + BALANCE
+========================================================= */
+
+let firebaseProfileUser = null;
+
+
+/* =========================================================
+   LOAD PROFILE
 ========================================================= */
 
 async function loadFirebaseProfile() {
 
   try {
 
-    if (
-      typeof firebaseAuth === "undefined" ||
-      typeof firebaseDb === "undefined"
-    ) {
-      return;
-    }
-
-
-    const currentUser =
+    firebaseProfileUser =
       firebaseAuth.currentUser;
 
 
-    if (!currentUser) {
-      return;
-    }
-
-
-    const doc =
-      await firebaseDb
-        .collection("profiles")
-        .doc(currentUser.uid)
-        .get();
-
-
-    if (!doc.exists) {
-      return;
-    }
-
-
-    const data =
-      doc.data();
-
-
     /*
-      Username from Firebase
+      If Firebase has no active user,
+      keep the existing guest UI.
     */
 
-    if (data.username) {
+    if (!firebaseProfileUser) {
 
-      localStorage.setItem(
-        "worker_username",
-        data.username
-      );
+      loadProfilePage();
 
-      document
-        .querySelectorAll("[data-username]")
-        .forEach(function(el) {
-
-          el.textContent =
-            data.username;
-
-        });
+      return;
 
     }
 
 
-    /*
-      Email from Firebase
-    */
+    let username =
+      firebaseProfileUser.displayName ||
+      localStorage.getItem("worker_username") ||
+      "Guest User";
 
-    const email =
-      data.email ||
-      currentUser.email ||
+
+    let email =
+      firebaseProfileUser.email ||
+      localStorage.getItem("worker_email") ||
       "Not logged in";
 
+
+    /*
+      Load profile from Firestore.
+    */
+
+    try {
+
+      const profileSnap =
+        await firebaseDb
+          .collection("profiles")
+          .doc(firebaseProfileUser.uid)
+          .get();
+
+
+      if (
+        profileSnap.exists &&
+        profileSnap.data().username
+      ) {
+
+        username =
+          profileSnap.data().username;
+
+      }
+
+    } catch (profileError) {
+
+      console.warn(
+        "Profile read skipped:",
+        profileError
+      );
+
+    }
+
+
+    /*
+      Update UI.
+    */
+
+    document
+      .querySelectorAll("[data-username]")
+      .forEach(function(el) {
+
+        el.textContent =
+          username;
+
+      });
+
+
+    document.getElementById(
+      "profileEmail"
+    ).textContent =
+      email;
+
+
+    /*
+      Save compatibility data.
+    */
+
+    localStorage.setItem(
+      "worker_username",
+      username
+    );
 
     localStorage.setItem(
       "worker_email",
       email
     );
 
-
-    document.getElementById(
-      "profileEmail"
-    ).textContent = email;
+    localStorage.setItem(
+      "worker_logged_in",
+      "true"
+    );
 
 
     /*
-      Firebase balance is only READ here.
-      We are not changing the existing
-      withdraw/balance system in this step.
+      Load balance from Firestore
+      if a wallet document exists.
+      
+      We check both:
+      wallets/{uid}
+      and profiles/{uid}.balance
+
+      This makes the migration safer.
     */
 
-    if (
-      typeof data.balance === "number"
-    ) {
+    let firebaseBalance = null;
 
-      localStorage.setItem(
-        "worker_balance",
-        data.balance.toFixed(2)
+
+    try {
+
+      const walletSnap =
+        await firebaseDb
+          .collection("wallets")
+          .doc(firebaseProfileUser.uid)
+          .get();
+
+
+      if (
+        walletSnap.exists &&
+        walletSnap.data().balance !== undefined
+      ) {
+
+        firebaseBalance =
+          Number(
+            walletSnap.data().balance || 0
+          );
+
+      }
+
+    } catch (walletError) {
+
+      console.warn(
+        "Wallet document read skipped:",
+        walletError
       );
+
+    }
+
+
+    /*
+      If wallets/{uid} does not exist,
+      try profiles/{uid}.balance.
+    */
+
+    if (firebaseBalance === null) {
+
+      try {
+
+        const profileSnap =
+          await firebaseDb
+            .collection("profiles")
+            .doc(firebaseProfileUser.uid)
+            .get();
+
+
+        if (
+          profileSnap.exists &&
+          profileSnap.data().balance !== undefined
+        ) {
+
+          firebaseBalance =
+            Number(
+              profileSnap.data().balance || 0
+            );
+
+        }
+
+      } catch (balanceError) {
+
+        console.warn(
+          "Profile balance read skipped:",
+          balanceError
+        );
+
+      }
+
+    }
+
+
+    /*
+      Update balance only when Firebase
+      actually returned a balance.
+    */
+
+    if (firebaseBalance !== null) {
+
+      const safeBalance =
+        Number(firebaseBalance) || 0;
 
 
       document
@@ -676,20 +793,43 @@ async function loadFirebaseProfile() {
         .forEach(function(el) {
 
           el.textContent =
-            data.balance.toFixed(2);
+            safeBalance.toFixed(2);
 
         });
 
+
+      localStorage.setItem(
+        "worker_balance",
+        safeBalance.toFixed(2)
+      );
+
+    }
+    else {
+
+      /*
+        Keep existing local balance
+        if Firestore wallet is not created yet.
+      */
+
+      if (
+        typeof updateUserDisplays ===
+        "function"
+      ) {
+
+        updateUserDisplays();
+
+      }
+
     }
 
-  }
-
-  catch (error) {
+  } catch (error) {
 
     console.error(
-      "Firebase profile load error:",
+      "Firebase profile error:",
       error
     );
+
+    loadProfilePage();
 
   }
 
@@ -697,7 +837,7 @@ async function loadFirebaseProfile() {
 
 
 /* =========================================================
-   PROFILE DISPLAY
+   EXISTING PROFILE DISPLAY
 ========================================================= */
 
 function loadProfilePage() {
@@ -733,7 +873,8 @@ function loadProfilePage() {
 
 
   if (
-    typeof updateUserDisplays === "function"
+    typeof updateUserDisplays ===
+    "function"
   ) {
 
     updateUserDisplays();
@@ -776,9 +917,39 @@ function showWithdrawMessage(
 
 /* =========================================================
    SUBMIT WITHDRAW
+   EXISTING FUNCTIONALITY PRESERVED
 ========================================================= */
 
 function submitWithdraw() {
+
+  /*
+    Require Firebase login if available.
+  */
+
+  if (
+    typeof firebaseAuth !== "undefined" &&
+    firebaseAuth.currentUser === null
+  ) {
+
+    /*
+      Keep compatibility with the
+      existing login system.
+    */
+
+    if (
+      typeof isLoggedIn === "function" &&
+      !isLoggedIn()
+    ) {
+
+      window.location.href =
+        "login.html";
+
+      return;
+
+    }
+
+  }
+
 
   const method =
     document.getElementById(
@@ -812,10 +983,7 @@ function submitWithdraw() {
   }
 
 
-  if (
-    !amount ||
-    amount < 510
-  ) {
+  if (!amount || amount < 510) {
 
     showWithdrawMessage(
       "Minimum withdrawal amount is ৳510.",
@@ -828,7 +996,8 @@ function submitWithdraw() {
 
 
   const balance =
-    typeof getBalance === "function"
+    typeof getBalance ===
+    "function"
       ? getBalance()
       : parseFloat(
           localStorage.getItem(
@@ -850,8 +1019,9 @@ function submitWithdraw() {
 
 
   /*
-    Existing local withdrawal system
-    remains unchanged for this migration step.
+    Existing local withdrawal record.
+    This will be migrated to Firebase
+    in the next withdrawal step.
   */
 
   const withdrawals =
@@ -897,7 +1067,8 @@ function submitWithdraw() {
 
 
   if (
-    typeof setBalance === "function"
+    typeof setBalance ===
+    "function"
   ) {
 
     setBalance(
@@ -909,7 +1080,8 @@ function submitWithdraw() {
 
     localStorage.setItem(
       "worker_balance",
-      (balance - amount).toFixed(2)
+      (balance - amount)
+        .toFixed(2)
     );
 
   }
@@ -938,6 +1110,7 @@ function submitWithdraw() {
 
 /* =========================================================
    WITHDRAW HISTORY
+   EXISTING FUNCTIONALITY PRESERVED
 ========================================================= */
 
 function loadWithdrawHistory() {
@@ -990,22 +1163,22 @@ function loadWithdrawHistory() {
         <div class="history-row">
 
           <strong>
-            ${item.method}
+            ${escapeHtmlSafe(item.method)}
           </strong>
 
           <span>
-            ৳${item.amount}
+            ৳${escapeHtmlSafe(item.amount)}
           </span>
 
         </div>
 
         <div class="history-meta">
 
-          ${item.account}
+          ${escapeHtmlSafe(item.account)}
           ·
-          ${item.status}
+          ${escapeHtmlSafe(item.status)}
           ·
-          ${item.date}
+          ${escapeHtmlSafe(item.date)}
 
         </div>
 
@@ -1023,28 +1196,77 @@ function loadWithdrawHistory() {
 
 
 /* =========================================================
-   LOGOUT
+   SAFE HTML
+========================================================= */
+
+function escapeHtmlSafe(value) {
+
+  return String(
+    value ?? ""
+  )
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+
+}
+
+
+/* =========================================================
+   FIREBASE LOGOUT
 ========================================================= */
 
 async function logout() {
 
+  const logoutButton =
+    document.querySelector(
+      ".logout-btn"
+    );
+
+
+  if (logoutButton) {
+
+    logoutButton.disabled =
+      true;
+
+    logoutButton.textContent =
+      "Logging out...";
+
+  }
+
+
   try {
 
     /*
-      Firebase logout
+      Firebase logout.
     */
 
     if (
-      typeof firebaseAuth !== "undefined"
+      typeof firebaseAuth !==
+      "undefined"
     ) {
 
       await firebaseAuth.signOut();
 
     }
 
-  }
-
-  catch (error) {
+  } catch (error) {
 
     console.error(
       "Firebase logout error:",
@@ -1055,68 +1277,85 @@ async function logout() {
 
 
   /*
-    Existing app logout.
-    This keeps the device account itself,
-    while clearing the active login session.
+    Clear current session state.
+
+    IMPORTANT:
+    iw_device_user is NOT deleted.
+    This preserves the existing
+    one-device / one-account marker.
   */
 
-  if (
-    typeof clearLoginSession === "function"
-  ) {
+  localStorage.removeItem(
+    "worker_logged_in"
+  );
 
-    clearLoginSession();
+  localStorage.removeItem(
+    "worker_username"
+  );
 
-  }
-  else {
-
-    localStorage.removeItem(
-      "worker_logged_in"
-    );
-
-    localStorage.removeItem(
-      "worker_username"
-    );
-
-    localStorage.removeItem(
-      "worker_email"
-    );
-
-  }
+  localStorage.removeItem(
+    "worker_email"
+  );
 
 
-  window.location.href =
-    "login.html";
+  /*
+    Keep worker_balance for compatibility.
+  */
+
+
+  window.location.replace(
+    "login.html"
+  );
 
 }
 
 
 /* =========================================================
-   INITIALIZE
+   PAGE LOAD
 ========================================================= */
 
 document.addEventListener(
   "DOMContentLoaded",
   function() {
 
+    /*
+      First load existing local UI
+      so page never appears blank.
+    */
+
     loadProfilePage();
 
     loadWithdrawHistory();
 
+
     /*
-      Firebase profile is loaded after
-      the existing local profile display,
-      so the current UI does not wait
-      for Firebase.
+      Then Firebase takes over
+      profile + balance.
     */
 
-    setTimeout(
-      function() {
+    if (
+      typeof firebaseAuth !==
+      "undefined"
+    ) {
 
-        loadFirebaseProfile();
+      firebaseAuth.onAuthStateChanged(
+        function(user) {
 
-      },
-      300
-    );
+          if (user) {
+
+            loadFirebaseProfile();
+
+          }
+          else {
+
+            loadProfilePage();
+
+          }
+
+        }
+      );
+
+    }
 
   }
 );

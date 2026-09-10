@@ -485,6 +485,16 @@
 </div>
 
 
+<!-- =========================================================
+     FIREBASE SDK
+========================================================= -->
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+
+<!-- EXISTING APP -->
 <script src="app.js"></script>
 
 
@@ -623,12 +633,7 @@ function startWebTask() {
 
 
   /*
-     ============================================
      ALWAYS OPEN SMARTLINK
-     ============================================
-     Do NOT use openSmartlink() here because that
-     function has its own cooldown. Visit Web must
-     open Smartlink on EVERY click.
   */
 
   const smartlink =
@@ -719,6 +724,7 @@ function startWebTask() {
 
 }
 
+
 /* =========================================================
    VISIT WEB RETURN CHECK
 ========================================================= */
@@ -737,10 +743,6 @@ document.addEventListener(
           (Date.now() - webStartedAt) / 1000
         );
 
-
-      /*
-         Returned before 60 seconds
-      */
 
       if (elapsed < WEB_WAIT) {
 
@@ -938,7 +940,7 @@ function completeWebTask() {
 
 
   /*
-     Add $0.03
+     Existing balance system remains unchanged
   */
 
   if (typeof addBalance === "function") {
@@ -1375,10 +1377,8 @@ function completeWatchAd() {
 
 
   /*
-     ============================================
      10 SECOND COUNTDOWN
      AFTER MONETAG SUCCESSFUL COMPLETION
-     ============================================
   */
 
   let countdown =
@@ -1424,9 +1424,7 @@ function completeWatchAd() {
 
 
       /*
-         ========================================
-         ADD $0.015 REWARD
-         ========================================
+         Existing balance system remains unchanged
       */
 
       if (
@@ -1543,6 +1541,122 @@ function completeWatchAd() {
 
 }
 
+
+/* =========================================================
+   FIREBASE USER SYNC
+   READ ONLY IN THIS STEP
+========================================================= */
+
+async function syncTaskUserFromFirebase() {
+
+  try {
+
+    if (
+      typeof firebaseAuth === "undefined" ||
+      typeof firebaseDb === "undefined"
+    ) {
+      return;
+    }
+
+
+    const currentUser =
+      firebaseAuth.currentUser;
+
+
+    if (!currentUser) {
+      return;
+    }
+
+
+    const profile =
+      await firebaseDb
+        .collection("profiles")
+        .doc(currentUser.uid)
+        .get();
+
+
+    if (!profile.exists) {
+      return;
+    }
+
+
+    const data =
+      profile.data();
+
+
+    /*
+       Username sync
+    */
+
+    if (data.username) {
+
+      localStorage.setItem(
+        "worker_username",
+        data.username
+      );
+
+    }
+
+
+    /*
+       Email sync
+    */
+
+    if (
+      data.email ||
+      currentUser.email
+    ) {
+
+      localStorage.setItem(
+        "worker_email",
+        data.email ||
+        currentUser.email
+      );
+
+    }
+
+
+    /*
+       Balance is read from Firebase only.
+       Existing app balance logic is not
+       replaced in this step.
+    */
+
+    if (
+      typeof data.balance === "number"
+    ) {
+
+      localStorage.setItem(
+        "worker_balance",
+        data.balance.toFixed(2)
+      );
+
+    }
+
+
+    if (
+      typeof updateUserDisplays ===
+      "function"
+    ) {
+
+      updateUserDisplays();
+
+    }
+
+  }
+
+  catch (error) {
+
+    console.error(
+      "Firebase task user sync error:",
+      error
+    );
+
+  }
+
+}
+
+
 /* =========================================================
    PAGE LOAD
 ========================================================= */
@@ -1562,6 +1676,21 @@ document.addEventListener(
 
 
     updateWatchStatus();
+
+
+    /*
+       Firebase sync happens after
+       the existing task page loads.
+    */
+
+    setTimeout(
+      function() {
+
+        syncTaskUserFromFirebase();
+
+      },
+      300
+    );
 
   }
 );

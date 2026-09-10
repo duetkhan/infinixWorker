@@ -203,7 +203,6 @@
 
   <!-- TOP 320x50 AD -->
   <div class="top-ad">
-
     <script>
       atOptions = {
         'key' : 'b529261b98306ae1169a6bf5b991c3d4',
@@ -215,9 +214,7 @@
     </script>
 
     <script src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js"></script>
-
   </div>
-
 
   <!-- HEADER -->
   <header class="login-header">
@@ -232,7 +229,6 @@
 
   </header>
 
-
   <main class="login-content">
 
     <!-- LOGIN CARD -->
@@ -243,7 +239,6 @@
       <p class="login-subtitle">
         Login to continue working and earning
       </p>
-
 
       <form id="loginForm">
 
@@ -263,7 +258,6 @@
 
         </div>
 
-
         <div class="field">
 
           <label for="loginPassword">
@@ -280,7 +274,6 @@
 
         </div>
 
-
         <button
           type="submit"
           class="login-btn"
@@ -290,16 +283,15 @@
 
       </form>
 
-
       <div
         id="loginMessage"
         class="login-message">
       </div>
 
-
       <div class="signup-link">
 
         Don't have an account?
+
         <a href="signup.html">
           Create account
         </a>
@@ -307,7 +299,6 @@
       </div>
 
     </div>
-
 
     <!-- NATIVE 2:1 -->
     <div class="native-ad">
@@ -321,7 +312,6 @@
       <div id="container-80507bc8e3d998279cd413247931169e"></div>
 
     </div>
-
 
     <!-- BELOW NATIVE 320x50 -->
     <div class="bottom-banner">
@@ -341,7 +331,6 @@
     </div>
 
   </main>
-
 
   <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
@@ -378,7 +367,6 @@
 
 </div>
 
-
 <script>
 
 const USER_KEY = "iw_device_user";
@@ -401,40 +389,263 @@ function showMessage(text, type) {
 
 
 /* =========================================================
-   SAVE COMPATIBILITY SESSION
-   Firebase remains the real authentication system.
+   GET OLD LOCAL USER
+   Used only for compatibility.
+
+   IMPORTANT:
+   Password is NEVER read or saved.
+========================================================= */
+
+function getOldLocalUser() {
+
+  const saved = localStorage.getItem(USER_KEY);
+
+  if (!saved) {
+    return null;
+  }
+
+  try {
+
+    const user = JSON.parse(saved);
+
+    if (!user || typeof user !== "object") {
+      return null;
+    }
+
+    return user;
+
+  } catch (error) {
+
+    return null;
+
+  }
+
+}
+
+
+/* =========================================================
+   CREATE / SYNC FIRESTORE PROFILE + WALLET
+========================================================= */
+
+async function prepareFirebaseUser(user) {
+
+  if (!user || !user.uid) {
+    throw new Error("INVALID_FIREBASE_USER");
+  }
+
+  const profileRef =
+    firebaseDb
+      .collection("profiles")
+      .doc(user.uid);
+
+  const walletRef =
+    firebaseDb
+      .collection("wallets")
+      .doc(user.uid);
+
+
+  const oldUser = getOldLocalUser();
+
+
+  /*
+    First read profile.
+  */
+
+  const profileSnap =
+    await profileRef.get();
+
+
+  let username = "";
+
+
+  if (profileSnap.exists) {
+
+    const profileData =
+      profileSnap.data() || {};
+
+    username =
+      profileData.username ||
+      "";
+
+  }
+
+
+  /*
+    If Firebase profile does not have username,
+    use old local username only when the email
+    belongs to the same Firebase account.
+  */
+
+  if (!username && oldUser) {
+
+    const oldEmail =
+      String(oldUser.email || "")
+        .trim()
+        .toLowerCase();
+
+    const firebaseEmail =
+      String(user.email || "")
+        .trim()
+        .toLowerCase();
+
+    if (
+      oldEmail &&
+      firebaseEmail &&
+      oldEmail === firebaseEmail &&
+      oldUser.username
+    ) {
+
+      username =
+        String(oldUser.username).trim();
+
+    }
+
+  }
+
+
+  /*
+    Final fallback.
+  */
+
+  if (!username) {
+
+    const emailName =
+      String(user.email || "")
+        .split("@")[0]
+        .trim();
+
+    username =
+      emailName || "worker";
+
+  }
+
+
+  /*
+    Create profile if missing.
+    If profile exists, only fill missing username/email/balance.
+  */
+
+  if (!profileSnap.exists) {
+
+    await profileRef.set({
+
+      username: username,
+
+      email: user.email || "",
+
+      balance: 0,
+
+      role: "user",
+
+      createdAt:
+        firebase.firestore.FieldValue
+          .serverTimestamp()
+
+    });
+
+  } else {
+
+    const profileData =
+      profileSnap.data() || {};
+
+    const updateData = {};
+
+
+    if (!profileData.username) {
+
+      updateData.username =
+        username;
+
+    }
+
+
+    if (!profileData.email) {
+
+      updateData.email =
+        user.email || "";
+
+    }
+
+
+    if (
+      typeof profileData.balance !== "number"
+    ) {
+
+      updateData.balance = 0;
+
+    }
+
+
+    if (
+      !profileData.role
+    ) {
+
+      updateData.role = "user";
+
+    }
+
+
+    if (
+      Object.keys(updateData).length > 0
+    ) {
+
+      await profileRef.update(
+        updateData
+      );
+
+    }
+
+  }
+
+
+  /*
+    Create wallet if missing.
+  */
+
+  const walletSnap =
+    await walletRef.get();
+
+
+  if (!walletSnap.exists) {
+
+    await walletRef.set({
+
+      balance: 0,
+
+      pending_balance: 0,
+
+      total_earned: 0,
+
+      total_withdrawn: 0,
+
+      userId: user.uid,
+
+      createdAt:
+        firebase.firestore.FieldValue
+          .serverTimestamp()
+
+    });
+
+  }
+
+
+  /*
+    Return username for local compatibility.
+  */
+
+  return username;
+
+}
+
+
+/* =========================================================
+   SAVE FIREBASE SESSION
 ========================================================= */
 
 async function saveFirebaseSession(user) {
 
-  let username = "";
-
-  try {
-
-    const profileDoc =
-      await firebaseDb
-        .collection("profiles")
-        .doc(user.uid)
-        .get();
-
-    if (profileDoc.exists) {
-
-      const data = profileDoc.data();
-
-      username =
-        data.username ||
-        "";
-
-    }
-
-  } catch (error) {
-
-    console.log(
-      "Profile read warning:",
-      error
-    );
-
-  }
+  const username =
+    await prepareFirebaseUser(user);
 
 
   localStorage.setItem(
@@ -442,70 +653,52 @@ async function saveFirebaseSession(user) {
     username
   );
 
+
   localStorage.setItem(
     "worker_email",
     user.email || ""
   );
+
 
   localStorage.setItem(
     LOGIN_KEY,
     "true"
   );
 
-  /*
-    Keep device marker for the existing
-    one-device system.
-
-    IMPORTANT:
-    No password is stored here.
-  */
-
-  const existingDeviceUser =
-    localStorage.getItem(USER_KEY);
-
-  let deviceUser = {};
-
-  if (existingDeviceUser) {
-
-    try {
-
-      deviceUser =
-        JSON.parse(existingDeviceUser);
-
-    } catch (error) {
-
-      deviceUser = {};
-
-    }
-
-  }
-
-  deviceUser.username =
-    username ||
-    deviceUser.username ||
-    "";
-
-  deviceUser.email =
-    user.email ||
-    deviceUser.email ||
-    "";
-
-  deviceUser.firebaseUid =
-    user.uid;
-
-  if (!deviceUser.createdAt) {
-
-    deviceUser.createdAt =
-      new Date().toISOString();
-
-  }
 
   /*
-    Remove old plaintext password if an
-    old local account had one.
+    Preserve device marker,
+    but NEVER store password.
   */
+
+  const oldUser =
+    getOldLocalUser() || {};
+
+
+  const deviceUser = {
+
+    username:
+      username ||
+      oldUser.username ||
+      "",
+
+    email:
+      user.email ||
+      oldUser.email ||
+      "",
+
+    firebaseUid:
+      user.uid,
+
+    createdAt:
+      oldUser.createdAt ||
+      new Date().toISOString()
+
+  };
+
 
   delete deviceUser.password;
+
 
   localStorage.setItem(
     USER_KEY,
@@ -516,28 +709,26 @@ async function saveFirebaseSession(user) {
 
 
 /* =========================================================
-   CHECK FIREBASE LOGIN
+   FIREBASE AUTH STATE
 ========================================================= */
 
 firebaseAuth.onAuthStateChanged(
   function(user) {
 
+    /*
+      Do not redirect automatically here.
+
+      This prevents the login page from
+      fighting with the form while Firebase
+      restores an old session.
+    */
+
     if (user) {
 
-      /*
-        Firebase session already exists.
-        Keep compatibility data synchronized.
-      */
-
-      saveFirebaseSession(user)
-        .catch(function(error) {
-
-          console.log(
-            "Session sync warning:",
-            error
-          );
-
-        });
+      console.log(
+        "Firebase session detected:",
+        user.email
+      );
 
     }
 
@@ -573,7 +764,9 @@ document
 
 
       const loginBtn =
-        document.getElementById("loginBtn");
+        document.getElementById(
+          "loginBtn"
+        );
 
 
       if (!email || !password) {
@@ -613,13 +806,13 @@ document
 
 
         /*
-          Save only compatibility/session
-          information locally.
-
-          PASSWORD IS NEVER SAVED.
+          Make sure Firebase profile
+          and wallet exist.
         */
 
-        await saveFirebaseSession(user);
+        await saveFirebaseSession(
+          user
+        );
 
 
         showMessage(
@@ -660,6 +853,7 @@ document
             "Please enter a valid email address.";
 
         }
+
         else if (
           error.code ===
           "auth/user-not-found"
@@ -669,6 +863,7 @@ document
             "No account found with this email.";
 
         }
+
         else if (
           error.code ===
           "auth/wrong-password"
@@ -678,6 +873,7 @@ document
             "Incorrect password.";
 
         }
+
         else if (
           error.code ===
           "auth/invalid-credential"
@@ -687,6 +883,7 @@ document
             "Invalid email or password.";
 
         }
+
         else if (
           error.code ===
           "auth/user-disabled"
@@ -696,6 +893,7 @@ document
             "This account has been disabled.";
 
         }
+
         else if (
           error.code ===
           "auth/too-many-requests"
@@ -705,6 +903,7 @@ document
             "Too many login attempts. Please try again later.";
 
         }
+
         else if (
           error.code ===
           "auth/network-request-failed"
@@ -712,6 +911,27 @@ document
 
           message =
             "Network error. Please check your internet connection.";
+
+        }
+
+        else if (
+          error.code ===
+          "permission-denied"
+        ) {
+
+          message =
+            "Firebase permission denied. Please check Firestore rules.";
+
+        }
+
+        else if (
+          error.message
+        ) {
+
+          console.error(
+            "Firebase error detail:",
+            error.message
+          );
 
         }
 
@@ -735,15 +955,17 @@ document
 
 /* =========================================================
    REMOVE OLD PLAINTEXT PASSWORD
-   This does not affect Firebase authentication.
 ========================================================= */
 
 (function cleanupOldLocalPassword() {
 
-  const savedUser =
-    localStorage.getItem(USER_KEY);
+  const saved =
+    localStorage.getItem(
+      USER_KEY
+    );
 
-  if (!savedUser) {
+
+  if (!saved) {
     return;
   }
 
@@ -751,10 +973,11 @@ document
   try {
 
     const user =
-      JSON.parse(savedUser);
+      JSON.parse(saved);
 
 
     if (
+      user &&
       Object.prototype.hasOwnProperty.call(
         user,
         "password"

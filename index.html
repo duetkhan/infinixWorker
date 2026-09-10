@@ -13,6 +13,65 @@
   <title>Infinix Worker</title>
 
   <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* =====================================================
+       INFINIX WORKER HOME BRANDING
+    ====================================================== */
+
+    .home-branding {
+      width: 100%;
+      padding: 14px 14px 4px;
+      box-sizing: border-box;
+    }
+
+    .home-logo-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .home-logo {
+      width: 88px;
+      height: 88px;
+      object-fit: contain;
+      display: block;
+      border-radius: 22px;
+    }
+
+    .home-banner-wrap {
+      width: 100%;
+      margin: 0 auto 15px;
+      overflow: hidden;
+      border-radius: 18px;
+      box-shadow: 0 7px 24px rgba(7, 85, 201, 0.18);
+      background: #eef5ff;
+    }
+
+    .home-banner {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+    }
+
+    @media (min-width: 700px) {
+      .home-branding {
+        max-width: 680px;
+        margin: 0 auto;
+      }
+
+      .home-logo {
+        width: 105px;
+        height: 105px;
+      }
+
+      .home-banner-wrap {
+        border-radius: 22px;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -57,6 +116,40 @@
     </div>
 
   </header>
+
+
+  <!-- =====================================================
+       NEW LOGO + BANNER
+  ====================================================== -->
+
+  <section class="home-branding">
+
+    <!-- NEW LOGO -->
+
+    <div class="home-logo-wrap">
+
+      <img
+        src="infinix-worker-logo.png"
+        alt="Infinix Worker Logo"
+        class="home-logo"
+      >
+
+    </div>
+
+
+    <!-- NEW BANNER -->
+
+    <div class="home-banner-wrap">
+
+      <img
+        src="infinix-worker-banner.png"
+        alt="Infinix Worker - Complete Tasks and Earn Real Money"
+        class="home-banner"
+      >
+
+    </div>
+
+  </section>
 
 
   <!-- =====================================================

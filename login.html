@@ -8,6 +8,12 @@
 
   <link rel="stylesheet" href="style.css">
 
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
   <style>
     .login-page {
       min-height: 100vh;
@@ -373,27 +379,10 @@
 </div>
 
 
-<!-- =====================================================
-     FIREBASE SDK
-===================================================== -->
-
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
-
-
 <script>
 
-/* =========================================================
-   EXISTING KEYS
-========================================================= */
-
-const USER_KEY =
-  "iw_device_user";
-
-const LOGIN_KEY =
-  "worker_logged_in";
+const USER_KEY = "iw_device_user";
+const LOGIN_KEY = "worker_logged_in";
 
 
 /* =========================================================
@@ -402,49 +391,48 @@ const LOGIN_KEY =
 
 function showMessage(text, type) {
 
-  const box =
-    document.getElementById("loginMessage");
+  const box = document.getElementById("loginMessage");
 
   box.textContent = text;
 
-  box.className =
-    "login-message " + type;
+  box.className = "login-message " + type;
 
 }
 
 
 /* =========================================================
-   SAVE LOGIN STATE
+   SAVE COMPATIBILITY SESSION
+   Firebase remains the real authentication system.
 ========================================================= */
 
-function saveLoginState(user, profileData) {
+async function saveFirebaseSession(user) {
 
   let username = "";
 
+  try {
 
-  if (
-    profileData &&
-    profileData.username
-  ) {
+    const profileDoc =
+      await firebaseDb
+        .collection("profiles")
+        .doc(user.uid)
+        .get();
 
-    username =
-      profileData.username;
+    if (profileDoc.exists) {
 
-  }
-  else if (
-    user.displayName
-  ) {
+      const data = profileDoc.data();
 
-    username =
-      user.displayName;
+      username =
+        data.username ||
+        "";
 
-  }
-  else if (
-    user.email
-  ) {
+    }
 
-    username =
-      user.email.split("@")[0];
+  } catch (error) {
+
+    console.log(
+      "Profile read warning:",
+      error
+    );
 
   }
 
@@ -454,246 +442,102 @@ function saveLoginState(user, profileData) {
     username
   );
 
-
   localStorage.setItem(
     "worker_email",
     user.email || ""
   );
 
-
   localStorage.setItem(
     LOGIN_KEY,
     "true"
   );
 
-
   /*
-    Do not overwrite an existing balance.
+    Keep device marker for the existing
+    one-device system.
+
+    IMPORTANT:
+    No password is stored here.
   */
 
-  if (
-    !localStorage.getItem(
-      "worker_balance"
-    )
-  ) {
+  const existingDeviceUser =
+    localStorage.getItem(USER_KEY);
 
-    localStorage.setItem(
-      "worker_balance",
-      "0.00"
-    );
+  let deviceUser = {};
 
-  }
-
-}
-
-
-/* =========================================================
-   FIREBASE LOGIN
-========================================================= */
-
-async function firebaseLogin(
-  email,
-  password
-) {
-
-  const result =
-    await firebaseAuth
-      .signInWithEmailAndPassword(
-        email,
-        password
-      );
-
-
-  const user =
-    result.user;
-
-
-  let profileData = null;
-
-
-  /*
-    Read username from Firestore profile.
-  */
-
-  try {
-
-    const profileSnapshot =
-      await firebaseDb
-        .collection("profiles")
-        .doc(user.uid)
-        .get();
-
-
-    if (
-      profileSnapshot.exists
-    ) {
-
-      profileData =
-        profileSnapshot.data();
-
-    }
-
-  }
-  catch (error) {
-
-    console.warn(
-      "Profile read failed:",
-      error
-    );
-
-  }
-
-
-  saveLoginState(
-    user,
-    profileData
-  );
-
-
-  return user;
-
-}
-
-
-/* =========================================================
-   OLD LOCALSTORAGE LOGIN
-   Temporary migration fallback
-========================================================= */
-
-function oldLocalLogin(
-  email,
-  password
-) {
-
-  const savedUser =
-    localStorage.getItem(
-      USER_KEY
-    );
-
-
-  if (!savedUser) {
-
-    return false;
-
-  }
-
-
-  let user;
-
-
-  try {
-
-    user =
-      JSON.parse(savedUser);
-
-  }
-  catch (error) {
-
-    return false;
-
-  }
-
-
-  if (
-    user.email !== email ||
-    user.password !== password
-  ) {
-
-    return false;
-
-  }
-
-
-  localStorage.setItem(
-    "worker_username",
-    user.username
-  );
-
-
-  localStorage.setItem(
-    "worker_email",
-    user.email
-  );
-
-
-  localStorage.setItem(
-    LOGIN_KEY,
-    "true"
-  );
-
-
-  if (
-    !localStorage.getItem(
-      "worker_balance"
-    )
-  ) {
-
-    localStorage.setItem(
-      "worker_balance",
-      "0.00"
-    );
-
-  }
-
-
-  return true;
-
-}
-
-
-/* =========================================================
-   CHECK FIREBASE SESSION
-========================================================= */
-
-firebaseAuth.onAuthStateChanged(
-  async function(user) {
-
-    if (!user) {
-
-      return;
-
-    }
-
-
-    /*
-      Keep Firebase session synchronized
-      with the existing app session.
-    */
+  if (existingDeviceUser) {
 
     try {
 
-      let profileData = null;
+      deviceUser =
+        JSON.parse(existingDeviceUser);
 
+    } catch (error) {
 
-      const profileSnapshot =
-        await firebaseDb
-          .collection("profiles")
-          .doc(user.uid)
-          .get();
-
-
-      if (
-        profileSnapshot.exists
-      ) {
-
-        profileData =
-          profileSnapshot.data();
-
-      }
-
-
-      saveLoginState(
-        user,
-        profileData
-      );
+      deviceUser = {};
 
     }
-    catch (error) {
 
-      console.warn(
-        "Session synchronization failed:",
-        error
-      );
+  }
+
+  deviceUser.username =
+    username ||
+    deviceUser.username ||
+    "";
+
+  deviceUser.email =
+    user.email ||
+    deviceUser.email ||
+    "";
+
+  deviceUser.firebaseUid =
+    user.uid;
+
+  if (!deviceUser.createdAt) {
+
+    deviceUser.createdAt =
+      new Date().toISOString();
+
+  }
+
+  /*
+    Remove old plaintext password if an
+    old local account had one.
+  */
+
+  delete deviceUser.password;
+
+  localStorage.setItem(
+    USER_KEY,
+    JSON.stringify(deviceUser)
+  );
+
+}
+
+
+/* =========================================================
+   CHECK FIREBASE LOGIN
+========================================================= */
+
+firebaseAuth.onAuthStateChanged(
+  function(user) {
+
+    if (user) {
+
+      /*
+        Firebase session already exists.
+        Keep compatibility data synchronized.
+      */
+
+      saveFirebaseSession(user)
+        .catch(function(error) {
+
+          console.log(
+            "Session sync warning:",
+            error
+          );
+
+        });
 
     }
 
@@ -702,16 +546,16 @@ firebaseAuth.onAuthStateChanged(
 
 
 /* =========================================================
-   LOGIN FORM
+   LOGIN
 ========================================================= */
 
 document
   .getElementById("loginForm")
   .addEventListener(
     "submit",
-    async function(e) {
+    async function(event) {
 
-      e.preventDefault();
+      event.preventDefault();
 
 
       const email =
@@ -729,31 +573,53 @@ document
 
 
       const loginBtn =
-        document.getElementById(
-          "loginBtn"
+        document.getElementById("loginBtn");
+
+
+      if (!email || !password) {
+
+        showMessage(
+          "Please enter your email and password.",
+          "error"
         );
 
+        return;
 
-      loginBtn.disabled =
-        true;
-
-
-      showMessage(
-        "Logging in...",
-        "success"
-      );
+      }
 
 
-      /*
-        Firebase first.
-      */
+      loginBtn.disabled = true;
+
+      loginBtn.textContent =
+        "Logging in...";
+
 
       try {
 
-        await firebaseLogin(
-          email,
-          password
-        );
+        /*
+          REAL FIREBASE LOGIN
+        */
+
+        const result =
+          await firebaseAuth
+            .signInWithEmailAndPassword(
+              email,
+              password
+            );
+
+
+        const user =
+          result.user;
+
+
+        /*
+          Save only compatibility/session
+          information locally.
+
+          PASSWORD IS NEVER SAVED.
+        */
+
+        await saveFirebaseSession(user);
 
 
         showMessage(
@@ -773,64 +639,147 @@ document
         );
 
 
-        return;
+      } catch (error) {
 
-      }
-      catch (firebaseError) {
-
-        console.warn(
+        console.error(
           "Firebase login error:",
-          firebaseError
+          error
         );
 
-      }
+
+        let message =
+          "Login failed. Please check your email and password.";
 
 
-      /*
-        Temporary fallback for an old
-        localStorage account.
-      */
+        if (
+          error.code ===
+          "auth/invalid-email"
+        ) {
 
-      if (
-        oldLocalLogin(
-          email,
-          password
-        )
-      ) {
+          message =
+            "Please enter a valid email address.";
+
+        }
+        else if (
+          error.code ===
+          "auth/user-not-found"
+        ) {
+
+          message =
+            "No account found with this email.";
+
+        }
+        else if (
+          error.code ===
+          "auth/wrong-password"
+        ) {
+
+          message =
+            "Incorrect password.";
+
+        }
+        else if (
+          error.code ===
+          "auth/invalid-credential"
+        ) {
+
+          message =
+            "Invalid email or password.";
+
+        }
+        else if (
+          error.code ===
+          "auth/user-disabled"
+        ) {
+
+          message =
+            "This account has been disabled.";
+
+        }
+        else if (
+          error.code ===
+          "auth/too-many-requests"
+        ) {
+
+          message =
+            "Too many login attempts. Please try again later.";
+
+        }
+        else if (
+          error.code ===
+          "auth/network-request-failed"
+        ) {
+
+          message =
+            "Network error. Please check your internet connection.";
+
+        }
+
 
         showMessage(
-          "Login successful. Redirecting...",
-          "success"
+          message,
+          "error"
         );
 
 
-        setTimeout(
-          function() {
+        loginBtn.disabled = false;
 
-            window.location.href =
-              "index.html";
-
-          },
-          700
-        );
-
-
-        return;
+        loginBtn.textContent =
+          "Login";
 
       }
-
-
-      loginBtn.disabled =
-        false;
-
-
-      showMessage(
-        "Invalid email or password.",
-        "error"
-      );
 
     }
   );
+
+
+/* =========================================================
+   REMOVE OLD PLAINTEXT PASSWORD
+   This does not affect Firebase authentication.
+========================================================= */
+
+(function cleanupOldLocalPassword() {
+
+  const savedUser =
+    localStorage.getItem(USER_KEY);
+
+  if (!savedUser) {
+    return;
+  }
+
+
+  try {
+
+    const user =
+      JSON.parse(savedUser);
+
+
+    if (
+      Object.prototype.hasOwnProperty.call(
+        user,
+        "password"
+      )
+    ) {
+
+      delete user.password;
+
+
+      localStorage.setItem(
+        USER_KEY,
+        JSON.stringify(user)
+      );
+
+    }
+
+  } catch (error) {
+
+    console.log(
+      "Old local account cleanup skipped."
+    );
+
+  }
+
+})();
 
 </script>
 

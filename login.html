@@ -373,10 +373,20 @@
 </div>
 
 
+<!-- =====================================================
+     FIREBASE SDK
+===================================================== -->
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+
+
 <script>
 
 /* =========================================================
-   EXISTING DEVICE ACCOUNT SYSTEM
+   EXISTING KEYS
 ========================================================= */
 
 const USER_KEY =
@@ -404,28 +414,302 @@ function showMessage(text, type) {
 
 
 /* =========================================================
-   CHECK EXISTING LOGIN
+   SAVE LOGIN STATE
 ========================================================= */
 
-if (
-  localStorage.getItem(LOGIN_KEY) === "true"
-) {
+function saveLoginState(user, profileData) {
 
-  window.location.href =
-    "index.html";
+  let username = "";
+
+
+  if (
+    profileData &&
+    profileData.username
+  ) {
+
+    username =
+      profileData.username;
+
+  }
+  else if (
+    user.displayName
+  ) {
+
+    username =
+      user.displayName;
+
+  }
+  else if (
+    user.email
+  ) {
+
+    username =
+      user.email.split("@")[0];
+
+  }
+
+
+  localStorage.setItem(
+    "worker_username",
+    username
+  );
+
+
+  localStorage.setItem(
+    "worker_email",
+    user.email || ""
+  );
+
+
+  localStorage.setItem(
+    LOGIN_KEY,
+    "true"
+  );
+
+
+  /*
+    Do not overwrite an existing balance.
+  */
+
+  if (
+    !localStorage.getItem(
+      "worker_balance"
+    )
+  ) {
+
+    localStorage.setItem(
+      "worker_balance",
+      "0.00"
+    );
+
+  }
 
 }
 
 
 /* =========================================================
-   LOGIN
+   FIREBASE LOGIN
+========================================================= */
+
+async function firebaseLogin(
+  email,
+  password
+) {
+
+  const result =
+    await firebaseAuth
+      .signInWithEmailAndPassword(
+        email,
+        password
+      );
+
+
+  const user =
+    result.user;
+
+
+  let profileData = null;
+
+
+  /*
+    Read username from Firestore profile.
+  */
+
+  try {
+
+    const profileSnapshot =
+      await firebaseDb
+        .collection("profiles")
+        .doc(user.uid)
+        .get();
+
+
+    if (
+      profileSnapshot.exists
+    ) {
+
+      profileData =
+        profileSnapshot.data();
+
+    }
+
+  }
+  catch (error) {
+
+    console.warn(
+      "Profile read failed:",
+      error
+    );
+
+  }
+
+
+  saveLoginState(
+    user,
+    profileData
+  );
+
+
+  return user;
+
+}
+
+
+/* =========================================================
+   OLD LOCALSTORAGE LOGIN
+   Temporary migration fallback
+========================================================= */
+
+function oldLocalLogin(
+  email,
+  password
+) {
+
+  const savedUser =
+    localStorage.getItem(
+      USER_KEY
+    );
+
+
+  if (!savedUser) {
+
+    return false;
+
+  }
+
+
+  let user;
+
+
+  try {
+
+    user =
+      JSON.parse(savedUser);
+
+  }
+  catch (error) {
+
+    return false;
+
+  }
+
+
+  if (
+    user.email !== email ||
+    user.password !== password
+  ) {
+
+    return false;
+
+  }
+
+
+  localStorage.setItem(
+    "worker_username",
+    user.username
+  );
+
+
+  localStorage.setItem(
+    "worker_email",
+    user.email
+  );
+
+
+  localStorage.setItem(
+    LOGIN_KEY,
+    "true"
+  );
+
+
+  if (
+    !localStorage.getItem(
+      "worker_balance"
+    )
+  ) {
+
+    localStorage.setItem(
+      "worker_balance",
+      "0.00"
+    );
+
+  }
+
+
+  return true;
+
+}
+
+
+/* =========================================================
+   CHECK FIREBASE SESSION
+========================================================= */
+
+firebaseAuth.onAuthStateChanged(
+  async function(user) {
+
+    if (!user) {
+
+      return;
+
+    }
+
+
+    /*
+      Keep Firebase session synchronized
+      with the existing app session.
+    */
+
+    try {
+
+      let profileData = null;
+
+
+      const profileSnapshot =
+        await firebaseDb
+          .collection("profiles")
+          .doc(user.uid)
+          .get();
+
+
+      if (
+        profileSnapshot.exists
+      ) {
+
+        profileData =
+          profileSnapshot.data();
+
+      }
+
+
+      saveLoginState(
+        user,
+        profileData
+      );
+
+    }
+    catch (error) {
+
+      console.warn(
+        "Session synchronization failed:",
+        error
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   LOGIN FORM
 ========================================================= */
 
 document
   .getElementById("loginForm")
   .addEventListener(
     "submit",
-    function(e) {
+    async function(e) {
 
       e.preventDefault();
 
@@ -445,130 +729,110 @@ document
 
 
       const loginBtn =
-        document.getElementById("loginBtn");
-
-
-      const savedUser =
-        localStorage.getItem(USER_KEY);
-
-
-      if (!savedUser) {
-
-        showMessage(
-          "No account found on this device. Please create an account first.",
-          "error"
+        document.getElementById(
+          "loginBtn"
         );
 
-        return;
 
-      }
-
-
-      let user;
-
-
-      try {
-
-        user =
-          JSON.parse(savedUser);
-
-      }
-      catch (error) {
-
-        showMessage(
-          "Account data is corrupted.",
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      if (
-        user.email !== email ||
-        user.password !== password
-      ) {
-
-        showMessage(
-          "Invalid email or password.",
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      /* LOGIN SUCCESS */
-
-      localStorage.setItem(
-        "worker_username",
-        user.username
-      );
-
-
-      localStorage.setItem(
-        "worker_email",
-        user.email
-      );
-
-
-      localStorage.setItem(
-        LOGIN_KEY,
-        "true"
-      );
-
-
-      if (
-        !localStorage.getItem(
-          "worker_balance"
-        )
-      ) {
-
-        localStorage.setItem(
-          "worker_balance",
-          "0.00"
-        );
-
-      }
-
-
-      loginBtn.disabled = true;
+      loginBtn.disabled =
+        true;
 
 
       showMessage(
-        "Login successful. Redirecting...",
+        "Logging in...",
         "success"
       );
 
 
-      setTimeout(
-        function() {
+      /*
+        Firebase first.
+      */
 
-          window.location.href =
-            "index.html";
+      try {
 
-        },
-        700
+        await firebaseLogin(
+          email,
+          password
+        );
+
+
+        showMessage(
+          "Login successful. Redirecting...",
+          "success"
+        );
+
+
+        setTimeout(
+          function() {
+
+            window.location.href =
+              "index.html";
+
+          },
+          700
+        );
+
+
+        return;
+
+      }
+      catch (firebaseError) {
+
+        console.warn(
+          "Firebase login error:",
+          firebaseError
+        );
+
+      }
+
+
+      /*
+        Temporary fallback for an old
+        localStorage account.
+      */
+
+      if (
+        oldLocalLogin(
+          email,
+          password
+        )
+      ) {
+
+        showMessage(
+          "Login successful. Redirecting...",
+          "success"
+        );
+
+
+        setTimeout(
+          function() {
+
+            window.location.href =
+              "index.html";
+
+          },
+          700
+        );
+
+
+        return;
+
+      }
+
+
+      loginBtn.disabled =
+        false;
+
+
+      showMessage(
+        "Invalid email or password.",
+        "error"
       );
 
     }
   );
 
 </script>
-
-
-<!-- =====================================================
-     FIREBASE SDK
-     Added only for Firebase migration preparation.
-     Existing login system above remains unchanged.
-===================================================== -->
-
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
 
 </body>
 </html>

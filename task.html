@@ -398,7 +398,6 @@
         class="task-timer">
       </div>
 
-      <!-- Kept hidden for compatibility -->
       <button
         id="watchCompleteBtn"
         class="btn success"
@@ -485,17 +484,20 @@
 </div>
 
 
+<script src="app.js"></script>
+
+
 <!-- =========================================================
-     FIREBASE SDK
+     FIREBASE
 ========================================================= -->
 
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
 
-<!-- EXISTING APP -->
-<script src="app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+
+<script src="firebase-config.js"></script>
 
 
 <script>
@@ -513,6 +515,14 @@ const WATCH_DAILY_LIMIT = 30;
 
 
 /* =========================================================
+   FIREBASE STATE
+========================================================= */
+
+let firebaseAuthReady = false;
+let firebaseTaskUser = null;
+
+
+/* =========================================================
    MESSAGE
 ========================================================= */
 
@@ -520,6 +530,10 @@ function showTaskMessage(text, type) {
 
   const box =
     document.getElementById("taskMessage");
+
+  if (!box) {
+    return;
+  }
 
   box.style.display = "block";
 
@@ -532,6 +546,464 @@ function showTaskMessage(text, type) {
     );
 
   box.textContent = text;
+
+}
+
+
+/* =========================================================
+   FIREBASE USER
+========================================================= */
+
+function getTaskFirebaseUser() {
+
+  if (
+    typeof firebaseAuth !== "undefined" &&
+    firebaseAuth.currentUser
+  ) {
+
+    return firebaseAuth.currentUser;
+
+  }
+
+  if (
+    typeof window.firebaseAuth !== "undefined" &&
+    window.firebaseAuth.currentUser
+  ) {
+
+    return window.firebaseAuth.currentUser;
+
+  }
+
+  return null;
+
+}
+
+
+/* =========================================================
+   UPDATE TASK BALANCE UI
+========================================================= */
+
+function updateTaskBalance(balance) {
+
+  const elements =
+    document.querySelectorAll(
+      "[data-balance]"
+    );
+
+  const value =
+    Number(balance || 0);
+
+
+  elements.forEach(function(element) {
+
+    element.textContent =
+      value.toFixed(2);
+
+  });
+
+
+  /*
+     Compatibility value for existing app.js.
+     Firebase remains the real backend.
+  */
+
+  localStorage.setItem(
+    "worker_balance",
+    value.toFixed(2)
+  );
+
+}
+
+
+/* =========================================================
+   UPDATE USERNAME
+========================================================= */
+
+function updateTaskUsername(username) {
+
+  const elements =
+    document.querySelectorAll(
+      "[data-username]"
+    );
+
+
+  const name =
+    username ||
+    "Guest User";
+
+
+  elements.forEach(function(element) {
+
+    element.textContent =
+      name;
+
+  });
+
+
+  if (username) {
+
+    localStorage.setItem(
+      "worker_username",
+      username
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   LOAD FIREBASE BALANCE
+========================================================= */
+
+async function loadTaskFirebaseBalance() {
+
+  const user =
+    getTaskFirebaseUser();
+
+
+  if (!user) {
+
+    updateTaskBalance(0);
+
+    return 0;
+
+  }
+
+
+  try {
+
+    const walletRef =
+      firebaseDb
+        .collection("wallets")
+        .doc(user.uid);
+
+
+    const walletSnap =
+      await walletRef.get();
+
+
+    if (walletSnap.exists) {
+
+      const data =
+        walletSnap.data() || {};
+
+
+      const balance =
+        Number(data.balance || 0);
+
+
+      updateTaskBalance(balance);
+
+      return balance;
+
+    }
+
+
+    /*
+      Compatibility fallback:
+      profile balance.
+    */
+
+    const profileRef =
+      firebaseDb
+        .collection("profiles")
+        .doc(user.uid);
+
+
+    const profileSnap =
+      await profileRef.get();
+
+
+    if (profileSnap.exists) {
+
+      const data =
+        profileSnap.data() || {};
+
+
+      const balance =
+        Number(data.balance || 0);
+
+
+      updateTaskBalance(balance);
+
+      return balance;
+
+    }
+
+
+    updateTaskBalance(0);
+
+    return 0;
+
+
+  } catch (error) {
+
+    console.error(
+      "Task balance load error:",
+      error
+    );
+
+
+    const localBalance =
+      Number(
+        localStorage.getItem(
+          "worker_balance"
+        ) || "0"
+      );
+
+
+    updateTaskBalance(
+      localBalance
+    );
+
+
+    return localBalance;
+
+  }
+
+}
+
+
+/* =========================================================
+   FIREBASE REWARD TRANSACTION
+========================================================= */
+
+async function addFirebaseReward(
+  reward,
+  rewardType
+) {
+
+  const user =
+    getTaskFirebaseUser();
+
+
+  if (!user) {
+
+    throw new Error(
+      "LOGIN_REQUIRED"
+    );
+
+  }
+
+
+  const numericReward =
+    Number(reward);
+
+
+  if (
+    !Number.isFinite(numericReward) ||
+    numericReward <= 0
+  ) {
+
+    throw new Error(
+      "INVALID_REWARD"
+    );
+
+  }
+
+
+  const walletRef =
+    firebaseDb
+      .collection("wallets")
+      .doc(user.uid);
+
+
+  const profileRef =
+    firebaseDb
+      .collection("profiles")
+      .doc(user.uid);
+
+
+  let resultingBalance = 0;
+
+
+  await firebaseDb.runTransaction(
+    async function(transaction) {
+
+      const walletSnap =
+        await transaction.get(
+          walletRef
+        );
+
+
+      const profileSnap =
+        await transaction.get(
+          profileRef
+        );
+
+
+      const walletData =
+        walletSnap.exists
+          ? (walletSnap.data() || {})
+          : {};
+
+
+      const profileData =
+        profileSnap.exists
+          ? (profileSnap.data() || {})
+          : {};
+
+
+      let currentBalance;
+
+
+      if (
+        walletSnap.exists &&
+        walletData.balance !== undefined
+      ) {
+
+        currentBalance =
+          Number(
+            walletData.balance || 0
+          );
+
+      } else {
+
+        currentBalance =
+          Number(
+            profileData.balance || 0
+          );
+
+      }
+
+
+      if (
+        !Number.isFinite(currentBalance)
+      ) {
+
+        currentBalance = 0;
+
+      }
+
+
+      resultingBalance =
+        Number(
+          (
+            currentBalance +
+            numericReward
+          ).toFixed(2)
+        );
+
+
+      /*
+        Wallet update.
+      */
+
+      if (walletSnap.exists) {
+
+        transaction.update(
+          walletRef,
+          {
+            balance: resultingBalance,
+
+            total_earned:
+              Number(
+                walletData.total_earned || 0
+              ) + numericReward,
+
+            updatedAt:
+              firebase.firestore.FieldValue
+                .serverTimestamp()
+          }
+        );
+
+      } else {
+
+        transaction.set(
+          walletRef,
+          {
+            userId: user.uid,
+
+            balance: resultingBalance,
+
+            pending_balance: 0,
+
+            total_earned:
+              numericReward,
+
+            total_withdrawn: 0,
+
+            updatedAt:
+              firebase.firestore.FieldValue
+                .serverTimestamp()
+          }
+        );
+
+      }
+
+
+      /*
+        Profile balance synchronization.
+      */
+
+      if (profileSnap.exists) {
+
+        transaction.update(
+          profileRef,
+          {
+            balance: resultingBalance,
+
+            updatedAt:
+              firebase.firestore.FieldValue
+                .serverTimestamp()
+          }
+        );
+
+      } else {
+
+        transaction.set(
+          profileRef,
+          {
+            username:
+              user.displayName ||
+              localStorage.getItem(
+                "worker_username"
+              ) ||
+              "User",
+
+            email:
+              user.email || "",
+
+            balance:
+              resultingBalance,
+
+            createdAt:
+              firebase.firestore.FieldValue
+                .serverTimestamp(),
+
+            updatedAt:
+              firebase.firestore.FieldValue
+                .serverTimestamp()
+          }
+        );
+
+      }
+
+    }
+  );
+
+
+  /*
+    Compatibility localStorage update.
+  */
+
+  localStorage.setItem(
+    "worker_balance",
+    resultingBalance.toFixed(2)
+  );
+
+
+  /*
+    Update visible balance.
+  */
+
+  updateTaskBalance(
+    resultingBalance
+  );
+
+
+  return resultingBalance;
 
 }
 
@@ -551,11 +1023,34 @@ let webTaskActive = false;
 
 function startWebTask() {
 
-  if (typeof requireLogin === "function") {
+  if (!firebaseAuthReady) {
 
-    if (!requireLogin()) {
-      return;
+    showTaskMessage(
+      "Please wait a moment and try again.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  if (!getTaskFirebaseUser()) {
+
+    if (
+      typeof requireLogin === "function"
+    ) {
+
+      requireLogin();
+
+    } else {
+
+      window.location.href =
+        "login.html";
+
     }
+
+    return;
 
   }
 
@@ -563,26 +1058,29 @@ function startWebTask() {
   const today =
     new Date().toISOString().slice(0, 10);
 
+
   const dateKey =
     "iw_web_task_date";
+
 
   const countKey =
     "iw_web_task_count";
 
 
   let savedDate =
-    localStorage.getItem(dateKey);
-
-  let count =
-    parseInt(
-      localStorage.getItem(countKey) || "0",
-      10
+    localStorage.getItem(
+      dateKey
     );
 
 
-  /*
-     New day = reset
-  */
+  let count =
+    parseInt(
+      localStorage.getItem(
+        countKey
+      ) || "0",
+      10
+    );
+
 
   if (savedDate !== today) {
 
@@ -601,11 +1099,10 @@ function startWebTask() {
   }
 
 
-  /*
-     Daily limit
-  */
-
-  if (count >= WEB_DAILY_LIMIT) {
+  if (
+    count >=
+    WEB_DAILY_LIMIT
+  ) {
 
     showTaskMessage(
       "Today's Visit Web limit is completed: 10/10.",
@@ -623,21 +1120,31 @@ function startWebTask() {
 
 
   const startBtn =
-    document.getElementById("webStartBtn");
+    document.getElementById(
+      "webStartBtn"
+    );
+
 
   const timer =
-    document.getElementById("webTimer");
+    document.getElementById(
+      "webTimer"
+    );
+
 
   const completeBtn =
-    document.getElementById("webCompleteBtn");
+    document.getElementById(
+      "webCompleteBtn"
+    );
 
 
   /*
-     ALWAYS OPEN SMARTLINK
+    Visit Web keeps the existing
+    every-click Smartlink behavior.
   */
 
   const smartlink =
     "https://www.profitableratecpmnetwork.com/xujhdqwep?key=a7974e14e4446b0e7745df0efe2ed3e9";
+
 
   window.open(
     smartlink,
@@ -646,12 +1153,9 @@ function startWebTask() {
   );
 
 
-  /*
-     Start 60 second timer
-  */
-
   webStartedAt =
     Date.now();
+
 
   webTaskActive =
     true;
@@ -660,8 +1164,10 @@ function startWebTask() {
   startBtn.style.display =
     "none";
 
+
   timer.style.display =
     "block";
+
 
   completeBtn.style.display =
     "none";
@@ -683,50 +1189,60 @@ function startWebTask() {
 
 
   webInterval =
-    setInterval(function() {
+    setInterval(
+      function() {
 
-      const elapsed =
-        Math.floor(
-          (Date.now() - webStartedAt) / 1000
-        );
-
-
-      remaining =
-        Math.max(
-          0,
-          WEB_WAIT - elapsed
-        );
+        const elapsed =
+          Math.floor(
+            (
+              Date.now() -
+              webStartedAt
+            ) / 1000
+          );
 
 
-      if (remaining > 0) {
+        remaining =
+          Math.max(
+            0,
+            WEB_WAIT -
+            elapsed
+          );
 
-        timer.textContent =
-          "Stay on the activity. Remaining: " +
-          remaining +
-          "s";
 
-      }
-      else {
+        if (
+          remaining > 0
+        ) {
 
-        clearInterval(
-          webInterval
-        );
+          timer.textContent =
+            "Stay on the activity. Remaining: " +
+            remaining +
+            "s";
 
-        timer.textContent =
-          "1 minute completed. You can complete the task.";
+        } else {
 
-        completeBtn.style.display =
-          "block";
+          clearInterval(
+            webInterval
+          );
 
-      }
 
-    }, 1000);
+          timer.textContent =
+            "1 minute completed. You can complete the task.";
+
+
+          completeBtn.style.display =
+            "block";
+
+        }
+
+      },
+      1000
+    );
 
 }
 
 
 /* =========================================================
-   VISIT WEB RETURN CHECK
+   VISIBILITY CHECK
 ========================================================= */
 
 document.addEventListener(
@@ -734,17 +1250,23 @@ document.addEventListener(
   function() {
 
     if (
-      document.visibilityState === "visible" &&
+      document.visibilityState ===
+      "visible" &&
       webTaskActive
     ) {
 
       const elapsed =
         Math.floor(
-          (Date.now() - webStartedAt) / 1000
+          (
+            Date.now() -
+            webStartedAt
+          ) / 1000
         );
 
 
-      if (elapsed < WEB_WAIT) {
+      if (
+        elapsed < WEB_WAIT
+      ) {
 
         cancelEarlyWebTask();
 
@@ -755,6 +1277,10 @@ document.addEventListener(
   }
 );
 
+
+/* =========================================================
+   FOCUS CHECK
+========================================================= */
 
 window.addEventListener(
   "focus",
@@ -767,11 +1293,16 @@ window.addEventListener(
 
     const elapsed =
       Math.floor(
-        (Date.now() - webStartedAt) / 1000
+        (
+          Date.now() -
+          webStartedAt
+        ) / 1000
       );
 
 
-    if (elapsed < WEB_WAIT) {
+    if (
+      elapsed < WEB_WAIT
+    ) {
 
       cancelEarlyWebTask();
 
@@ -782,7 +1313,7 @@ window.addEventListener(
 
 
 /* =========================================================
-   CANCEL EARLY WEB TASK
+   CANCEL EARLY
 ========================================================= */
 
 function cancelEarlyWebTask() {
@@ -791,31 +1322,44 @@ function cancelEarlyWebTask() {
     webInterval
   );
 
+
   webTaskActive =
     false;
+
 
   webStartedAt =
     0;
 
 
   const startBtn =
-    document.getElementById("webStartBtn");
+    document.getElementById(
+      "webStartBtn"
+    );
+
 
   const timer =
-    document.getElementById("webTimer");
+    document.getElementById(
+      "webTimer"
+    );
+
 
   const completeBtn =
-    document.getElementById("webCompleteBtn");
+    document.getElementById(
+      "webCompleteBtn"
+    );
 
 
   startBtn.style.display =
     "block";
 
+
   completeBtn.style.display =
     "none";
 
+
   timer.style.display =
     "block";
+
 
   timer.textContent =
     "Returned too early. No reward.";
@@ -833,13 +1377,26 @@ function cancelEarlyWebTask() {
    COMPLETE WEB TASK
 ========================================================= */
 
-function completeWebTask() {
+async function completeWebTask() {
 
-  if (typeof requireLogin === "function") {
+  if (!firebaseAuthReady) {
 
-    if (!requireLogin()) {
-      return;
-    }
+    showTaskMessage(
+      "Please wait a moment and try again.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  if (!getTaskFirebaseUser()) {
+
+    window.location.href =
+      "login.html";
+
+    return;
 
   }
 
@@ -858,15 +1415,16 @@ function completeWebTask() {
 
   const elapsed =
     Math.floor(
-      (Date.now() - webStartedAt) / 1000
+      (
+        Date.now() -
+        webStartedAt
+      ) / 1000
     );
 
 
-  /*
-     Must complete full 60 seconds
-  */
-
-  if (elapsed < WEB_WAIT) {
+  if (
+    elapsed < WEB_WAIT
+  ) {
 
     showTaskMessage(
       "You must stay for the full 1 minute.",
@@ -881,31 +1439,43 @@ function completeWebTask() {
   const today =
     new Date().toISOString().slice(0, 10);
 
+
   const dateKey =
     "iw_web_task_date";
+
 
   const countKey =
     "iw_web_task_count";
 
 
   let savedDate =
-    localStorage.getItem(dateKey);
+    localStorage.getItem(
+      dateKey
+    );
+
 
   let count =
     parseInt(
-      localStorage.getItem(countKey) || "0",
+      localStorage.getItem(
+        countKey
+      ) || "0",
       10
     );
 
 
-  if (savedDate !== today) {
+  if (
+    savedDate !== today
+  ) {
 
     count = 0;
 
   }
 
 
-  if (count >= WEB_DAILY_LIMIT) {
+  if (
+    count >=
+    WEB_DAILY_LIMIT
+  ) {
 
     showTaskMessage(
       "Today's Visit Web limit is completed.",
@@ -916,10 +1486,6 @@ function completeWebTask() {
 
   }
 
-
-  /*
-     Genuine activity confirmation
-  */
 
   const confirmed =
     confirm(
@@ -939,97 +1505,133 @@ function completeWebTask() {
   }
 
 
-  /*
-     Existing balance system remains unchanged
-  */
-
-  if (typeof addBalance === "function") {
-
-    addBalance(
-      WEB_REWARD
+  const completeBtn =
+    document.getElementById(
+      "webCompleteBtn"
     );
 
-  }
-  else {
 
-    const current =
-      parseFloat(
-        localStorage.getItem(
-          "worker_balance"
-        ) || "0"
+  const startBtn =
+    document.getElementById(
+      "webStartBtn"
+    );
+
+
+  completeBtn.disabled =
+    true;
+
+
+  completeBtn.textContent =
+    "Processing...";
+
+
+  try {
+
+    const newBalance =
+      await addFirebaseReward(
+        WEB_REWARD,
+        "visit_web"
       );
 
+
+    count++;
+
+
     localStorage.setItem(
-      "worker_balance",
-      (
-        current +
-        WEB_REWARD
-      ).toFixed(3)
+      dateKey,
+      today
     );
 
-  }
 
-
-  /*
-     Increase daily count
-  */
-
-  count++;
-
-
-  localStorage.setItem(
-    dateKey,
-    today
-  );
-
-  localStorage.setItem(
-    countKey,
-    String(count)
-  );
-
-
-  webTaskActive =
-    false;
-
-  webStartedAt =
-    0;
-
-
-  clearInterval(
-    webInterval
-  );
-
-
-  document.getElementById(
-    "webCompleteBtn"
-  ).style.display =
-    "none";
-
-
-  document.getElementById(
-    "webStartBtn"
-  ).style.display =
-    count >= WEB_DAILY_LIMIT
-      ? "none"
-      : "block";
-
-
-  if (count >= WEB_DAILY_LIMIT) {
-
-    showTaskMessage(
-      "Visit completed. ৳3.0 added. Today's limit 10/10 is completed.",
-      "success"
+    localStorage.setItem(
+      countKey,
+      String(count)
     );
 
-  }
-  else {
 
-    showTaskMessage(
-      "Visit completed. ৳3.00 added to your balance. " +
-      count +
-      "/10 completed today.",
-      "success"
+    webTaskActive =
+      false;
+
+
+    webStartedAt =
+      0;
+
+
+    clearInterval(
+      webInterval
     );
+
+
+    completeBtn.style.display =
+      "none";
+
+
+    startBtn.style.display =
+      count >= WEB_DAILY_LIMIT
+        ? "none"
+        : "block";
+
+
+    if (
+      count >=
+      WEB_DAILY_LIMIT
+    ) {
+
+      showTaskMessage(
+        "Visit completed. ৳3.00 added. Today's limit 10/10 is completed.",
+        "success"
+      );
+
+    } else {
+
+      showTaskMessage(
+        "Visit completed. ৳3.00 added to your balance. " +
+        count +
+        "/10 completed today.",
+        "success"
+      );
+
+    }
+
+
+    updateTaskBalance(
+      newBalance
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Visit reward error:",
+      error
+    );
+
+
+    if (
+      error.message ===
+      "LOGIN_REQUIRED"
+    ) {
+
+      window.location.href =
+        "login.html";
+
+    } else {
+
+      showTaskMessage(
+        "Reward could not be added. Please try again.",
+        "error"
+      );
+
+    }
+
+  } finally {
+
+    completeBtn.disabled =
+      false;
+
+
+    completeBtn.textContent =
+      "Complete Task";
 
   }
 
@@ -1038,7 +1640,6 @@ function completeWebTask() {
 
 /* =========================================================
    WATCH & EARN
-   30 ADS PER DAY
 ========================================================= */
 
 let watchBusy =
@@ -1054,12 +1655,15 @@ function getWatchDailyData() {
   const today =
     new Date().toISOString().slice(0, 10);
 
+
   const key =
     "iw_watch_daily";
 
 
   const saved =
-    localStorage.getItem(key);
+    localStorage.getItem(
+      key
+    );
 
 
   if (!saved) {
@@ -1096,8 +1700,7 @@ function getWatchDailyData() {
         Number(data.count) || 0
     };
 
-  }
-  catch (e) {
+  } catch (error) {
 
     return {
       date: today,
@@ -1147,10 +1750,16 @@ function updateWatchStatus() {
       "watchStartBtn"
     );
 
+
   const timer =
     document.getElementById(
       "watchTimer"
     );
+
+
+  if (!startBtn || !timer) {
+    return;
+  }
 
 
   if (
@@ -1161,11 +1770,14 @@ function updateWatchStatus() {
     startBtn.style.display =
       "none";
 
+
     timer.style.display =
       "block";
 
+
     timer.textContent =
       "Today completed ✓ 30/30 ads";
+
 
     return;
 
@@ -1175,11 +1787,14 @@ function updateWatchStatus() {
   startBtn.style.display =
     "block";
 
+
   startBtn.disabled =
     false;
 
+
   timer.style.display =
     "block";
+
 
   timer.textContent =
     "Today: " +
@@ -1197,11 +1812,34 @@ function updateWatchStatus() {
 
 function startWatchTask() {
 
-  if (typeof requireLogin === "function") {
+  if (!firebaseAuthReady) {
 
-    if (!requireLogin()) {
-      return;
+    showTaskMessage(
+      "Please wait a moment and try again.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  if (!getTaskFirebaseUser()) {
+
+    if (
+      typeof requireLogin === "function"
+    ) {
+
+      requireLogin();
+
+    } else {
+
+      window.location.href =
+        "login.html";
+
     }
+
+    return;
 
   }
 
@@ -1215,10 +1853,6 @@ function startWatchTask() {
     getWatchDailyData();
 
 
-  /*
-     30 ads daily limit
-  */
-
   if (
     data.count >=
     WATCH_DAILY_LIMIT
@@ -1226,10 +1860,12 @@ function startWatchTask() {
 
     updateWatchStatus();
 
+
     showTaskMessage(
       "Today's Watch & Earn limit is completed: 30/30 ads.",
       "error"
     );
+
 
     return;
 
@@ -1241,15 +1877,12 @@ function startWatchTask() {
       "watchStartBtn"
     );
 
+
   const timer =
     document.getElementById(
       "watchTimer"
     );
 
-
-  /*
-     Monetag SDK check
-  */
 
   if (
     typeof show_11761461 !==
@@ -1260,6 +1893,7 @@ function startWatchTask() {
       "Advertisement is not available right now. Please try again.",
       "error"
     );
+
 
     return;
 
@@ -1273,6 +1907,7 @@ function startWatchTask() {
   startBtn.disabled =
     true;
 
+
   startBtn.style.display =
     "none";
 
@@ -1280,22 +1915,14 @@ function startWatchTask() {
   timer.style.display =
     "block";
 
+
   timer.textContent =
     "Loading advertisement...";
 
 
-  /*
-     Monetag Rewarded Interstitial
-  */
-
   show_11761461()
 
     .then(function() {
-
-      /*
-         Reward after Monetag
-         promise completes
-      */
 
       completeWatchAd();
 
@@ -1309,6 +1936,7 @@ function startWatchTask() {
 
       startBtn.style.display =
         "block";
+
 
       startBtn.disabled =
         false;
@@ -1337,7 +1965,7 @@ function startWatchTask() {
 
 
 /* =========================================================
-   COMPLETE ONE WATCH AD
+   COMPLETE WATCH AD
 ========================================================= */
 
 function completeWatchAd() {
@@ -1345,10 +1973,6 @@ function completeWatchAd() {
   const data =
     getWatchDailyData();
 
-
-  /*
-     Safety check
-  */
 
   if (
     data.count >=
@@ -1358,7 +1982,9 @@ function completeWatchAd() {
     watchBusy =
       false;
 
+
     updateWatchStatus();
+
 
     return;
 
@@ -1370,16 +1996,12 @@ function completeWatchAd() {
       "watchStartBtn"
     );
 
+
   const timer =
     document.getElementById(
       "watchTimer"
     );
 
-
-  /*
-     10 SECOND COUNTDOWN
-     AFTER MONETAG SUCCESSFUL COMPLETION
-  */
 
   let countdown =
     10;
@@ -1388,11 +2010,14 @@ function completeWatchAd() {
   startBtn.style.display =
     "none";
 
+
   startBtn.disabled =
     true;
 
+
   timer.style.display =
     "block";
+
 
   timer.textContent =
     "View completed ✓ Reward in " +
@@ -1401,264 +2026,182 @@ function completeWatchAd() {
 
 
   const rewardTimer =
-    setInterval(function() {
+    setInterval(
+      async function() {
 
-      countdown--;
-
-
-      if (countdown > 0) {
-
-        timer.textContent =
-          "View completed ✓ Reward in " +
-          countdown +
-          "s";
-
-        return;
-
-      }
+        countdown--;
 
 
-      clearInterval(
-        rewardTimer
-      );
+        if (
+          countdown > 0
+        ) {
+
+          timer.textContent =
+            "View completed ✓ Reward in " +
+            countdown +
+            "s";
+
+          return;
+
+        }
 
 
-      /*
-         Existing balance system remains unchanged
-      */
-
-      if (
-        typeof addBalance ===
-        "function"
-      ) {
-
-        addBalance(
-          WATCH_REWARD
+        clearInterval(
+          rewardTimer
         );
 
-      }
-      else {
 
-        const current =
-          parseFloat(
-            localStorage.getItem(
-              "worker_balance"
-            ) || "0"
+        /*
+          Firebase reward
+        */
+
+        try {
+
+          const newBalance =
+            await addFirebaseReward(
+              WATCH_REWARD,
+              "watch_earn"
+            );
+
+
+          const newCount =
+            data.count + 1;
+
+
+          saveWatchDailyCount(
+            newCount
           );
 
-        localStorage.setItem(
-          "worker_balance",
-          (
-            current +
-            WATCH_REWARD
-          ).toFixed(3)
-        );
 
-      }
+          watchBusy =
+            false;
 
 
-      /*
-         Increase count
-      */
+          if (
+            newCount >=
+            WATCH_DAILY_LIMIT
+          ) {
 
-      const newCount =
-        data.count + 1;
+            startBtn.style.display =
+              "none";
 
 
-      saveWatchDailyCount(
-        newCount
-      );
+            startBtn.disabled =
+              true;
 
 
-      watchBusy =
-        false;
+            timer.style.display =
+              "block";
 
 
-      /*
-         30/30
-      */
+            timer.textContent =
+              "Today completed ✓ 30/30 ads";
 
-      if (
-        newCount >=
-        WATCH_DAILY_LIMIT
-      ) {
 
-        startBtn.style.display =
-          "none";
+            showTaskMessage(
+              "Watch & Earn completed for today. 30 ads watched and ৳45 earned.",
+              "success"
+            );
 
-        startBtn.disabled =
-          true;
+          } else {
 
-        timer.style.display =
-          "block";
+            startBtn.style.display =
+              "block";
 
-        timer.textContent =
-          "Today completed ✓ 30/30 ads";
 
+            startBtn.disabled =
+              false;
 
-        showTaskMessage(
-          "Watch & Earn completed for today. " +
-          "30 ads watched and ৳45 earned.",
-          "success"
-        );
 
-        return;
+            timer.style.display =
+              "block";
 
-      }
 
+            timer.textContent =
+              "Today: " +
+              newCount +
+              "/" +
+              WATCH_DAILY_LIMIT +
+              " ads";
 
-      /*
-         More ads available
-      */
 
-      startBtn.style.display =
-        "block";
+            showTaskMessage(
+              "Completed. ৳1.50 added to your balance. " +
+              newCount +
+              "/" +
+              WATCH_DAILY_LIMIT +
+              " completed today.",
+              "success"
+            );
 
-      startBtn.disabled =
-        false;
+          }
 
-      timer.style.display =
-        "block";
 
-      timer.textContent =
-        "Today: " +
-        newCount +
-        "/" +
-        WATCH_DAILY_LIMIT +
-        " ads";
+          updateTaskBalance(
+            newBalance
+          );
 
 
-      showTaskMessage(
-        "completed. ৳1.50 added your balance. " +
-        newCount +
-        "/" +
-        WATCH_DAILY_LIMIT +
-        " completed today.",
-        "success"
-      );
+        } catch (error) {
 
-    }, 1000);
+          console.error(
+            "Watch reward error:",
+            error
+          );
 
-}
 
+          watchBusy =
+            false;
 
-/* =========================================================
-   FIREBASE USER SYNC
-   READ ONLY IN THIS STEP
-========================================================= */
 
-async function syncTaskUserFromFirebase() {
+          startBtn.style.display =
+            "block";
 
-  try {
 
-    if (
-      typeof firebaseAuth === "undefined" ||
-      typeof firebaseDb === "undefined"
-    ) {
-      return;
-    }
+          startBtn.disabled =
+            false;
 
 
-    const currentUser =
-      firebaseAuth.currentUser;
+          const current =
+            getWatchDailyData();
 
 
-    if (!currentUser) {
-      return;
-    }
+          timer.textContent =
+            "Today: " +
+            current.count +
+            "/" +
+            WATCH_DAILY_LIMIT +
+            " ads";
 
 
-    const profile =
-      await firebaseDb
-        .collection("profiles")
-        .doc(currentUser.uid)
-        .get();
+          if (
+            error.message ===
+            "LOGIN_REQUIRED"
+          ) {
 
+            window.location.href =
+              "login.html";
 
-    if (!profile.exists) {
-      return;
-    }
+          } else {
 
+            showTaskMessage(
+              "Reward could not be added. Please try again.",
+              "error"
+            );
 
-    const data =
-      profile.data();
+          }
 
+        }
 
-    /*
-       Username sync
-    */
-
-    if (data.username) {
-
-      localStorage.setItem(
-        "worker_username",
-        data.username
-      );
-
-    }
-
-
-    /*
-       Email sync
-    */
-
-    if (
-      data.email ||
-      currentUser.email
-    ) {
-
-      localStorage.setItem(
-        "worker_email",
-        data.email ||
-        currentUser.email
-      );
-
-    }
-
-
-    /*
-       Balance is read from Firebase only.
-       Existing app balance logic is not
-       replaced in this step.
-    */
-
-    if (
-      typeof data.balance === "number"
-    ) {
-
-      localStorage.setItem(
-        "worker_balance",
-        data.balance.toFixed(2)
-      );
-
-    }
-
-
-    if (
-      typeof updateUserDisplays ===
-      "function"
-    ) {
-
-      updateUserDisplays();
-
-    }
-
-  }
-
-  catch (error) {
-
-    console.error(
-      "Firebase task user sync error:",
-      error
+      },
+      1000
     );
 
-  }
-
 }
 
 
 /* =========================================================
-   PAGE LOAD
+   FIREBASE AUTH STATE
 ========================================================= */
 
 document.addEventListener(
@@ -1666,30 +2209,118 @@ document.addEventListener(
   function() {
 
     if (
-      typeof updateUserDisplays ===
-      "function"
+      typeof firebaseAuth ===
+      "undefined"
     ) {
 
-      updateUserDisplays();
+      console.error(
+        "Firebase Auth is not available."
+      );
+
+      return;
 
     }
 
 
-    updateWatchStatus();
+    firebaseAuth.onAuthStateChanged(
+      async function(user) {
+
+        firebaseTaskUser =
+          user || null;
 
 
-    /*
-       Firebase sync happens after
-       the existing task page loads.
-    */
+        firebaseAuthReady =
+          true;
 
-    setTimeout(
-      function() {
 
-        syncTaskUserFromFirebase();
+        if (!user) {
 
-      },
-      300
+          updateTaskUsername(
+            "Guest User"
+          );
+
+
+          updateTaskBalance(
+            0
+          );
+
+
+          updateWatchStatus();
+
+
+          return;
+
+        }
+
+
+        localStorage.setItem(
+          "worker_logged_in",
+          "true"
+        );
+
+
+        if (user.email) {
+
+          localStorage.setItem(
+            "worker_email",
+            user.email
+          );
+
+        }
+
+
+        let username =
+          user.displayName ||
+          localStorage.getItem(
+            "worker_username"
+          ) ||
+          "User";
+
+
+        try {
+
+          const profileSnap =
+            await firebaseDb
+              .collection("profiles")
+              .doc(user.uid)
+              .get();
+
+
+          if (
+            profileSnap.exists
+          ) {
+
+            const data =
+              profileSnap.data() || {};
+
+
+            username =
+              data.username ||
+              username;
+
+          }
+
+        } catch (error) {
+
+          console.warn(
+            "Task profile load error:",
+            error
+          );
+
+        }
+
+
+        updateTaskUsername(
+          username
+        );
+
+
+        await loadTaskFirebaseBalance();
+
+
+        updateWatchStatus();
+
+      }
     );
 
   }

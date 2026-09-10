@@ -774,267 +774,103 @@ async function addFirebaseReward(
   rewardType,
   claimId
 ) {
-
-  const user =
-    getTaskFirebaseUser();
-
+  const user = getTaskFirebaseUser();
 
   if (!user) {
-
-    throw new Error(
-      "LOGIN_REQUIRED"
-    );
-
+    throw new Error("LOGIN_REQUIRED");
   }
 
-
-  const numericReward =
-    Number(reward);
-
-
-  if (
-    !Number.isFinite(numericReward) ||
-    numericReward <= 0
-  ) {
-
-    throw new Error(
-      "INVALID_REWARD"
-    );
-
+  if (!rewardType || typeof rewardType !== "string") {
+    throw new Error("INVALID_REWARD_TYPE");
   }
-
 
   if (!claimId || typeof claimId !== "string") {
     throw new Error("CLAIM_ID_REQUIRED");
   }
 
+  let idToken;
 
-  const walletRef =
-    firebaseDb
-      .collection("wallets")
-      .doc(user.uid);
+  try {
+    idToken = await user.getIdToken(true);
+  } catch (error) {
+    console.error("Firebase token error:", error);
+    throw new Error("AUTH_TOKEN_ERROR");
+  }
 
+  let response;
 
-  const profileRef =
-    firebaseDb
-      .collection("profiles")
-      .doc(user.uid);
+  try {
+    response = await fetch("/api/reward", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + idToken
+      },
+      body: JSON.stringify({
+        rewardType: rewardType,
+        claimId: claimId
+      })
+    });
+  } catch (error) {
+    console.error("Reward API network error:", error);
+    throw new Error("REWARD_SERVER_ERROR");
+  }
 
-  const claimRef =
-    firebaseDb
-      .collection("submissions")
-      .doc(claimId);
+  let data = {};
 
+  try {
+    data = await response.json();
+  } catch (error) {
+    console.error("Reward API JSON error:", error);
+    throw new Error("REWARD_SERVER_ERROR");
+  }
 
-  let resultingBalance = 0;
-
-
-  await firebaseDb.runTransaction(
-    async function(transaction) {
-
-      const claimSnap =
-        await transaction.get(
-          claimRef
-        );
-
-      if (claimSnap.exists) {
-        throw new Error("REWARD_ALREADY_CLAIMED");
-      }
-
-      const walletSnap =
-        await transaction.get(
-          walletRef
-        );
-
-
-      const profileSnap =
-        await transaction.get(
-          profileRef
-        );
-
-
-      const walletData =
-        walletSnap.exists
-          ? (walletSnap.data() || {})
-          : {};
-
-
-      const profileData =
-        profileSnap.exists
-          ? (profileSnap.data() || {})
-          : {};
-
-
-      let currentBalance;
-
-
-      if (
-        walletSnap.exists &&
-        walletData.balance !== undefined
-      ) {
-
-        currentBalance =
-          Number(
-            walletData.balance || 0
-          );
-
-      } else {
-
-        currentBalance =
-          Number(
-            profileData.balance || 0
-          );
-
-      }
-
-
-      if (
-        !Number.isFinite(currentBalance)
-      ) {
-
-        currentBalance = 0;
-
-      }
-
-
-      resultingBalance =
-        Number(
-          (
-            currentBalance +
-            numericReward
-          ).toFixed(2)
-        );
-
-
-      /*
-        Wallet update.
-      */
-
-      if (walletSnap.exists) {
-
-        transaction.update(
-          walletRef,
-          {
-            balance: resultingBalance,
-
-            total_earned:
-              Number(
-                walletData.total_earned || 0
-              ) + numericReward,
-
-            updatedAt:
-              firebase.firestore.FieldValue
-                .serverTimestamp()
-          }
-        );
-
-      } else {
-
-        transaction.set(
-          walletRef,
-          {
-            userId: user.uid,
-
-            balance: resultingBalance,
-
-            pending_balance: 0,
-
-            total_earned:
-              numericReward,
-
-            total_withdrawn: 0,
-
-            updatedAt:
-              firebase.firestore.FieldValue
-                .serverTimestamp()
-          }
-        );
-
-      }
-
-
-      /*
-        Profile balance synchronization.
-      */
-
-      if (profileSnap.exists) {
-
-        transaction.update(
-          profileRef,
-          {
-            balance: resultingBalance,
-
-            updatedAt:
-              firebase.firestore.FieldValue
-                .serverTimestamp()
-          }
-        );
-
-      } else {
-
-        transaction.set(
-          profileRef,
-          {
-            username:
-              user.displayName ||
-              localStorage.getItem(
-                "worker_username"
-              ) ||
-              "User",
-
-            email:
-              user.email || "",
-
-            balance:
-              resultingBalance,
-
-            createdAt:
-              firebase.firestore.FieldValue
-                .serverTimestamp(),
-
-            updatedAt:
-              firebase.firestore.FieldValue
-                .serverTimestamp()
-          }
-        );
-
-      }
-
-      transaction.set(
-        claimRef,
-        {
-          userId: user.uid,
-          rewardType: rewardType || "task",
-          reward: numericReward,
-          claimedAt: firebase.firestore.FieldValue.serverTimestamp()
-        }
-      );
-
+  if (!response.ok) {
+    if (data.error === "REWARD_ALREADY_CLAIMED") {
+      throw new Error("REWARD_ALREADY_CLAIMED");
     }
-  );
 
+    if (data.error === "DAILY_LIMIT_REACHED") {
+      throw new Error("DAILY_LIMIT_REACHED");
+    }
 
-  /*
-    Compatibility localStorage update.
-  */
+    if (
+      data.error === "AUTH_REQUIRED" ||
+      data.error === "INVALID_AUTH_TOKEN"
+    ) {
+      throw new Error("LOGIN_REQUIRED");
+    }
+
+    if (data.error === "INVALID_REWARD_TYPE") {
+      throw new Error("INVALID_REWARD_TYPE");
+    }
+
+    if (data.error === "CLAIM_ID_REQUIRED") {
+      throw new Error("CLAIM_ID_REQUIRED");
+    }
+
+    throw new Error("REWARD_SERVER_ERROR");
+  }
+
+  const resultingBalance = Number(data.balance);
+  const serverReward = Number(data.reward);
+
+  if (!Number.isFinite(resultingBalance)) {
+    throw new Error("INVALID_SERVER_BALANCE");
+  }
+
+  if (!Number.isFinite(serverReward) || serverReward <= 0) {
+    throw new Error("INVALID_SERVER_REWARD");
+  }
 
   localStorage.setItem(
     "worker_balance",
     resultingBalance.toFixed(2)
   );
 
-
-  /*
-    Update visible balance.
-  */
-
-  updateTaskBalance(
-    resultingBalance
-  );
-
+  updateTaskBalance(resultingBalance);
 
   return resultingBalance;
-
 }
 
 

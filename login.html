@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>Login - Infinix Worker</title>
 
@@ -15,6 +18,7 @@
   <script src="firebase-config.js"></script>
 
   <style>
+
     .login-page {
       min-height: 100vh;
       padding-bottom: 145px;
@@ -162,6 +166,12 @@
       color: #14754b;
     }
 
+    .login-message.info {
+      display: block;
+      background: #eef5ff;
+      color: #1769e0;
+    }
+
     .signup-link {
       margin-top: 17px;
       text-align: center;
@@ -194,6 +204,7 @@
       justify-content: center;
       overflow: hidden;
     }
+
   </style>
 </head>
 
@@ -203,6 +214,7 @@
 
   <!-- TOP 320x50 AD -->
   <div class="top-ad">
+
     <script>
       atOptions = {
         'key' : 'b529261b98306ae1169a6bf5b991c3d4',
@@ -214,7 +226,9 @@
     </script>
 
     <script src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js"></script>
+
   </div>
+
 
   <!-- HEADER -->
   <header class="login-header">
@@ -225,20 +239,26 @@
 
     <h1>Infinix Worker</h1>
 
-    <p>Fast • Simple • Smart Earning Platform</p>
+    <p>
+      Fast • Simple • Smart Earning Platform
+    </p>
 
   </header>
+
 
   <main class="login-content">
 
     <!-- LOGIN CARD -->
     <div class="login-card">
 
-      <h2>Welcome Back</h2>
+      <h2>
+        Welcome Back
+      </h2>
 
       <p class="login-subtitle">
         Login to continue working and earning
       </p>
+
 
       <form id="loginForm">
 
@@ -258,6 +278,7 @@
 
         </div>
 
+
         <div class="field">
 
           <label for="loginPassword">
@@ -274,19 +295,24 @@
 
         </div>
 
+
         <button
           type="submit"
           class="login-btn"
           id="loginBtn">
+
           Login
+
         </button>
 
       </form>
+
 
       <div
         id="loginMessage"
         class="login-message">
       </div>
+
 
       <div class="signup-link">
 
@@ -300,6 +326,7 @@
 
     </div>
 
+
     <!-- NATIVE 2:1 -->
     <div class="native-ad">
 
@@ -312,6 +339,7 @@
       <div id="container-80507bc8e3d998279cd413247931169e"></div>
 
     </div>
+
 
     <!-- BELOW NATIVE 320x50 -->
     <div class="bottom-banner">
@@ -332,6 +360,7 @@
 
   </main>
 
+
   <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
 
@@ -349,74 +378,167 @@
       href="https://t.me/bitbytee_bot"
       target="_blank"
       rel="noopener noreferrer">
+
       <span class="nav-icon">✈</span>
       <span>Telegram</span>
+
     </a>
 
     <a href="profile.html">
+
       <span class="nav-icon">👤</span>
       <span>Profile</span>
+
     </a>
 
     <a href="more.html">
+
       <span class="nav-icon">☰</span>
       <span>More</span>
+
     </a>
 
   </nav>
 
 </div>
 
+
 <script>
 
-const USER_KEY = "iw_device_user";
-const LOGIN_KEY = "worker_logged_in";
+/* =========================================================
+   INFINIX WORKER - FIREBASE ONLY LOGIN
+
+   Firebase Authentication is the ONLY authentication
+   source.
+
+   No browser storage is used for authentication.
+========================================================= */
 
 
 /* =========================================================
    MESSAGE
 ========================================================= */
 
-function showMessage(text, type) {
+function showMessage(
+  text,
+  type
+) {
 
-  const box = document.getElementById("loginMessage");
+  const box =
+    document.getElementById(
+      "loginMessage"
+    );
 
-  box.textContent = text;
+  if (!box) {
+    return;
+  }
 
-  box.className = "login-message " + type;
+  box.textContent =
+    text;
+
+  box.className =
+    "login-message " +
+    (
+      type ||
+      "info"
+    );
 
 }
 
 
 /* =========================================================
-   GET OLD LOCAL USER
-   Used only for compatibility.
-
-   IMPORTANT:
-   Password is NEVER read or saved.
+   FIREBASE ERROR MESSAGE
 ========================================================= */
 
-function getOldLocalUser() {
+function firebaseErrorMessage(
+  error
+) {
 
-  const saved = localStorage.getItem(USER_KEY);
+  const code =
+    error &&
+    error.code
+      ? error.code
+      : "";
 
-  if (!saved) {
-    return null;
-  }
 
-  try {
+  switch (code) {
 
-    const user = JSON.parse(saved);
+    case "auth/invalid-email":
 
-    if (!user || typeof user !== "object") {
-      return null;
-    }
+      return (
+        "Please enter a valid email address."
+      );
 
-    return user;
 
-  } catch (error) {
+    case "auth/user-not-found":
 
-    return null;
+      return (
+        "No account found with this email."
+      );
+
+
+    case "auth/wrong-password":
+
+      return (
+        "Incorrect password."
+      );
+
+
+    case "auth/invalid-credential":
+
+      return (
+        "Invalid email or password."
+      );
+
+
+    case "auth/user-disabled":
+
+      return (
+        "This account has been disabled."
+      );
+
+
+    case "auth/too-many-requests":
+
+      return (
+        "Too many login attempts. Please try again later."
+      );
+
+
+    case "auth/network-request-failed":
+
+      return (
+        "Network error. Please check your internet connection."
+      );
+
+
+    case "auth/operation-not-allowed":
+
+      return (
+        "Email/Password authentication is not enabled in Firebase."
+      );
+
+
+    case "auth/unauthorized-domain":
+
+      return (
+        "This website domain is not authorized in Firebase."
+      );
+
+
+    default:
+
+      return (
+        "Firebase error: " +
+        (
+          code ||
+          (
+            error &&
+            error.message
+          ) ||
+          "Unknown error"
+        )
+      );
 
   }
 
@@ -424,19 +546,30 @@ function getOldLocalUser() {
 
 
 /* =========================================================
-   CREATE / SYNC FIRESTORE PROFILE + WALLET
+   FIRESTORE PROFILE + WALLET
 ========================================================= */
 
-async function prepareFirebaseUser(user) {
+async function ensureFirebaseUserData(
+  user
+) {
 
-  if (!user || !user.uid) {
-    throw new Error("INVALID_FIREBASE_USER");
+  if (
+    !user ||
+    !user.uid
+  ) {
+
+    throw new Error(
+      "INVALID_FIREBASE_USER"
+    );
+
   }
+
 
   const profileRef =
     firebaseDb
       .collection("profiles")
       .doc(user.uid);
+
 
   const walletRef =
     firebaseDb
@@ -444,153 +577,139 @@ async function prepareFirebaseUser(user) {
       .doc(user.uid);
 
 
-  const oldUser = getOldLocalUser();
-
-
-  /*
-    First read profile.
-  */
-
-  const profileSnap =
-    await profileRef.get();
-
-
   let username = "";
 
 
-  if (profileSnap.exists) {
+  /* =======================================================
+     READ EXISTING PROFILE
+  ======================================================= */
 
-    const profileData =
-      profileSnap.data() || {};
+  try {
 
-    username =
-      profileData.username ||
-      "";
+    const profileSnap =
+      await profileRef.get();
 
-  }
-
-
-  /*
-    If Firebase profile does not have username,
-    use old local username only when the email
-    belongs to the same Firebase account.
-  */
-
-  if (!username && oldUser) {
-
-    const oldEmail =
-      String(oldUser.email || "")
-        .trim()
-        .toLowerCase();
-
-    const firebaseEmail =
-      String(user.email || "")
-        .trim()
-        .toLowerCase();
 
     if (
-      oldEmail &&
-      firebaseEmail &&
-      oldEmail === firebaseEmail &&
-      oldUser.username
+      profileSnap.exists
     ) {
 
+      const data =
+        profileSnap.data() || {};
+
+
       username =
-        String(oldUser.username).trim();
+        String(
+          data.username || ""
+        ).trim();
 
     }
 
+  } catch (error) {
+
+    console.warn(
+      "Profile read warning:",
+      error
+    );
+
   }
 
 
-  /*
-    Final fallback.
-  */
+  /* =======================================================
+     CREATE PROFILE IF MISSING
+  ======================================================= */
 
   if (!username) {
 
-    const emailName =
-      String(user.email || "")
+    username =
+      String(
+        user.displayName || ""
+      ).trim();
+
+
+    if (!username) {
+
+      username =
+        String(
+          user.email || ""
+        )
         .split("@")[0]
         .trim();
 
-    username =
-      emailName || "worker";
-
-  }
+    }
 
 
-  /*
-    Create profile if missing.
-    If profile exists, only fill missing username/email/balance.
-  */
+    if (!username) {
 
-  if (!profileSnap.exists) {
-
-    await profileRef.set({
-
-      username: username,
-
-      email: user.email || "",
-
-      balance: 0,
-
-      role: "user",
-
-      createdAt:
-        firebase.firestore.FieldValue
-          .serverTimestamp()
-
-    });
-
-  } else {
-
-    const profileData =
-      profileSnap.data() || {};
-
-    const updateData = {};
-
-
-    if (!profileData.username) {
-
-      updateData.username =
-        username;
+      username =
+        "User";
 
     }
 
 
-    if (!profileData.email) {
+    try {
 
-      updateData.email =
-        user.email || "";
-
-    }
+      const profileSnap =
+        await profileRef.get();
 
 
-    if (
-      typeof profileData.balance !== "number"
-    ) {
+      if (
+        !profileSnap.exists
+      ) {
 
-      updateData.balance = 0;
+        await profileRef.set({
 
-    }
+          username:
+            username,
+
+          email:
+            user.email || "",
+
+          balance:
+            0,
+
+          role:
+            "user",
+
+          createdAt:
+            firebase.firestore
+              .FieldValue
+              .serverTimestamp()
+
+        });
+
+      } else {
+
+        const profileData =
+          profileSnap.data() || {};
 
 
-    if (
-      !profileData.role
-    ) {
+        if (
+          !profileData.username
+        ) {
 
-      updateData.role = "user";
+          await profileRef.update({
 
-    }
+            username:
+              username
 
+          });
 
-    if (
-      Object.keys(updateData).length > 0
-    ) {
+        }
 
-      await profileRef.update(
-        updateData
+      }
+
+    } catch (error) {
+
+      /*
+        Firebase authentication is already
+        successful. A Firestore problem here
+        must NOT become a password error.
+      */
+
+      console.warn(
+        "Profile create/update warning:",
+        error
       );
 
     }
@@ -598,40 +717,60 @@ async function prepareFirebaseUser(user) {
   }
 
 
-  /*
-    Create wallet if missing.
-  */
+  /* =======================================================
+     CREATE WALLET IF MISSING
+  ======================================================= */
 
-  const walletSnap =
-    await walletRef.get();
+  try {
+
+    const walletSnap =
+      await walletRef.get();
 
 
-  if (!walletSnap.exists) {
+    if (
+      !walletSnap.exists
+    ) {
 
-    await walletRef.set({
+      await walletRef.set({
 
-      balance: 0,
+        userId:
+          user.uid,
 
-      pending_balance: 0,
+        balance:
+          0,
 
-      total_earned: 0,
+        pending_balance:
+          0,
 
-      total_withdrawn: 0,
+        total_earned:
+          0,
 
-      userId: user.uid,
+        total_withdrawn:
+          0,
 
-      createdAt:
-        firebase.firestore.FieldValue
-          .serverTimestamp()
+        createdAt:
+          firebase.firestore
+            .FieldValue
+            .serverTimestamp()
 
-    });
+      });
+
+    }
+
+  } catch (error) {
+
+    /*
+      Wallet initialization failure must NOT
+      cancel an already successful Firebase login.
+    */
+
+    console.warn(
+      "Wallet creation warning:",
+      error
+    );
 
   }
 
-
-  /*
-    Return username for local compatibility.
-  */
 
   return username;
 
@@ -639,109 +778,13 @@ async function prepareFirebaseUser(user) {
 
 
 /* =========================================================
-   SAVE FIREBASE SESSION
-========================================================= */
-
-async function saveFirebaseSession(user) {
-
-  const username =
-    await prepareFirebaseUser(user);
-
-
-  localStorage.setItem(
-    "worker_username",
-    username
-  );
-
-
-  localStorage.setItem(
-    "worker_email",
-    user.email || ""
-  );
-
-
-  localStorage.setItem(
-    LOGIN_KEY,
-    "true"
-  );
-
-
-  /*
-    Preserve device marker,
-    but NEVER store password.
-  */
-
-  const oldUser =
-    getOldLocalUser() || {};
-
-
-  const deviceUser = {
-
-    username:
-      username ||
-      oldUser.username ||
-      "",
-
-    email:
-      user.email ||
-      oldUser.email ||
-      "",
-
-    firebaseUid:
-      user.uid,
-
-    createdAt:
-      oldUser.createdAt ||
-      new Date().toISOString()
-
-  };
-
-
-  delete deviceUser.password;
-
-
-  localStorage.setItem(
-    USER_KEY,
-    JSON.stringify(deviceUser)
-  );
-
-}
-
-
-/* =========================================================
-   FIREBASE AUTH STATE
-========================================================= */
-
-firebaseAuth.onAuthStateChanged(
-  function(user) {
-
-    /*
-      Do not redirect automatically here.
-
-      This prevents the login page from
-      fighting with the form while Firebase
-      restores an old session.
-    */
-
-    if (user) {
-
-      console.log(
-        "Firebase session detected:",
-        user.email
-      );
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   LOGIN
+   LOGIN FORM
 ========================================================= */
 
 document
-  .getElementById("loginForm")
+  .getElementById(
+    "loginForm"
+  )
   .addEventListener(
     "submit",
     async function(event) {
@@ -751,7 +794,9 @@ document
 
       const email =
         document
-          .getElementById("loginEmail")
+          .getElementById(
+            "loginEmail"
+          )
           .value
           .trim()
           .toLowerCase();
@@ -759,7 +804,9 @@ document
 
       const password =
         document
-          .getElementById("loginPassword")
+          .getElementById(
+            "loginPassword"
+          )
           .value;
 
 
@@ -769,7 +816,10 @@ document
         );
 
 
-      if (!email || !password) {
+      if (
+        !email ||
+        !password
+      ) {
 
         showMessage(
           "Please enter your email and password.",
@@ -781,17 +831,25 @@ document
       }
 
 
-      loginBtn.disabled = true;
+      loginBtn.disabled =
+        true;
 
       loginBtn.textContent =
         "Logging in...";
 
 
-      try {
+      /* =====================================================
+         STEP 1
+         FIREBASE AUTHENTICATION
 
-        /*
-          REAL FIREBASE LOGIN
-        */
+         ONLY this step decides whether the
+         email/password is valid.
+      ===================================================== */
+
+      let user;
+
+
+      try {
 
         const result =
           await firebaseAuth
@@ -801,208 +859,128 @@ document
             );
 
 
-        const user =
+        user =
           result.user;
-
-
-        /*
-          Make sure Firebase profile
-          and wallet exist.
-        */
-
-        await saveFirebaseSession(
-          user
-        );
-
-
-        showMessage(
-          "Login successful. Redirecting...",
-          "success"
-        );
-
-
-        setTimeout(
-          function() {
-
-            window.location.href =
-              "index.html";
-
-          },
-          700
-        );
-
 
       } catch (error) {
 
         console.error(
-          "Firebase login error:",
+          "Firebase authentication error:",
           error
         );
 
 
-        let message =
-          "Login failed. Please check your email and password.";
-
-
-        if (
-          error.code ===
-          "auth/invalid-email"
-        ) {
-
-          message =
-            "Please enter a valid email address.";
-
-        }
-
-        else if (
-          error.code ===
-          "auth/user-not-found"
-        ) {
-
-          message =
-            "No account found with this email.";
-
-        }
-
-        else if (
-          error.code ===
-          "auth/wrong-password"
-        ) {
-
-          message =
-            "Incorrect password.";
-
-        }
-
-        else if (
-          error.code ===
-          "auth/invalid-credential"
-        ) {
-
-          message =
-            "Invalid email or password.";
-
-        }
-
-        else if (
-          error.code ===
-          "auth/user-disabled"
-        ) {
-
-          message =
-            "This account has been disabled.";
-
-        }
-
-        else if (
-          error.code ===
-          "auth/too-many-requests"
-        ) {
-
-          message =
-            "Too many login attempts. Please try again later.";
-
-        }
-
-        else if (
-          error.code ===
-          "auth/network-request-failed"
-        ) {
-
-          message =
-            "Network error. Please check your internet connection.";
-
-        }
-
-        else if (
-          error.code ===
-          "permission-denied"
-        ) {
-
-          message =
-            "Firebase permission denied. Please check Firestore rules.";
-
-        }
-
-        else if (
-          error.message
-        ) {
-
-          console.error(
-            "Firebase error detail:",
-            error.message
-          );
-
-        }
-
-
         showMessage(
-          message,
+          firebaseErrorMessage(
+            error
+          ),
           "error"
         );
 
 
-        loginBtn.disabled = false;
+        loginBtn.disabled =
+          false;
 
         loginBtn.textContent =
           "Login";
 
+
+        return;
+
       }
+
+
+      /* =====================================================
+         STEP 2
+         AUTHENTICATION SUCCESSFUL
+      ===================================================== */
+
+      console.log(
+        "Firebase authentication successful:",
+        user.uid,
+        user.email
+      );
+
+
+      showMessage(
+        "Login successful. Loading your account...",
+        "success"
+      );
+
+
+      /* =====================================================
+         STEP 3
+         PREPARE FIRESTORE ACCOUNT DATA
+
+         Firestore errors are isolated.
+      ===================================================== */
+
+      try {
+
+        await ensureFirebaseUserData(
+          user
+        );
+
+      } catch (error) {
+
+        console.warn(
+          "Firestore account preparation warning:",
+          error
+        );
+
+      }
+
+
+      /* =====================================================
+         STEP 4
+         REDIRECT
+
+         Firebase Auth automatically maintains
+         the authentication session.
+      ===================================================== */
+
+      showMessage(
+        "Login successful. Redirecting...",
+        "success"
+      );
+
+
+      setTimeout(
+        function() {
+
+          window.location.href =
+            "index.html";
+
+        },
+        700
+      );
 
     }
   );
 
 
 /* =========================================================
-   REMOVE OLD PLAINTEXT PASSWORD
+   FIREBASE SESSION LISTENER
+
+   Firebase handles session persistence.
+   No browser storage login flag is needed.
 ========================================================= */
 
-(function cleanupOldLocalPassword() {
+firebaseAuth.onAuthStateChanged(
+  function(user) {
 
-  const saved =
-    localStorage.getItem(
-      USER_KEY
-    );
+    if (user) {
 
-
-  if (!saved) {
-    return;
-  }
-
-
-  try {
-
-    const user =
-      JSON.parse(saved);
-
-
-    if (
-      user &&
-      Object.prototype.hasOwnProperty.call(
-        user,
-        "password"
-      )
-    ) {
-
-      delete user.password;
-
-
-      localStorage.setItem(
-        USER_KEY,
-        JSON.stringify(user)
+      console.log(
+        "Firebase session available:",
+        user.uid,
+        user.email
       );
 
     }
 
-  } catch (error) {
-
-    console.log(
-      "Old local account cleanup skipped."
-    );
-
   }
-
-})();
+);
 
 </script>
 

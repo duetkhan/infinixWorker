@@ -286,10 +286,10 @@
         <input
           id="amount"
           type="number"
-          min="110"
+          min="510"
           max="5000"
           step="1"
-          placeholder="Amount (110 - 5000)"
+          placeholder="Amount (510 - 5000)"
         >
 
       </div>
@@ -303,7 +303,7 @@
 
 
       <div class="withdraw-note">
-        Minimum withdrawal: 110 coins.<br>
+        Minimum withdrawal: 510 coins.<br>
         Maximum withdrawal: 5000 coins per request.<br>
         Please make sure your payment number is correct.
       </div>
@@ -474,12 +474,12 @@ function submitWithdraw() {
 
   if (
     !amount ||
-    amount < 110 ||
+    amount < 510 ||
     amount > 5000
   ) {
 
     alert(
-      "Withdrawal amount must be between 110 and 5000 coins."
+      "Withdrawal amount must be between 510 and 5000 coins."
     );
 
     return;

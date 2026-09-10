@@ -1233,11 +1233,6 @@ async function checkAdminAccess(user) {
       profileSnap.data() || {};
 
 
-    /*
-      Admin permission is determined
-      by the Firebase profile role.
-    */
-
     if (
       profile.role !==
       "admin"
@@ -1414,11 +1409,6 @@ async function loadUsers() {
       );
 
 
-    /*
-      Balance is primarily read
-      from wallets/{uid}.
-    */
-
     let totalBalance = 0;
 
 
@@ -1516,11 +1506,6 @@ async function loadUsers() {
 
     }
 
-
-    /*
-      Newest-looking records first
-      when createdAt exists.
-    */
 
     users.sort(
       function(a, b) {
@@ -1957,6 +1942,9 @@ async function loadWithdrawals() {
 
 /* =========================================================
    APPROVE WITHDRAWAL
+   IMPORTANT:
+   User balance was already deducted
+   when withdrawal was submitted.
 ========================================================= */
 
 async function approveWithdrawal(
@@ -1981,25 +1969,87 @@ async function approveWithdrawal(
 
   try {
 
-    await firebaseDb
+    const withdrawalRef =
+      firebaseDb
 
-      .collection("withdrawals")
+        .collection("withdrawals")
 
-      .doc(withdrawalId)
+        .doc(withdrawalId);
 
-      .update({
 
-        status:
-          "Approved",
+    await firebaseDb.runTransaction(
+      async function(transaction) {
 
-        approvedAt:
-          firebase.firestore.FieldValue
-            .serverTimestamp(),
+        const withdrawalSnap =
+          await transaction.get(
+            withdrawalRef
+          );
 
-        approvedBy:
-          adminUser.uid
 
-      });
+        if (
+          !withdrawalSnap.exists
+        ) {
+
+          throw new Error(
+            "Withdrawal request not found."
+          );
+
+        }
+
+
+        const withdrawal =
+          withdrawalSnap.data() || {};
+
+
+        const currentStatus =
+          String(
+            withdrawal.status ||
+            "Pending"
+          ).toLowerCase();
+
+
+        /*
+          Only Pending requests can be approved.
+          This prevents double processing.
+        */
+
+        if (
+          currentStatus !==
+          "pending"
+        ) {
+
+          throw new Error(
+            "This withdrawal has already been processed."
+          );
+
+        }
+
+
+        transaction.update(
+          withdrawalRef,
+          {
+
+            status:
+              "Approved",
+
+            approvedAt:
+              firebase.firestore
+                .FieldValue
+                .serverTimestamp(),
+
+            approvedBy:
+              adminUser.uid,
+
+            processedAt:
+              firebase.firestore
+                .FieldValue
+                .serverTimestamp()
+
+          }
+        );
+
+      }
+    );
 
 
     alert(
@@ -2007,8 +2057,9 @@ async function approveWithdrawal(
     );
 
 
-    await loadWithdrawals();
+    clearError();
 
+    await loadWithdrawals();
 
   } catch (error) {
 
@@ -2033,6 +2084,18 @@ async function approveWithdrawal(
 
 /* =========================================================
    REJECT WITHDRAWAL
+   IMPORTANT:
+   Withdrawal amount was already deducted.
+
+   Therefore:
+   1. Read withdrawal
+   2. Read wallet
+   3. Read profile
+   4. Check status is Pending
+   5. Refund amount
+   6. Mark withdrawal Rejected
+
+   Everything happens in ONE transaction.
 ========================================================= */
 
 async function rejectWithdrawal(
@@ -2046,7 +2109,7 @@ async function rejectWithdrawal(
 
   if (
     !confirm(
-      "Reject this withdrawal request?"
+      "Reject this withdrawal request and refund the amount to the user?"
     )
   ) {
 
@@ -2057,43 +2120,354 @@ async function rejectWithdrawal(
 
   try {
 
-    /*
-      IMPORTANT:
-      The amount was already deducted when
-      the user submitted the withdrawal.
+    const withdrawalRef =
+      firebaseDb
 
-      Therefore rejecting here does NOT
-      automatically refund it yet.
+        .collection("withdrawals")
 
-      Refund handling will be added separately
-      after the admin flow is verified.
-    */
+        .doc(withdrawalId);
 
-    await firebaseDb
 
-      .collection("withdrawals")
+    await firebaseDb.runTransaction(
+      async function(transaction) {
 
-      .doc(withdrawalId)
+        /*
+          -----------------------------------------
+          STEP 1: READ WITHDRAWAL
+          -----------------------------------------
+        */
 
-      .update({
+        const withdrawalSnap =
+          await transaction.get(
+            withdrawalRef
+          );
 
-        status:
-          "Rejected",
 
-        rejectedAt:
-          firebase.firestore.FieldValue
-            .serverTimestamp(),
+        if (
+          !withdrawalSnap.exists
+        ) {
 
-        rejectedBy:
-          adminUser.uid
+          throw new Error(
+            "Withdrawal request not found."
+          );
 
-      });
+        }
+
+
+        const withdrawal =
+          withdrawalSnap.data() || {};
+
+
+        const currentStatus =
+          String(
+            withdrawal.status ||
+            "Pending"
+          ).toLowerCase();
+
+
+        /*
+          Only Pending requests can be rejected.
+          This prevents a second refund.
+        */
+
+        if (
+          currentStatus !==
+          "pending"
+        ) {
+
+          throw new Error(
+            "This withdrawal has already been processed."
+          );
+
+        }
+
+
+        const userId =
+          String(
+            withdrawal.userId ||
+            ""
+          );
+
+
+        if (!userId) {
+
+          throw new Error(
+            "Withdrawal user ID is missing."
+          );
+
+        }
+
+
+        const amount =
+          Number(
+            withdrawal.amount || 0
+          );
+
+
+        if (
+          !Number.isFinite(amount) ||
+          amount <= 0
+        ) {
+
+          throw new Error(
+            "Invalid withdrawal amount."
+          );
+
+        }
+
+
+        /*
+          -----------------------------------------
+          STEP 2: PREPARE REFERENCES
+          -----------------------------------------
+        */
+
+        const walletRef =
+          firebaseDb
+
+            .collection("wallets")
+
+            .doc(userId);
+
+
+        const profileRef =
+          firebaseDb
+
+            .collection("profiles")
+
+            .doc(userId);
+
+
+        /*
+          -----------------------------------------
+          STEP 3: READ WALLET
+          -----------------------------------------
+        */
+
+        const walletSnap =
+          await transaction.get(
+            walletRef
+          );
+
+
+        /*
+          -----------------------------------------
+          STEP 4: READ PROFILE
+          -----------------------------------------
+        */
+
+        const profileSnap =
+          await transaction.get(
+            profileRef
+          );
+
+
+        const walletData =
+          walletSnap.exists
+            ? (
+                walletSnap.data() ||
+                {}
+              )
+            : {};
+
+
+        const profileData =
+          profileSnap.exists
+            ? (
+                profileSnap.data() ||
+                {}
+              )
+            : {};
+
+
+        /*
+          -----------------------------------------
+          CURRENT BALANCE
+          -----------------------------------------
+        */
+
+        const walletBalance =
+          Number(
+            walletData.balance || 0
+          );
+
+
+        const profileBalance =
+          Number(
+            profileData.balance || 0
+          );
+
+
+        /*
+          Wallet is the primary balance source.
+          If wallet exists, refund there.
+          Otherwise profile balance is used.
+        */
+
+        const currentBalance =
+          walletSnap.exists
+            ? walletBalance
+            : profileBalance;
+
+
+        const newBalance =
+          currentBalance +
+          amount;
+
+
+        /*
+          -----------------------------------------
+          STEP 5: REFUND WALLET
+          -----------------------------------------
+        */
+
+        if (
+          walletSnap.exists
+        ) {
+
+          const currentTotalEarned =
+            Number(
+              walletData.total_earned || 0
+            );
+
+
+          transaction.update(
+            walletRef,
+            {
+
+              balance:
+                newBalance,
+
+              updatedAt:
+                firebase.firestore
+                  .FieldValue
+                  .serverTimestamp()
+
+            }
+          );
+
+        } else {
+
+          /*
+            Wallet does not exist.
+            Create it so future balance
+            calculations remain consistent.
+          */
+
+          transaction.set(
+            walletRef,
+            {
+
+              balance:
+                newBalance,
+
+              pending_balance:
+                Number(
+                  walletData.pending_balance ||
+                  0
+                ),
+
+              total_earned:
+                Number(
+                  walletData.total_earned ||
+                  0
+                ),
+
+              total_withdrawn:
+                Number(
+                  walletData.total_withdrawn ||
+                  0
+                ),
+
+              userId:
+                userId,
+
+              updatedAt:
+                firebase.firestore
+                  .FieldValue
+                  .serverTimestamp(),
+
+              createdAt:
+                firebase.firestore
+                  .FieldValue
+                  .serverTimestamp()
+
+            }
+          );
+
+        }
+
+
+        /*
+          -----------------------------------------
+          STEP 6: KEEP PROFILE BALANCE IN SYNC
+          -----------------------------------------
+        */
+
+        if (
+          profileSnap.exists
+        ) {
+
+          transaction.update(
+            profileRef,
+            {
+
+              balance:
+                newBalance
+
+            }
+          );
+
+        }
+
+
+        /*
+          -----------------------------------------
+          STEP 7: MARK WITHDRAWAL REJECTED
+          -----------------------------------------
+        */
+
+        transaction.update(
+          withdrawalRef,
+          {
+
+            status:
+              "Rejected",
+
+            rejectedAt:
+              firebase.firestore
+                .FieldValue
+                .serverTimestamp(),
+
+            rejectedBy:
+              adminUser.uid,
+
+            refundProcessed:
+              true,
+
+            refundAmount:
+              amount,
+
+            processedAt:
+              firebase.firestore
+                .FieldValue
+                .serverTimestamp()
+
+          }
+        );
+
+      }
+    );
 
 
     alert(
-      "Withdrawal rejected."
+      "Withdrawal rejected and balance refunded."
     );
 
+
+    clearError();
+
+    await loadUsers();
 
     await loadWithdrawals();
 
@@ -2350,11 +2724,6 @@ async function adminLogout() {
 
     await firebaseAuth.signOut();
 
-
-    /*
-      Keep device identifier.
-      Remove normal login compatibility values.
-    */
 
     localStorage.removeItem(
       "worker_logged_in"

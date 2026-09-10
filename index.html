@@ -16,93 +16,159 @@
 
   <style>
     /* =====================================================
-       INFINIX WORKER HOME HEADER
+       HOME HEADER — BANNER BACKGROUND
     ====================================================== */
 
     .home-header {
-      position: relative;
-      overflow: hidden;
-      background:
+      position: relative !important;
+      overflow: hidden !important;
+
+      background-image:
         linear-gradient(
-          135deg,
-          rgba(5, 83, 205, 0.96),
-          rgba(10, 118, 235, 0.90)
+          rgba(5, 85, 205, 0.18),
+          rgba(5, 85, 205, 0.18)
         ),
-        url("infinix-worker-banner.png") center center / cover no-repeat;
+        url("infinix-worker-banner.png") !important;
 
-      background-blend-mode: multiply;
+      background-position: center center !important;
+      background-repeat: no-repeat !important;
+      background-size: cover !important;
     }
 
-    .home-header::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background:
-        linear-gradient(
-          135deg,
-          rgba(0, 78, 190, 0.35),
-          rgba(0, 132, 255, 0.08)
-        );
-    }
-
-    .home-header > * {
-      position: relative;
-      z-index: 2;
-    }
 
     /* =====================================================
-       HEADER LOGO
+       MENU BUTTON — ALWAYS LEFT
     ====================================================== */
 
-    .home-brand .logo-box {
-      width: 68px;
-      height: 68px;
-      min-width: 68px;
-      min-height: 68px;
+    .home-header .menu-btn {
+      position: absolute !important;
 
-      padding: 0;
-      margin: 0;
+      left: 18px !important;
+      right: auto !important;
 
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      top: 24px !important;
 
-      background: rgba(255, 255, 255, 0.13);
-      border: 1px solid rgba(255, 255, 255, 0.20);
-      border-radius: 18px;
+      z-index: 20 !important;
 
-      overflow: hidden;
+      margin: 0 !important;
+      transform: none !important;
+    }
+
+
+    /* =====================================================
+       BRAND AREA
+    ====================================================== */
+
+    .home-header .home-brand {
+      position: relative !important;
+
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+
+      width: 100% !important;
+
+      margin: 0 auto !important;
+
+      padding-left: 55px !important;
+      padding-right: 18px !important;
+
+      box-sizing: border-box !important;
+
+      z-index: 5 !important;
+    }
+
+
+    /* =====================================================
+       LOGO — REPLACE IW TEXT
+    ====================================================== */
+
+    .home-header .logo-box {
+      width: 68px !important;
+      height: 68px !important;
+
+      min-width: 68px !important;
+      min-height: 68px !important;
+
+      padding: 0 !important;
+      margin: 0 14px 0 0 !important;
+
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+
+      font-size: 0 !important;
+      line-height: 0 !important;
+
+      overflow: hidden !important;
+
+      border-radius: 18px !important;
+
+      background:
+        rgba(255, 255, 255, 0.12) !important;
+
+      border:
+        1px solid rgba(255, 255, 255, 0.22) !important;
 
       box-shadow:
-        0 6px 18px rgba(0, 0, 0, 0.14),
-        inset 0 1px 0 rgba(255, 255, 255, 0.20);
-
-      font-size: 0;
+        0 6px 18px rgba(0, 0, 0, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.20) !important;
     }
 
-    .home-brand .logo-box::before {
-      content: "";
-      display: block;
 
-      width: 100%;
-      height: 100%;
+    .home-header .logo-box::before {
+      content: "" !important;
 
-      background-image: url("infinix-worker-logo.png");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
+      display: block !important;
+
+      width: 100% !important;
+      height: 100% !important;
+
+      background-image:
+        url("infinix-worker-logo.png") !important;
+
+      background-position: center !important;
+      background-size: cover !important;
+      background-repeat: no-repeat !important;
     }
+
 
     /* =====================================================
-       HEADER BRAND TEXT
+       BRAND TEXT
     ====================================================== */
 
-    .home-brand .brand-title strong,
-    .home-brand .brand-title small,
-    .home-tagline {
-      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.18);
+    .home-header .brand-title {
+      text-align: left !important;
+      position: relative !important;
+      z-index: 5 !important;
     }
+
+    .home-header .brand-title strong {
+      text-shadow:
+        0 2px 5px rgba(0, 0, 0, 0.25) !important;
+    }
+
+    .home-header .brand-title small {
+      text-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.25) !important;
+    }
+
+
+    /* =====================================================
+       TAGLINE
+    ====================================================== */
+
+    .home-header .home-tagline {
+      position: relative !important;
+
+      z-index: 5 !important;
+
+      text-align: center !important;
+
+      text-shadow:
+        0 2px 5px rgba(0, 0, 0, 0.25) !important;
+    }
+
 
     /* =====================================================
        MOBILE
@@ -110,28 +176,51 @@
 
     @media (max-width: 480px) {
 
-      .home-brand .logo-box {
-        width: 64px;
-        height: 64px;
-        min-width: 64px;
-        min-height: 64px;
-        border-radius: 17px;
+      .home-header .menu-btn {
+        left: 16px !important;
+        top: 22px !important;
+      }
+
+      .home-header .home-brand {
+        padding-left: 48px !important;
+        padding-right: 10px !important;
+      }
+
+      .home-header .logo-box {
+        width: 62px !important;
+        height: 62px !important;
+
+        min-width: 62px !important;
+        min-height: 62px !important;
+
+        margin-right: 11px !important;
+
+        border-radius: 17px !important;
       }
 
     }
 
+
     /* =====================================================
-       DESKTOP / TABLET
+       EXTRA SMALL PHONES
     ====================================================== */
 
-    @media (min-width: 700px) {
+    @media (max-width: 360px) {
 
-      .home-brand .logo-box {
-        width: 76px;
-        height: 76px;
-        min-width: 76px;
-        min-height: 76px;
-        border-radius: 20px;
+      .home-header .menu-btn {
+        left: 12px !important;
+      }
+
+      .home-header .home-brand {
+        padding-left: 42px !important;
+      }
+
+      .home-header .logo-box {
+        width: 56px !important;
+        height: 56px !important;
+
+        min-width: 56px !important;
+        min-height: 56px !important;
       }
 
     }
@@ -157,15 +246,18 @@
       ☰
     </button>
 
+
     <div class="home-brand">
 
-      <!-- LOGO REPLACES OLD IW BOX -->
-
-      <div class="logo-box" aria-label="Infinix Worker Logo"></div>
+      <div class="logo-box">
+        IW
+      </div>
 
       <div class="brand-title">
 
-        <strong>Infinix Worker</strong>
+        <strong>
+          Infinix Worker
+        </strong>
 
         <small>
           WORK • EARN • REWARD
@@ -174,6 +266,7 @@
       </div>
 
     </div>
+
 
     <div class="home-tagline">
       Complete activities and earn rewards

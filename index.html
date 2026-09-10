@@ -16,60 +16,124 @@
 
   <style>
     /* =====================================================
-       INFINIX WORKER HOME BRANDING
+       INFINIX WORKER HOME HEADER
     ====================================================== */
 
-    .home-branding {
-      width: 100%;
-      padding: 14px 14px 4px;
-      box-sizing: border-box;
-    }
-
-    .home-logo-wrap {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-
-    .home-logo {
-      width: 88px;
-      height: 88px;
-      object-fit: contain;
-      display: block;
-      border-radius: 22px;
-    }
-
-    .home-banner-wrap {
-      width: 100%;
-      margin: 0 auto 15px;
+    .home-header {
+      position: relative;
       overflow: hidden;
-      border-radius: 18px;
-      box-shadow: 0 7px 24px rgba(7, 85, 201, 0.18);
-      background: #eef5ff;
+      background:
+        linear-gradient(
+          135deg,
+          rgba(5, 83, 205, 0.96),
+          rgba(10, 118, 235, 0.90)
+        ),
+        url("infinix-worker-banner.png") center center / cover no-repeat;
+
+      background-blend-mode: multiply;
     }
 
-    .home-banner {
-      width: 100%;
-      height: auto;
-      display: block;
-      object-fit: cover;
+    .home-header::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(
+          135deg,
+          rgba(0, 78, 190, 0.35),
+          rgba(0, 132, 255, 0.08)
+        );
     }
+
+    .home-header > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* =====================================================
+       HEADER LOGO
+    ====================================================== */
+
+    .home-brand .logo-box {
+      width: 68px;
+      height: 68px;
+      min-width: 68px;
+      min-height: 68px;
+
+      padding: 0;
+      margin: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background: rgba(255, 255, 255, 0.13);
+      border: 1px solid rgba(255, 255, 255, 0.20);
+      border-radius: 18px;
+
+      overflow: hidden;
+
+      box-shadow:
+        0 6px 18px rgba(0, 0, 0, 0.14),
+        inset 0 1px 0 rgba(255, 255, 255, 0.20);
+
+      font-size: 0;
+    }
+
+    .home-brand .logo-box::before {
+      content: "";
+      display: block;
+
+      width: 100%;
+      height: 100%;
+
+      background-image: url("infinix-worker-logo.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    /* =====================================================
+       HEADER BRAND TEXT
+    ====================================================== */
+
+    .home-brand .brand-title strong,
+    .home-brand .brand-title small,
+    .home-tagline {
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.18);
+    }
+
+    /* =====================================================
+       MOBILE
+    ====================================================== */
+
+    @media (max-width: 480px) {
+
+      .home-brand .logo-box {
+        width: 64px;
+        height: 64px;
+        min-width: 64px;
+        min-height: 64px;
+        border-radius: 17px;
+      }
+
+    }
+
+    /* =====================================================
+       DESKTOP / TABLET
+    ====================================================== */
 
     @media (min-width: 700px) {
-      .home-branding {
-        max-width: 680px;
-        margin: 0 auto;
+
+      .home-brand .logo-box {
+        width: 76px;
+        height: 76px;
+        min-width: 76px;
+        min-height: 76px;
+        border-radius: 20px;
       }
 
-      .home-logo {
-        width: 105px;
-        height: 105px;
-      }
-
-      .home-banner-wrap {
-        border-radius: 22px;
-      }
     }
   </style>
 </head>
@@ -95,9 +159,9 @@
 
     <div class="home-brand">
 
-      <div class="logo-box">
-        IW
-      </div>
+      <!-- LOGO REPLACES OLD IW BOX -->
+
+      <div class="logo-box" aria-label="Infinix Worker Logo"></div>
 
       <div class="brand-title">
 
@@ -116,40 +180,6 @@
     </div>
 
   </header>
-
-
-  <!-- =====================================================
-       NEW LOGO + BANNER
-  ====================================================== -->
-
-  <section class="home-branding">
-
-    <!-- NEW LOGO -->
-
-    <div class="home-logo-wrap">
-
-      <img
-        src="infinix-worker-logo.png"
-        alt="Infinix Worker Logo"
-        class="home-logo"
-      >
-
-    </div>
-
-
-    <!-- NEW BANNER -->
-
-    <div class="home-banner-wrap">
-
-      <img
-        src="infinix-worker-banner.png"
-        alt="Infinix Worker - Complete Tasks and Earn Real Money"
-        class="home-banner"
-      >
-
-    </div>
-
-  </section>
 
 
   <!-- =====================================================

@@ -1,0 +1,2451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="theme-color"
+    content="#1769e0"
+  >
+
+  <title>Admin Panel - Infinix Worker</title>
+
+  <link rel="stylesheet" href="style.css">
+
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+
+    body {
+      margin: 0;
+      background: #f4f7fb;
+      color: #20283a;
+      font-family: Arial, sans-serif;
+    }
+
+
+    .admin-page {
+      min-height: 100vh;
+      padding-bottom: 40px;
+    }
+
+
+    /* =========================================
+       HEADER
+    ========================================= */
+
+    .admin-header {
+
+      background:
+        linear-gradient(
+          135deg,
+          #1769e0,
+          #0755c9
+        );
+
+      color: #fff;
+
+      padding: 20px 16px;
+
+      border-radius:
+        0 0 24px 24px;
+
+      box-shadow:
+        0 5px 18px
+        rgba(23,105,224,.20);
+
+    }
+
+
+    .admin-header-row {
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      gap: 12px;
+
+    }
+
+
+    .admin-title {
+
+      margin: 0;
+
+      font-size: 21px;
+
+      font-weight: 800;
+
+    }
+
+
+    .admin-subtitle {
+
+      margin: 5px 0 0;
+
+      font-size: 11px;
+
+      opacity: .88;
+
+    }
+
+
+    .logout-btn {
+
+      border: 0;
+
+      background:
+        rgba(255,255,255,.16);
+
+      color: #fff;
+
+      border-radius: 11px;
+
+      padding: 10px 13px;
+
+      font-size: 12px;
+
+      font-weight: 700;
+
+      cursor: pointer;
+
+    }
+
+
+    /* =========================================
+       CONTENT
+    ========================================= */
+
+    .admin-content {
+
+      padding: 16px;
+
+    }
+
+
+    /* =========================================
+       LOGIN / ACCESS
+    ========================================= */
+
+    #accessMessage {
+
+      background: #fff;
+
+      border-radius: 18px;
+
+      padding: 22px;
+
+      text-align: center;
+
+      box-shadow:
+        0 6px 20px
+        rgba(25,35,60,.08);
+
+      margin-bottom: 16px;
+
+    }
+
+
+    .access-icon {
+
+      font-size: 38px;
+
+      margin-bottom: 8px;
+
+    }
+
+
+    .access-title {
+
+      font-size: 17px;
+
+      font-weight: 800;
+
+      margin-bottom: 6px;
+
+    }
+
+
+    .access-text {
+
+      color: #70798b;
+
+      font-size: 12px;
+
+      line-height: 1.5;
+
+    }
+
+
+    /* =========================================
+       DASHBOARD
+    ========================================= */
+
+    .stats-grid {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+      gap: 12px;
+
+      margin-bottom: 17px;
+
+    }
+
+
+    .stat-card {
+
+      background: #fff;
+
+      border-radius: 17px;
+
+      padding: 15px;
+
+      box-shadow:
+        0 6px 20px
+        rgba(25,35,60,.07);
+
+    }
+
+
+    .stat-icon {
+
+      width: 39px;
+
+      height: 39px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      background: #eaf2ff;
+
+      color: #1769e0;
+
+      border-radius: 12px;
+
+      font-size: 19px;
+
+      margin-bottom: 10px;
+
+    }
+
+
+    .stat-label {
+
+      color: #7a8495;
+
+      font-size: 11px;
+
+    }
+
+
+    .stat-value {
+
+      margin-top: 4px;
+
+      color: #20283a;
+
+      font-size: 22px;
+
+      font-weight: 800;
+
+    }
+
+
+    /* =========================================
+       SECTION
+    ========================================= */
+
+    .section {
+
+      background: #fff;
+
+      border-radius: 19px;
+
+      padding: 16px;
+
+      margin-bottom: 16px;
+
+      box-shadow:
+        0 6px 20px
+        rgba(25,35,60,.07);
+
+    }
+
+
+    .section-header {
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      gap: 10px;
+
+      margin-bottom: 13px;
+
+    }
+
+
+    .section-title {
+
+      margin: 0;
+
+      font-size: 17px;
+
+      font-weight: 800;
+
+    }
+
+
+    .refresh-btn {
+
+      border: 0;
+
+      background: #eef5ff;
+
+      color: #1769e0;
+
+      border-radius: 10px;
+
+      padding: 8px 11px;
+
+      font-size: 11px;
+
+      font-weight: 700;
+
+      cursor: pointer;
+
+    }
+
+
+    /* =========================================
+       TABLE-LIKE ROWS
+    ========================================= */
+
+    .data-list {
+
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 9px;
+
+    }
+
+
+    .data-row {
+
+      background: #f8faff;
+
+      border: 1px solid #edf1f7;
+
+      border-radius: 13px;
+
+      padding: 12px;
+
+    }
+
+
+    .data-main {
+
+      display: flex;
+
+      align-items: flex-start;
+
+      justify-content: space-between;
+
+      gap: 10px;
+
+    }
+
+
+    .data-name {
+
+      color: #20283a;
+
+      font-size: 13px;
+
+      font-weight: 800;
+
+      word-break: break-word;
+
+    }
+
+
+    .data-secondary {
+
+      margin-top: 4px;
+
+      color: #7a8495;
+
+      font-size: 10px;
+
+      line-height: 1.5;
+
+      word-break: break-word;
+
+    }
+
+
+    .data-amount {
+
+      color: #1769e0;
+
+      font-size: 13px;
+
+      font-weight: 800;
+
+      white-space: nowrap;
+
+    }
+
+
+    .status {
+
+      display: inline-block;
+
+      margin-top: 7px;
+
+      padding: 5px 8px;
+
+      border-radius: 8px;
+
+      background: #eef5ff;
+
+      color: #1769e0;
+
+      font-size: 10px;
+
+      font-weight: 700;
+
+    }
+
+
+    .status.approved {
+
+      background: #eaf8f1;
+
+      color: #14754b;
+
+    }
+
+
+    .status.rejected {
+
+      background: #fff0f0;
+
+      color: #b33b3b;
+
+    }
+
+
+    /* =========================================
+       WITHDRAW ACTIONS
+    ========================================= */
+
+    .action-row {
+
+      display: flex;
+
+      gap: 8px;
+
+      margin-top: 10px;
+
+    }
+
+
+    .action-btn {
+
+      flex: 1;
+
+      min-height: 38px;
+
+      border: 0;
+
+      border-radius: 10px;
+
+      font-size: 11px;
+
+      font-weight: 800;
+
+      cursor: pointer;
+
+    }
+
+
+    .approve-btn {
+
+      background: #eaf8f1;
+
+      color: #14754b;
+
+    }
+
+
+    .reject-btn {
+
+      background: #fff0f0;
+
+      color: #b33b3b;
+
+    }
+
+
+    .action-btn:disabled {
+
+      opacity: .55;
+
+      cursor: not-allowed;
+
+    }
+
+
+    /* =========================================
+       EMPTY
+    ========================================= */
+
+    .empty {
+
+      text-align: center;
+
+      padding: 17px 8px;
+
+      color: #7a8495;
+
+      font-size: 12px;
+
+    }
+
+
+    .empty-icon {
+
+      font-size: 27px;
+
+      margin-bottom: 6px;
+
+    }
+
+
+    /* =========================================
+       LOADING
+    ========================================= */
+
+    .loading {
+
+      text-align: center;
+
+      padding: 18px;
+
+      color: #7a8495;
+
+      font-size: 12px;
+
+    }
+
+
+    /* =========================================
+       ERROR
+    ========================================= */
+
+    .error-box {
+
+      background: #fff0f0;
+
+      color: #b33b3b;
+
+      border-radius: 12px;
+
+      padding: 12px;
+
+      font-size: 11px;
+
+      line-height: 1.5;
+
+      margin-bottom: 14px;
+
+      display: none;
+
+    }
+
+
+    /* =========================================
+       ADMIN PROFILE
+    ========================================= */
+
+    .admin-info {
+
+      background: #fff;
+
+      border-radius: 18px;
+
+      padding: 15px;
+
+      margin-bottom: 16px;
+
+      box-shadow:
+        0 6px 20px
+        rgba(25,35,60,.07);
+
+    }
+
+
+    .admin-info-title {
+
+      color: #1769e0;
+
+      font-size: 11px;
+
+      font-weight: 800;
+
+      margin-bottom: 6px;
+
+    }
+
+
+    .admin-info-email {
+
+      color: #20283a;
+
+      font-size: 13px;
+
+      font-weight: 700;
+
+      word-break: break-word;
+
+    }
+
+
+    .admin-role {
+
+      display: inline-block;
+
+      margin-top: 7px;
+
+      padding: 5px 8px;
+
+      background: #eaf2ff;
+
+      color: #1769e0;
+
+      border-radius: 8px;
+
+      font-size: 10px;
+
+      font-weight: 800;
+
+    }
+
+
+    @media (min-width: 700px) {
+
+      .admin-content {
+
+        max-width: 720px;
+
+        margin: 0 auto;
+
+      }
+
+      .stats-grid {
+
+        grid-template-columns:
+          repeat(4, minmax(0, 1fr));
+
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+<div class="admin-page">
+
+
+  <!-- =========================================
+       HEADER
+  ========================================== -->
+
+  <header class="admin-header">
+
+    <div class="admin-header-row">
+
+      <div>
+
+        <h1 class="admin-title">
+          Infinix Worker Admin
+        </h1>
+
+        <p class="admin-subtitle">
+          Dashboard & management panel
+        </p>
+
+      </div>
+
+
+      <button
+        id="logoutButton"
+        class="logout-btn"
+        type="button"
+        onclick="adminLogout()">
+
+        Logout
+
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <main class="admin-content">
+
+
+    <!-- =========================================
+         ACCESS MESSAGE
+    ========================================== -->
+
+    <div id="accessMessage">
+
+      <div class="access-icon">
+        🔐
+      </div>
+
+      <div class="access-title">
+        Checking admin access...
+      </div>
+
+      <div class="access-text">
+        Please wait.
+      </div>
+
+    </div>
+
+
+    <!-- =========================================
+         ERROR
+    ========================================== -->
+
+    <div
+      id="errorBox"
+      class="error-box">
+    </div>
+
+
+    <!-- =========================================
+         ADMIN INFO
+    ========================================== -->
+
+    <div
+      id="adminInfo"
+      class="admin-info"
+      style="display:none;">
+
+      <div class="admin-info-title">
+        ADMIN ACCOUNT
+      </div>
+
+      <div
+        id="adminEmail"
+        class="admin-info-email">
+      </div>
+
+      <span class="admin-role">
+        Administrator
+      </span>
+
+    </div>
+
+
+    <!-- =========================================
+         DASHBOARD
+    ========================================== -->
+
+    <div
+      id="dashboard"
+      style="display:none;">
+
+
+      <div class="stats-grid">
+
+
+        <div class="stat-card">
+
+          <div class="stat-icon">
+            👥
+          </div>
+
+          <div class="stat-label">
+            Users
+          </div>
+
+          <div
+            id="usersCount"
+            class="stat-value">
+            0
+          </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <div class="stat-icon">
+            💰
+          </div>
+
+          <div class="stat-label">
+            Total Balance
+          </div>
+
+          <div
+            id="balanceCount"
+            class="stat-value">
+            0
+          </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <div class="stat-icon">
+            💳
+          </div>
+
+          <div class="stat-label">
+            Withdrawals
+          </div>
+
+          <div
+            id="withdrawCount"
+            class="stat-value">
+            0
+          </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <div class="stat-icon">
+            📋
+          </div>
+
+          <div class="stat-label">
+            Tasks
+          </div>
+
+          <div
+            id="tasksCount"
+            class="stat-value">
+            0
+          </div>
+
+        </div>
+
+
+      </div>
+
+
+      <!-- =====================================
+           USERS
+      ====================================== -->
+
+      <section class="section">
+
+        <div class="section-header">
+
+          <h2 class="section-title">
+            👥 Users
+          </h2>
+
+          <button
+            class="refresh-btn"
+            type="button"
+            onclick="loadUsers()">
+
+            Refresh
+
+          </button>
+
+        </div>
+
+
+        <div
+          id="usersList"
+          class="data-list">
+
+          <div class="loading">
+            Loading users...
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================
+           WITHDRAWALS
+      ====================================== -->
+
+      <section class="section">
+
+        <div class="section-header">
+
+          <h2 class="section-title">
+            💳 Withdrawal Requests
+          </h2>
+
+          <button
+            class="refresh-btn"
+            type="button"
+            onclick="loadWithdrawals()">
+
+            Refresh
+
+          </button>
+
+        </div>
+
+
+        <div
+          id="withdrawalsList"
+          class="data-list">
+
+          <div class="loading">
+            Loading withdrawals...
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================
+           TASKS
+      ====================================== -->
+
+      <section class="section">
+
+        <div class="section-header">
+
+          <h2 class="section-title">
+            📋 Tasks
+          </h2>
+
+          <button
+            class="refresh-btn"
+            type="button"
+            onclick="loadTasks()">
+
+            Refresh
+
+          </button>
+
+        </div>
+
+
+        <div
+          id="tasksList"
+          class="data-list">
+
+          <div class="loading">
+            Loading tasks...
+          </div>
+
+        </div>
+
+      </section>
+
+
+    </div>
+
+
+  </main>
+
+
+</div>
+
+
+<!-- =====================================================
+     FIREBASE
+====================================================== -->
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+
+<script src="firebase-config.js"></script>
+
+
+<script>
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let adminUser = null;
+let adminReady = false;
+
+
+/* =========================================================
+   ELEMENT HELPERS
+========================================================= */
+
+function getElement(id) {
+
+  return document.getElementById(id);
+
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+function showError(message) {
+
+  const box =
+    getElement("errorBox");
+
+
+  if (!box) {
+    return;
+  }
+
+
+  box.style.display =
+    "block";
+
+
+  box.textContent =
+    message;
+
+}
+
+
+/* =========================================================
+   CLEAR ERROR
+========================================================= */
+
+function clearError() {
+
+  const box =
+    getElement("errorBox");
+
+
+  if (!box) {
+    return;
+  }
+
+
+  box.style.display =
+    "none";
+
+
+  box.textContent =
+    "";
+
+}
+
+
+/* =========================================================
+   HTML ESCAPE
+========================================================= */
+
+function escapeHtml(value) {
+
+  return String(value || "")
+
+    .replace(/&/g, "&amp;")
+
+    .replace(/</g, "&lt;")
+
+    .replace(/>/g, "&gt;")
+
+    .replace(/"/g, "&quot;")
+
+    .replace(/'/g, "&#039;");
+
+}
+
+
+/* =========================================================
+   DATE FORMAT
+========================================================= */
+
+function formatDate(timestamp) {
+
+  try {
+
+    if (!timestamp) {
+      return "Date unavailable";
+    }
+
+
+    let date;
+
+
+    if (
+      typeof timestamp.toDate ===
+      "function"
+    ) {
+
+      date =
+        timestamp.toDate();
+
+    } else {
+
+      date =
+        new Date(timestamp);
+
+    }
+
+
+    if (
+      isNaN(
+        date.getTime()
+      )
+    ) {
+
+      return "Date unavailable";
+
+    }
+
+
+    return date.toLocaleString();
+
+  } catch (error) {
+
+    return "Date unavailable";
+
+  }
+
+}
+
+
+/* =========================================================
+   ADMIN ACCESS CHECK
+========================================================= */
+
+async function checkAdminAccess(user) {
+
+  const access =
+    getElement("accessMessage");
+
+
+  if (!user) {
+
+    access.innerHTML = `
+
+      <div class="access-icon">
+        🔐
+      </div>
+
+      <div class="access-title">
+        Login required
+      </div>
+
+      <div class="access-text">
+        Please login with an administrator account.
+      </div>
+
+    `;
+
+
+    setTimeout(function() {
+
+      window.location.href =
+        "login.html";
+
+    }, 1200);
+
+
+    return false;
+
+  }
+
+
+  try {
+
+    const profileSnap =
+      await firebaseDb
+
+        .collection("profiles")
+
+        .doc(user.uid)
+
+        .get();
+
+
+    if (
+      !profileSnap.exists
+    ) {
+
+      access.innerHTML = `
+
+        <div class="access-icon">
+          ⛔
+        </div>
+
+        <div class="access-title">
+          Access denied
+        </div>
+
+        <div class="access-text">
+          Administrator profile was not found.
+        </div>
+
+      `;
+
+      return false;
+
+    }
+
+
+    const profile =
+      profileSnap.data() || {};
+
+
+    /*
+      Admin permission is determined
+      by the Firebase profile role.
+    */
+
+    if (
+      profile.role !==
+      "admin"
+    ) {
+
+      access.innerHTML = `
+
+        <div class="access-icon">
+          ⛔
+        </div>
+
+        <div class="access-title">
+          Access denied
+        </div>
+
+        <div class="access-text">
+          This account does not have administrator permission.
+        </div>
+
+      `;
+
+
+      return false;
+
+    }
+
+
+    adminUser =
+      user;
+
+
+    adminReady =
+      true;
+
+
+    access.style.display =
+      "none";
+
+
+    getElement(
+      "adminInfo"
+    ).style.display =
+      "block";
+
+
+    getElement(
+      "dashboard"
+    ).style.display =
+      "block";
+
+
+    getElement(
+      "adminEmail"
+    ).textContent =
+      user.email || "";
+
+
+    clearError();
+
+
+    await loadDashboard();
+
+
+    return true;
+
+
+  } catch (error) {
+
+    console.error(
+      "Admin access error:",
+      error
+    );
+
+
+    access.innerHTML = `
+
+      <div class="access-icon">
+        ⚠️
+      </div>
+
+      <div class="access-title">
+        Error
+      </div>
+
+      <div class="access-text">
+        Unable to verify administrator access.
+      </div>
+
+    `;
+
+
+    showError(
+      "Firebase error: " +
+      (
+        error.message ||
+        "Unknown error"
+      )
+    );
+
+
+    return false;
+
+  }
+
+}
+
+
+/* =========================================================
+   LOAD DASHBOARD
+========================================================= */
+
+async function loadDashboard() {
+
+  if (!adminReady) {
+    return;
+  }
+
+
+  await Promise.all([
+    loadUsers(),
+    loadWithdrawals(),
+    loadTasks()
+  ]);
+
+}
+
+
+/* =========================================================
+   LOAD USERS
+========================================================= */
+
+async function loadUsers() {
+
+  if (!adminReady) {
+    return;
+  }
+
+
+  const list =
+    getElement(
+      "usersList"
+    );
+
+
+  list.innerHTML = `
+    <div class="loading">
+      Loading users...
+    </div>
+  `;
+
+
+  try {
+
+    const snapshot =
+      await firebaseDb
+
+        .collection("profiles")
+
+        .get();
+
+
+    const users =
+      snapshot.docs.map(
+        function(doc) {
+
+          return {
+            id: doc.id,
+            ...(
+              doc.data() || {}
+            )
+          };
+
+        }
+      );
+
+
+    /*
+      Balance is primarily read
+      from wallets/{uid}.
+    */
+
+    let totalBalance = 0;
+
+
+    const walletPromises =
+      users.map(
+        async function(user) {
+
+          try {
+
+            const wallet =
+              await firebaseDb
+
+                .collection("wallets")
+
+                .doc(user.id)
+
+                .get();
+
+
+            if (
+              wallet.exists
+            ) {
+
+              const data =
+                wallet.data() || {};
+
+
+              user.balance =
+                Number(
+                  data.balance || 0
+                );
+
+            } else {
+
+              user.balance =
+                Number(
+                  user.balance || 0
+                );
+
+            }
+
+          } catch (error) {
+
+            user.balance =
+              Number(
+                user.balance || 0
+              );
+
+          }
+
+
+          totalBalance +=
+            Number(
+              user.balance || 0
+            );
+
+        }
+      );
+
+
+    await Promise.all(
+      walletPromises
+    );
+
+
+    getElement(
+      "usersCount"
+    ).textContent =
+      users.length;
+
+
+    getElement(
+      "balanceCount"
+    ).textContent =
+      totalBalance.toFixed(2);
+
+
+    if (!users.length) {
+
+      list.innerHTML = `
+
+        <div class="empty">
+
+          <div class="empty-icon">
+            👥
+          </div>
+
+          No users found.
+
+        </div>
+
+      `;
+
+      return;
+
+    }
+
+
+    /*
+      Newest-looking records first
+      when createdAt exists.
+    */
+
+    users.sort(
+      function(a, b) {
+
+        const aTime =
+          a.createdAt &&
+          typeof a.createdAt.toMillis ===
+          "function"
+            ? a.createdAt.toMillis()
+            : 0;
+
+
+        const bTime =
+          b.createdAt &&
+          typeof b.createdAt.toMillis ===
+          "function"
+            ? b.createdAt.toMillis()
+            : 0;
+
+
+        return bTime - aTime;
+
+      }
+    );
+
+
+    list.innerHTML =
+      users
+        .map(
+          function(user) {
+
+            const username =
+              escapeHtml(
+                user.username ||
+                "User"
+              );
+
+
+            const email =
+              escapeHtml(
+                user.email ||
+                ""
+              );
+
+
+            const role =
+              escapeHtml(
+                user.role ||
+                "user"
+              );
+
+
+            const uid =
+              escapeHtml(
+                user.id
+              );
+
+
+            const balance =
+              Number(
+                user.balance || 0
+              );
+
+
+            return `
+
+              <div class="data-row">
+
+                <div class="data-main">
+
+                  <div>
+
+                    <div class="data-name">
+                      ${username}
+                    </div>
+
+                    <div class="data-secondary">
+                      ${email}<br>
+                      UID: ${uid}
+                    </div>
+
+                  </div>
+
+                  <div class="data-amount">
+                    ${balance.toFixed(2)}
+                  </div>
+
+                </div>
+
+                <span class="status">
+                  ${role}
+                </span>
+
+              </div>
+
+            `;
+
+          }
+        )
+        .join("");
+
+
+  } catch (error) {
+
+    console.error(
+      "Users load error:",
+      error
+    );
+
+
+    list.innerHTML = `
+
+      <div class="empty">
+        Unable to load users.
+      </div>
+
+    `;
+
+
+    showError(
+      "Users: " +
+      (
+        error.message ||
+        "Unable to load users."
+      )
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   LOAD WITHDRAWALS
+========================================================= */
+
+async function loadWithdrawals() {
+
+  if (!adminReady) {
+    return;
+  }
+
+
+  const list =
+    getElement(
+      "withdrawalsList"
+    );
+
+
+  list.innerHTML = `
+    <div class="loading">
+      Loading withdrawals...
+    </div>
+  `;
+
+
+  try {
+
+    const snapshot =
+      await firebaseDb
+
+        .collection("withdrawals")
+
+        .get();
+
+
+    const withdrawals =
+      snapshot.docs
+
+        .map(
+          function(doc) {
+
+            return {
+              id: doc.id,
+              ...(
+                doc.data() || {}
+              )
+            };
+
+          }
+        )
+
+
+        .sort(
+          function(a, b) {
+
+            const aTime =
+              a.createdAt &&
+              typeof a.createdAt.toMillis ===
+              "function"
+                ? a.createdAt.toMillis()
+                : 0;
+
+
+            const bTime =
+              b.createdAt &&
+              typeof b.createdAt.toMillis ===
+              "function"
+                ? b.createdAt.toMillis()
+                : 0;
+
+
+            return bTime - aTime;
+
+          }
+        );
+
+
+    getElement(
+      "withdrawCount"
+    ).textContent =
+      withdrawals.length;
+
+
+    if (!withdrawals.length) {
+
+      list.innerHTML = `
+
+        <div class="empty">
+
+          <div class="empty-icon">
+            💳
+          </div>
+
+          No withdrawal requests.
+
+        </div>
+
+      `;
+
+      return;
+
+    }
+
+
+    list.innerHTML =
+      withdrawals
+        .map(
+          function(item) {
+
+            const status =
+              String(
+                item.status ||
+                "Pending"
+              );
+
+
+            const lowerStatus =
+              status.toLowerCase();
+
+
+            let statusClass =
+              "";
+
+
+            if (
+              lowerStatus ===
+              "approved"
+            ) {
+
+              statusClass =
+                "approved";
+
+            }
+
+
+            if (
+              lowerStatus ===
+              "rejected"
+            ) {
+
+              statusClass =
+                "rejected";
+
+            }
+
+
+            const username =
+              escapeHtml(
+                item.username ||
+                "User"
+              );
+
+
+            const email =
+              escapeHtml(
+                item.email ||
+                ""
+              );
+
+
+            const method =
+              escapeHtml(
+                item.method ||
+                "Payment"
+              );
+
+
+            const payment =
+              escapeHtml(
+                item.paymentMasked ||
+                ""
+              );
+
+
+            const amount =
+              Number(
+                item.amount || 0
+              );
+
+
+            const id =
+              escapeHtml(
+                item.id
+              );
+
+
+            const date =
+              escapeHtml(
+                formatDate(
+                  item.createdAt
+                )
+              );
+
+
+            const canAct =
+              lowerStatus ===
+              "pending";
+
+
+            return `
+
+              <div class="data-row">
+
+                <div class="data-main">
+
+                  <div>
+
+                    <div class="data-name">
+                      ${username}
+                    </div>
+
+                    <div class="data-secondary">
+                      ${email}<br>
+                      ${method}
+                      ${payment ? " • " + payment : ""}<br>
+                      ${date}
+                    </div>
+
+                  </div>
+
+                  <div class="data-amount">
+                    ${amount.toFixed(2)}
+                  </div>
+
+                </div>
+
+
+                <span
+                  class="status ${statusClass}">
+                  ${escapeHtml(status)}
+                </span>
+
+
+                ${
+                  canAct
+                    ? `
+
+                      <div class="action-row">
+
+                        <button
+                          class="action-btn approve-btn"
+                          type="button"
+                          onclick="approveWithdrawal('${id}')">
+
+                          Approve
+
+                        </button>
+
+
+                        <button
+                          class="action-btn reject-btn"
+                          type="button"
+                          onclick="rejectWithdrawal('${id}')">
+
+                          Reject
+
+                        </button>
+
+                      </div>
+
+                    `
+                    : ""
+                }
+
+              </div>
+
+            `;
+
+          }
+        )
+        .join("");
+
+
+  } catch (error) {
+
+    console.error(
+      "Withdrawal load error:",
+      error
+    );
+
+
+    list.innerHTML = `
+
+      <div class="empty">
+        Unable to load withdrawal requests.
+      </div>
+
+    `;
+
+
+    showError(
+      "Withdrawals: " +
+      (
+        error.message ||
+        "Unable to load withdrawals."
+      )
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   APPROVE WITHDRAWAL
+========================================================= */
+
+async function approveWithdrawal(
+  withdrawalId
+) {
+
+  if (!adminReady) {
+    return;
+  }
+
+
+  if (
+    !confirm(
+      "Approve this withdrawal request?"
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  try {
+
+    await firebaseDb
+
+      .collection("withdrawals")
+
+      .doc(withdrawalId)
+
+      .update({
+
+        status:
+          "Approved",
+
+        approvedAt:
+          firebase.firestore.FieldValue
+            .serverTimestamp(),
+
+        approvedBy:
+          adminUser.uid
+
+      });
+
+
+    alert(
+      "Withdrawal approved."
+    );
+
+
+    await loadWithdrawals();
+
+
+  } catch (error) {
+
+    console.error(
+      "Approve withdrawal error:",
+      error
+    );
+
+
+    showError(
+      "Unable to approve withdrawal: " +
+      (
+        error.message ||
+        "Unknown error"
+      )
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   REJECT WITHDRAWAL
+========================================================= */
+
+async function rejectWithdrawal(
+  withdrawalId
+) {
+
+  if (!adminReady) {
+    return;
+  }
+
+
+  if (
+    !confirm(
+      "Reject this withdrawal request?"
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  try {
+
+    /*
+      IMPORTANT:
+      The amount was already deducted when
+      the user submitted the withdrawal.
+
+      Therefore rejecting here does NOT
+      automatically refund it yet.
+
+      Refund handling will be added separately
+      after the admin flow is verified.
+    */
+
+    await firebaseDb
+
+      .collection("withdrawals")
+
+      .doc(withdrawalId)
+
+      .update({
+
+        status:
+          "Rejected",
+
+        rejectedAt:
+          firebase.firestore.FieldValue
+            .serverTimestamp(),
+
+        rejectedBy:
+          adminUser.uid
+
+      });
+
+
+    alert(
+      "Withdrawal rejected."
+    );
+
+
+    await loadWithdrawals();
+
+
+  } catch (error) {
+
+    console.error(
+      "Reject withdrawal error:",
+      error
+    );
+
+
+    showError(
+      "Unable to reject withdrawal: " +
+      (
+        error.message ||
+        "Unknown error"
+      )
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   LOAD TASKS
+========================================================= */
+
+async function loadTasks() {
+
+  if (!adminReady) {
+    return;
+  }
+
+
+  const list =
+    getElement(
+      "tasksList"
+    );
+
+
+  list.innerHTML = `
+    <div class="loading">
+      Loading tasks...
+    </div>
+  `;
+
+
+  try {
+
+    const snapshot =
+      await firebaseDb
+
+        .collection("tasks")
+
+        .get();
+
+
+    const tasks =
+      snapshot.docs
+
+        .map(
+          function(doc) {
+
+            return {
+              id: doc.id,
+              ...(
+                doc.data() || {}
+              )
+            };
+
+          }
+        )
+
+
+        .sort(
+          function(a, b) {
+
+            const aTime =
+              a.createdAt &&
+              typeof a.createdAt.toMillis ===
+              "function"
+                ? a.createdAt.toMillis()
+                : 0;
+
+
+            const bTime =
+              b.createdAt &&
+              typeof b.createdAt.toMillis ===
+              "function"
+                ? b.createdAt.toMillis()
+                : 0;
+
+
+            return bTime - aTime;
+
+          }
+        );
+
+
+    getElement(
+      "tasksCount"
+    ).textContent =
+      tasks.length;
+
+
+    if (!tasks.length) {
+
+      list.innerHTML = `
+
+        <div class="empty">
+
+          <div class="empty-icon">
+            📋
+          </div>
+
+          No Firebase tasks found yet.
+
+        </div>
+
+      `;
+
+      return;
+
+    }
+
+
+    list.innerHTML =
+      tasks
+        .map(
+          function(task) {
+
+            const title =
+              escapeHtml(
+                task.title ||
+                "Untitled task"
+              );
+
+
+            const description =
+              escapeHtml(
+                task.description ||
+                ""
+              );
+
+
+            const reward =
+              Number(
+                task.reward || 0
+              );
+
+
+            const status =
+              escapeHtml(
+                task.status ||
+                "active"
+              );
+
+
+            const completed =
+              Number(
+                task.current_completions ||
+                0
+              );
+
+
+            const max =
+              Number(
+                task.max_completions ||
+                0
+              );
+
+
+            return `
+
+              <div class="data-row">
+
+                <div class="data-main">
+
+                  <div>
+
+                    <div class="data-name">
+                      ${title}
+                    </div>
+
+                    <div class="data-secondary">
+                      ${description}
+                    </div>
+
+                  </div>
+
+                  <div class="data-amount">
+                    ${reward.toFixed(2)}
+                  </div>
+
+                </div>
+
+
+                <span class="status">
+                  ${status}
+                </span>
+
+
+                <div class="data-secondary">
+
+                  Completions:
+                  ${completed}
+                  ${
+                    max > 0
+                      ? " / " + max
+                      : ""
+                  }
+
+                </div>
+
+              </div>
+
+            `;
+
+          }
+        )
+        .join("");
+
+
+  } catch (error) {
+
+    console.error(
+      "Tasks load error:",
+      error
+    );
+
+
+    list.innerHTML = `
+
+      <div class="empty">
+        No Firebase tasks found yet.
+      </div>
+
+    `;
+
+  }
+
+}
+
+
+/* =========================================================
+   ADMIN LOGOUT
+========================================================= */
+
+async function adminLogout() {
+
+  try {
+
+    await firebaseAuth.signOut();
+
+
+    /*
+      Keep device identifier.
+      Remove normal login compatibility values.
+    */
+
+    localStorage.removeItem(
+      "worker_logged_in"
+    );
+
+    localStorage.removeItem(
+      "worker_username"
+    );
+
+    localStorage.removeItem(
+      "worker_email"
+    );
+
+
+    window.location.href =
+      "login.html";
+
+
+  } catch (error) {
+
+    console.error(
+      "Admin logout error:",
+      error
+    );
+
+
+    alert(
+      "Logout failed. Please try again."
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   AUTH STATE
+========================================================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function() {
+
+    if (
+      typeof firebaseAuth ===
+      "undefined"
+    ) {
+
+      const access =
+        getElement(
+          "accessMessage"
+        );
+
+
+      access.innerHTML = `
+
+        <div class="access-icon">
+          ⚠️
+        </div>
+
+        <div class="access-title">
+          Firebase unavailable
+        </div>
+
+        <div class="access-text">
+          Firebase configuration could not be loaded.
+        </div>
+
+      `;
+
+
+      return;
+
+    }
+
+
+    firebaseAuth.onAuthStateChanged(
+      async function(user) {
+
+        await checkAdminAccess(
+          user
+        );
+
+      }
+    );
+
+  }
+);
+
+</script>
+
+
+</body>
+</html>

@@ -287,7 +287,6 @@
 
   <!-- TOP 320x50 -->
   <div class="top-ad">
-
     <script>
       atOptions = {
         'key' : 'b529261b98306ae1169a6bf5b991c3d4',
@@ -299,7 +298,6 @@
     </script>
 
     <script src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js"></script>
-
   </div>
 
 
@@ -319,7 +317,6 @@
 
 
   <main class="profile-content">
-
 
     <!-- USER + BALANCE -->
     <section class="profile-card">
@@ -561,6 +558,13 @@
 </div>
 
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+
+<!-- Existing App -->
 <script src="app.js"></script>
 
 
@@ -570,14 +574,145 @@
    PROFILE DATA
 ========================================================= */
 
+async function loadFirebaseProfile() {
+
+  try {
+
+    if (
+      typeof firebaseAuth === "undefined" ||
+      typeof firebaseDb === "undefined"
+    ) {
+      return;
+    }
+
+
+    const currentUser =
+      firebaseAuth.currentUser;
+
+
+    if (!currentUser) {
+      return;
+    }
+
+
+    const doc =
+      await firebaseDb
+        .collection("profiles")
+        .doc(currentUser.uid)
+        .get();
+
+
+    if (!doc.exists) {
+      return;
+    }
+
+
+    const data =
+      doc.data();
+
+
+    /*
+      Username from Firebase
+    */
+
+    if (data.username) {
+
+      localStorage.setItem(
+        "worker_username",
+        data.username
+      );
+
+      document
+        .querySelectorAll("[data-username]")
+        .forEach(function(el) {
+
+          el.textContent =
+            data.username;
+
+        });
+
+    }
+
+
+    /*
+      Email from Firebase
+    */
+
+    const email =
+      data.email ||
+      currentUser.email ||
+      "Not logged in";
+
+
+    localStorage.setItem(
+      "worker_email",
+      email
+    );
+
+
+    document.getElementById(
+      "profileEmail"
+    ).textContent = email;
+
+
+    /*
+      Firebase balance is only READ here.
+      We are not changing the existing
+      withdraw/balance system in this step.
+    */
+
+    if (
+      typeof data.balance === "number"
+    ) {
+
+      localStorage.setItem(
+        "worker_balance",
+        data.balance.toFixed(2)
+      );
+
+
+      document
+        .querySelectorAll("[data-balance]")
+        .forEach(function(el) {
+
+          el.textContent =
+            data.balance.toFixed(2);
+
+        });
+
+    }
+
+  }
+
+  catch (error) {
+
+    console.error(
+      "Firebase profile load error:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   PROFILE DISPLAY
+========================================================= */
+
 function loadProfilePage() {
 
   const username =
-    localStorage.getItem("worker_username") ||
+    localStorage.getItem(
+      "worker_username"
+    ) ||
     "Guest User";
 
+
   const email =
-    localStorage.getItem("worker_email") ||
+    localStorage.getItem(
+      "worker_email"
+    ) ||
     "Not logged in";
 
 
@@ -585,14 +720,16 @@ function loadProfilePage() {
     .querySelectorAll("[data-username]")
     .forEach(function(el) {
 
-      el.textContent = username;
+      el.textContent =
+        username;
 
     });
 
 
   document.getElementById(
     "profileEmail"
-  ).textContent = email;
+  ).textContent =
+    email;
 
 
   if (
@@ -610,21 +747,29 @@ function loadProfilePage() {
    WITHDRAW MESSAGE
 ========================================================= */
 
-function showWithdrawMessage(text, success) {
+function showWithdrawMessage(
+  text,
+  success
+) {
 
   const box =
     document.getElementById(
       "withdrawMessage"
     );
 
-  box.style.display = "block";
+
+  box.style.display =
+    "block";
+
 
   box.className =
     success
       ? "message success"
       : "message error";
 
-  box.textContent = text;
+
+  box.textContent =
+    text;
 
 }
 
@@ -667,7 +812,10 @@ function submitWithdraw() {
   }
 
 
-  if (!amount || amount < 510) {
+  if (
+    !amount ||
+    amount < 510
+  ) {
 
     showWithdrawMessage(
       "Minimum withdrawal amount is ৳510.",
@@ -702,9 +850,8 @@ function submitWithdraw() {
 
 
   /*
-    Local withdrawal record.
-    Real payment processing requires
-    a secure backend/admin system.
+    Existing local withdrawal system
+    remains unchanged for this migration step.
   */
 
   const withdrawals =
@@ -717,19 +864,23 @@ function submitWithdraw() {
 
   withdrawals.unshift({
 
-    id: Date.now(),
+    id:
+      Date.now(),
 
-    method: method,
+    method:
+      method,
 
     account:
       account.length > 4
-        ? "****" + account.slice(-4)
+        ? "****" +
+          account.slice(-4)
         : account,
 
     amount:
       amount.toFixed(2),
 
-    status: "Pending",
+    status:
+      "Pending",
 
     date:
       new Date().toLocaleString()
@@ -739,7 +890,9 @@ function submitWithdraw() {
 
   localStorage.setItem(
     "worker_withdrawals",
-    JSON.stringify(withdrawals)
+    JSON.stringify(
+      withdrawals
+    )
   );
 
 
@@ -815,57 +968,130 @@ function loadWithdrawHistory() {
   }
 
 
-  box.innerHTML = "";
+  box.innerHTML =
+    "";
 
 
-  withdrawals.forEach(function(item) {
+  withdrawals.forEach(
+    function(item) {
 
-    const div =
-      document.createElement(
-        "div"
+      const div =
+        document.createElement(
+          "div"
+        );
+
+
+      div.className =
+        "history-item";
+
+
+      div.innerHTML = `
+
+        <div class="history-row">
+
+          <strong>
+            ${item.method}
+          </strong>
+
+          <span>
+            ৳${item.amount}
+          </span>
+
+        </div>
+
+        <div class="history-meta">
+
+          ${item.account}
+          ·
+          ${item.status}
+          ·
+          ${item.date}
+
+        </div>
+
+      `;
+
+
+      box.appendChild(
+        div
       );
 
-
-    div.className =
-      "history-item";
-
-
-    div.innerHTML = `
-
-      <div class="history-row">
-
-        <strong>
-          ${item.method}
-        </strong>
-
-        <span>
-          $${item.amount}
-        </span>
-
-      </div>
-
-      <div class="history-meta">
-
-        ${item.account}
-        ·
-        ${item.status}
-        ·
-        ${item.date}
-
-      </div>
-
-    `;
-
-
-    box.appendChild(div);
-
-  });
+    }
+  );
 
 }
 
 
 /* =========================================================
-   LOAD
+   LOGOUT
+========================================================= */
+
+async function logout() {
+
+  try {
+
+    /*
+      Firebase logout
+    */
+
+    if (
+      typeof firebaseAuth !== "undefined"
+    ) {
+
+      await firebaseAuth.signOut();
+
+    }
+
+  }
+
+  catch (error) {
+
+    console.error(
+      "Firebase logout error:",
+      error
+    );
+
+  }
+
+
+  /*
+    Existing app logout.
+    This keeps the device account itself,
+    while clearing the active login session.
+  */
+
+  if (
+    typeof clearLoginSession === "function"
+  ) {
+
+    clearLoginSession();
+
+  }
+  else {
+
+    localStorage.removeItem(
+      "worker_logged_in"
+    );
+
+    localStorage.removeItem(
+      "worker_username"
+    );
+
+    localStorage.removeItem(
+      "worker_email"
+    );
+
+  }
+
+
+  window.location.href =
+    "login.html";
+
+}
+
+
+/* =========================================================
+   INITIALIZE
 ========================================================= */
 
 document.addEventListener(
@@ -875,6 +1101,22 @@ document.addEventListener(
     loadProfilePage();
 
     loadWithdrawHistory();
+
+    /*
+      Firebase profile is loaded after
+      the existing local profile display,
+      so the current UI does not wait
+      for Firebase.
+    */
+
+    setTimeout(
+      function() {
+
+        loadFirebaseProfile();
+
+      },
+      300
+    );
 
   }
 );

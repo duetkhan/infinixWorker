@@ -607,6 +607,11 @@ function startWebTask() {
   }
 
 
+  if (webTaskActive) {
+    return;
+  }
+
+
   const startBtn =
     document.getElementById("webStartBtn");
 
@@ -618,14 +623,22 @@ function startWebTask() {
 
 
   /*
-     Trigger Smartlink
+     ============================================
+     ALWAYS OPEN SMARTLINK
+     ============================================
+     Do NOT use openSmartlink() here because that
+     function has its own cooldown. Visit Web must
+     open Smartlink on EVERY click.
   */
 
-  if (typeof openSmartlink === "function") {
+  const smartlink =
+    "https://www.profitableratecpmnetwork.com/xujhdqwep?key=a7974e14e4446b0e7745df0efe2ed3e9";
 
-    openSmartlink();
-
-  }
+  window.open(
+    smartlink,
+    "_blank",
+    "noopener,noreferrer"
+  );
 
 
   /*
@@ -705,7 +718,6 @@ function startWebTask() {
     }, 1000);
 
 }
-
 
 /* =========================================================
    VISIT WEB RETURN CHECK
@@ -1351,57 +1363,6 @@ function completeWatchAd() {
   }
 
 
-  /*
-     Add $0.015
-  */
-
-  if (
-    typeof addBalance ===
-    "function"
-  ) {
-
-    addBalance(
-      WATCH_REWARD
-    );
-
-  }
-  else {
-
-    const current =
-      parseFloat(
-        localStorage.getItem(
-          "worker_balance"
-        ) || "0"
-      );
-
-    localStorage.setItem(
-      "worker_balance",
-      (
-        current +
-        WATCH_REWARD
-      ).toFixed(3)
-    );
-
-  }
-
-
-  /*
-     Increase count
-  */
-
-  const newCount =
-    data.count + 1;
-
-
-  saveWatchDailyCount(
-    newCount
-  );
-
-
-  watchBusy =
-    false;
-
-
   const startBtn =
     document.getElementById(
       "watchStartBtn"
@@ -1414,68 +1375,173 @@ function completeWatchAd() {
 
 
   /*
-     30/30
+     ============================================
+     10 SECOND COUNTDOWN
+     AFTER MONETAG SUCCESSFUL COMPLETION
+     ============================================
   */
 
-  if (
-    newCount >=
-    WATCH_DAILY_LIMIT
-  ) {
+  let countdown =
+    10;
 
-    startBtn.style.display =
-      "none";
-
-    timer.style.display =
-      "block";
-
-    timer.textContent =
-      "Today completed ✓ 30/30 ads";
-
-
-    showTaskMessage(
-      "Watch & Earn completed for today. " +
-      "30 ads watched and $0.45 earned.",
-      "success"
-    );
-
-    return;
-
-  }
-
-
-  /*
-     More ads available
-  */
 
   startBtn.style.display =
-    "block";
+    "none";
 
   startBtn.disabled =
-    false;
-
+    true;
 
   timer.style.display =
     "block";
 
   timer.textContent =
-    "Today: " +
-    newCount +
-    "/" +
-    WATCH_DAILY_LIMIT +
-    " ads";
+    "Ad completed ✓ Reward in " +
+    countdown +
+    "s";
 
 
-  showTaskMessage(
-    "Ad completed. $0.015 added. " +
-    newCount +
-    "/" +
-    WATCH_DAILY_LIMIT +
-    " completed today.",
-    "success"
-  );
+  const rewardTimer =
+    setInterval(function() {
+
+      countdown--;
+
+
+      if (countdown > 0) {
+
+        timer.textContent =
+          "Ad completed ✓ Reward in " +
+          countdown +
+          "s";
+
+        return;
+
+      }
+
+
+      clearInterval(
+        rewardTimer
+      );
+
+
+      /*
+         ========================================
+         ADD $0.015 REWARD
+         ========================================
+      */
+
+      if (
+        typeof addBalance ===
+        "function"
+      ) {
+
+        addBalance(
+          WATCH_REWARD
+        );
+
+      }
+      else {
+
+        const current =
+          parseFloat(
+            localStorage.getItem(
+              "worker_balance"
+            ) || "0"
+          );
+
+        localStorage.setItem(
+          "worker_balance",
+          (
+            current +
+            WATCH_REWARD
+          ).toFixed(3)
+        );
+
+      }
+
+
+      /*
+         Increase count
+      */
+
+      const newCount =
+        data.count + 1;
+
+
+      saveWatchDailyCount(
+        newCount
+      );
+
+
+      watchBusy =
+        false;
+
+
+      /*
+         30/30
+      */
+
+      if (
+        newCount >=
+        WATCH_DAILY_LIMIT
+      ) {
+
+        startBtn.style.display =
+          "none";
+
+        startBtn.disabled =
+          true;
+
+        timer.style.display =
+          "block";
+
+        timer.textContent =
+          "Today completed ✓ 30/30 ads";
+
+
+        showTaskMessage(
+          "Watch & Earn completed for today. " +
+          "30 ads watched and $0.45 earned.",
+          "success"
+        );
+
+        return;
+
+      }
+
+
+      /*
+         More ads available
+      */
+
+      startBtn.style.display =
+        "block";
+
+      startBtn.disabled =
+        false;
+
+      timer.style.display =
+        "block";
+
+      timer.textContent =
+        "Today: " +
+        newCount +
+        "/" +
+        WATCH_DAILY_LIMIT +
+        " ads";
+
+
+      showTaskMessage(
+        "Ad completed. $0.015 added. " +
+        newCount +
+        "/" +
+        WATCH_DAILY_LIMIT +
+        " completed today.",
+        "success"
+      );
+
+    }, 1000);
 
 }
-
 
 /* =========================================================
    PAGE LOAD

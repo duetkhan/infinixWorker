@@ -318,7 +318,7 @@
       </p>
 
       <div class="task-reward">
-        Reward: $0.03
+        Reward: ৳3.00
       </div>
 
       <span class="task-limit">
@@ -378,7 +378,7 @@
       </p>
 
       <div class="task-reward">
-        Reward: $0.015 per ad
+        Reward: ৳1.50 per ad
       </div>
 
       <span class="task-limit">
@@ -494,11 +494,11 @@
    SETTINGS
 ========================================================= */
 
-const WEB_REWARD = 0.03;
+const WEB_REWARD = 3.00;
 const WEB_DAILY_LIMIT = 10;
 const WEB_WAIT = 60;
 
-const WATCH_REWARD = 0.015;
+const WATCH_REWARD = 1.50;
 const WATCH_DAILY_LIMIT = 30;
 
 
@@ -1015,7 +1015,7 @@ function completeWebTask() {
   if (count >= WEB_DAILY_LIMIT) {
 
     showTaskMessage(
-      "Visit Web completed. $0.03 added. Today's limit 10/10 is completed.",
+      "Visit completed. ৳3.0 added. Today's limit 10/10 is completed.",
       "success"
     );
 
@@ -1023,7 +1023,7 @@ function completeWebTask() {
   else {
 
     showTaskMessage(
-      "Visit Web completed. $0.03 added. " +
+      "Visit completed. ৳3.00 added to your balance. " +
       count +
       "/10 completed today.",
       "success"
@@ -1395,7 +1395,7 @@ function completeWatchAd() {
     "block";
 
   timer.textContent =
-    "Ad completed ✓ Reward in " +
+    "View completed ✓ Reward in " +
     countdown +
     "s";
 
@@ -1409,7 +1409,7 @@ function completeWatchAd() {
       if (countdown > 0) {
 
         timer.textContent =
-          "Ad completed ✓ Reward in " +
+          "View completed ✓ Reward in " +
           countdown +
           "s";
 
@@ -1500,7 +1500,7 @@ function completeWatchAd() {
 
         showTaskMessage(
           "Watch & Earn completed for today. " +
-          "30 ads watched and $0.45 earned.",
+          "30 ads watched and ৳45 earned.",
           "success"
         );
 
@@ -1531,7 +1531,7 @@ function completeWatchAd() {
 
 
       showTaskMessage(
-        "Ad completed. $0.015 added. " +
+        "completed. ৳1.50 added your balance. " +
         newCount +
         "/" +
         WATCH_DAILY_LIMIT +

@@ -771,7 +771,8 @@ async function loadTaskFirebaseBalance() {
 
 async function addFirebaseReward(
   reward,
-  rewardType
+  rewardType,
+  claimId
 ) {
 
   const user =
@@ -803,6 +804,11 @@ async function addFirebaseReward(
   }
 
 
+  if (!claimId || typeof claimId !== "string") {
+    throw new Error("CLAIM_ID_REQUIRED");
+  }
+
+
   const walletRef =
     firebaseDb
       .collection("wallets")
@@ -814,12 +820,26 @@ async function addFirebaseReward(
       .collection("profiles")
       .doc(user.uid);
 
+  const claimRef =
+    firebaseDb
+      .collection("submissions")
+      .doc(claimId);
+
 
   let resultingBalance = 0;
 
 
   await firebaseDb.runTransaction(
     async function(transaction) {
+
+      const claimSnap =
+        await transaction.get(
+          claimRef
+        );
+
+      if (claimSnap.exists) {
+        throw new Error("REWARD_ALREADY_CLAIMED");
+      }
 
       const walletSnap =
         await transaction.get(
@@ -980,6 +1000,16 @@ async function addFirebaseReward(
 
       }
 
+      transaction.set(
+        claimRef,
+        {
+          userId: user.uid,
+          rewardType: rewardType || "task",
+          reward: numericReward,
+          claimedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }
+      );
+
     }
   );
 
@@ -1005,6 +1035,32 @@ async function addFirebaseReward(
 
   return resultingBalance;
 
+}
+
+
+/* =========================================================
+   REWARD CLAIM ID
+========================================================= */
+
+function makeRewardClaimId(user, rewardType) {
+
+  const today = new Date().toISOString().slice(0, 10);
+  const key = rewardType + "_" + today;
+  const storageKey = "iw_claim_index_" + key;
+
+  let index = parseInt(
+    localStorage.getItem(storageKey) || "0",
+    10
+  );
+
+  if (!Number.isFinite(index) || index < 0) {
+    index = 0;
+  }
+
+  index += 1;
+  localStorage.setItem(storageKey, String(index));
+
+  return user.uid + "_" + key + "_" + index;
 }
 
 
@@ -1530,7 +1586,8 @@ async function completeWebTask() {
     const newBalance =
       await addFirebaseReward(
         WEB_REWARD,
-        "visit_web"
+        "visit_web",
+        makeRewardClaimId(getTaskFirebaseUser(), "visit_web")
       );
 
 
@@ -1614,6 +1671,13 @@ async function completeWebTask() {
 
       window.location.href =
         "login.html";
+
+    } else if (error.message === "REWARD_ALREADY_CLAIMED") {
+
+      showTaskMessage(
+        "This reward has already been claimed.",
+        "error"
+      );
 
     } else {
 
@@ -2060,7 +2124,8 @@ function completeWatchAd() {
           const newBalance =
             await addFirebaseReward(
               WATCH_REWARD,
-              "watch_earn"
+              "watch_earn",
+              makeRewardClaimId(getTaskFirebaseUser(), "watch_earn")
             );
 
 
@@ -2181,6 +2246,13 @@ function completeWatchAd() {
 
             window.location.href =
               "login.html";
+
+          } else if (error.message === "REWARD_ALREADY_CLAIMED") {
+
+            showTaskMessage(
+              "This reward has already been claimed.",
+              "error"
+            );
 
           } else {
 

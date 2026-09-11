@@ -415,8 +415,15 @@
       ================================================== -->
 
       <a
-        href="task.html"
+        href="./task.html"
         class="action-card"
+        id="task-card"
+        onclick="
+          event.preventDefault();
+          event.stopPropagation();
+          window.location.assign('./task.html');
+          return false;
+        "
       >
 
         <div class="action-icon">
@@ -622,7 +629,7 @@
      APP.JS
 ====================================================== -->
 
-<script src="app.js?v=task-route-fix-1"></script>
+<script src="app.js?v=task-route-final-2"></script>
 
 </body>
 </html>

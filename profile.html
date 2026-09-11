@@ -333,11 +333,11 @@
         <div>
 
           <h2 data-username>
-            Guest User
+            User
           </h2>
 
           <p id="profileEmail">
-            Not logged in
+            Loading...
           </p>
 
         </div>
@@ -575,248 +575,156 @@
 <script>
 
 /* =========================================================
-   FIREBASE PROFILE + BALANCE
+   FIREBASE-ONLY PROFILE
 ========================================================= */
 
 let firebaseProfileUser = null;
 
 
 /* =========================================================
-   LOAD PROFILE
+   MESSAGE
 ========================================================= */
 
-async function loadFirebaseProfile() {
+function showWithdrawMessage(text, success) {
+
+  const box =
+    document.getElementById("withdrawMessage");
+
+  if (!box) {
+    return;
+  }
+
+  box.style.display = "block";
+
+  box.className =
+    success
+      ? "message success"
+      : "message error";
+
+  box.textContent = text;
+
+}
+
+
+/* =========================================================
+   USERNAME UI
+========================================================= */
+
+function updateProfileUsername(username) {
+
+  const name =
+    username || "User";
+
+  document
+    .querySelectorAll("[data-username]")
+    .forEach(function(element) {
+
+      element.textContent =
+        name;
+
+    });
+
+}
+
+
+/* =========================================================
+   BALANCE UI
+========================================================= */
+
+function updateProfileBalance(balance) {
+
+  let value =
+    Number(balance);
+
+  if (
+    !Number.isFinite(value) ||
+    value < 0
+  ) {
+
+    value = 0;
+
+  }
+
+
+  document
+    .querySelectorAll("[data-balance]")
+    .forEach(function(element) {
+
+      element.textContent =
+        value.toFixed(2);
+
+    });
+
+}
+
+
+/* =========================================================
+   LOAD FIREBASE PROFILE
+========================================================= */
+
+async function loadFirebaseProfile(user) {
+
+  if (
+    !user ||
+    !user.uid
+  ) {
+
+    return;
+
+  }
+
+
+  firebaseProfileUser =
+    user;
+
+
+  const emailElement =
+    document.getElementById(
+      "profileEmail"
+    );
+
+
+  if (emailElement) {
+
+    emailElement.textContent =
+      user.email || "";
+
+  }
+
+
+  let username =
+    "User";
+
+
+  /* ---------------------------------------------------------
+     LOAD PROFILE
+  --------------------------------------------------------- */
 
   try {
 
-    firebaseProfileUser =
-      firebaseAuth.currentUser;
+    const profileSnap =
+      await firebaseDb
+        .collection("profiles")
+        .doc(user.uid)
+        .get();
 
 
-    /*
-      If Firebase has no active user,
-      keep the existing guest UI.
-    */
+    if (
+      profileSnap.exists
+    ) {
 
-    if (!firebaseProfileUser) {
-
-      loadProfilePage();
-
-      return;
-
-    }
-
-
-    let username =
-      firebaseProfileUser.displayName ||
-      localStorage.getItem("worker_username") ||
-      "Guest User";
-
-
-    let email =
-      firebaseProfileUser.email ||
-      localStorage.getItem("worker_email") ||
-      "Not logged in";
-
-
-    /*
-      Load profile from Firestore.
-    */
-
-    try {
-
-      const profileSnap =
-        await firebaseDb
-          .collection("profiles")
-          .doc(firebaseProfileUser.uid)
-          .get();
+      const profileData =
+        profileSnap.data() || {};
 
 
       if (
-        profileSnap.exists &&
-        profileSnap.data().username
+        profileData.username
       ) {
 
         username =
-          profileSnap.data().username;
-
-      }
-
-    } catch (profileError) {
-
-      console.warn(
-        "Profile read skipped:",
-        profileError
-      );
-
-    }
-
-
-    /*
-      Update UI.
-    */
-
-    document
-      .querySelectorAll("[data-username]")
-      .forEach(function(el) {
-
-        el.textContent =
-          username;
-
-      });
-
-
-    document.getElementById(
-      "profileEmail"
-    ).textContent =
-      email;
-
-
-    /*
-      Save compatibility data.
-    */
-
-    localStorage.setItem(
-      "worker_username",
-      username
-    );
-
-    localStorage.setItem(
-      "worker_email",
-      email
-    );
-
-    localStorage.setItem(
-      "worker_logged_in",
-      "true"
-    );
-
-
-    /*
-      Load balance from Firestore
-      if a wallet document exists.
-      
-      We check both:
-      wallets/{uid}
-      and profiles/{uid}.balance
-
-      This makes the migration safer.
-    */
-
-    let firebaseBalance = null;
-
-
-    try {
-
-      const walletSnap =
-        await firebaseDb
-          .collection("wallets")
-          .doc(firebaseProfileUser.uid)
-          .get();
-
-
-      if (
-        walletSnap.exists &&
-        walletSnap.data().balance !== undefined
-      ) {
-
-        firebaseBalance =
-          Number(
-            walletSnap.data().balance || 0
+          String(
+            profileData.username
           );
-
-      }
-
-    } catch (walletError) {
-
-      console.warn(
-        "Wallet document read skipped:",
-        walletError
-      );
-
-    }
-
-
-    /*
-      If wallets/{uid} does not exist,
-      try profiles/{uid}.balance.
-    */
-
-    if (firebaseBalance === null) {
-
-      try {
-
-        const profileSnap =
-          await firebaseDb
-            .collection("profiles")
-            .doc(firebaseProfileUser.uid)
-            .get();
-
-
-        if (
-          profileSnap.exists &&
-          profileSnap.data().balance !== undefined
-        ) {
-
-          firebaseBalance =
-            Number(
-              profileSnap.data().balance || 0
-            );
-
-        }
-
-      } catch (balanceError) {
-
-        console.warn(
-          "Profile balance read skipped:",
-          balanceError
-        );
-
-      }
-
-    }
-
-
-    /*
-      Update balance only when Firebase
-      actually returned a balance.
-    */
-
-    if (firebaseBalance !== null) {
-
-      const safeBalance =
-        Number(firebaseBalance) || 0;
-
-
-      document
-        .querySelectorAll("[data-balance]")
-        .forEach(function(el) {
-
-          el.textContent =
-            safeBalance.toFixed(2);
-
-        });
-
-
-      localStorage.setItem(
-        "worker_balance",
-        safeBalance.toFixed(2)
-      );
-
-    }
-    else {
-
-      /*
-        Keep existing local balance
-        if Firestore wallet is not created yet.
-      */
-
-      if (
-        typeof updateUserDisplays ===
-        "function"
-      ) {
-
-        updateUserDisplays();
 
       }
 
@@ -825,192 +733,114 @@ async function loadFirebaseProfile() {
   } catch (error) {
 
     console.error(
-      "Firebase profile error:",
+      "Firebase profile read error:",
       error
     );
 
-    loadProfilePage();
 
-  }
-
-}
-
-
-/* =========================================================
-   EXISTING PROFILE DISPLAY
-========================================================= */
-
-function loadProfilePage() {
-
-  const username =
-    localStorage.getItem(
-      "worker_username"
-    ) ||
-    "Guest User";
-
-
-  const email =
-    localStorage.getItem(
-      "worker_email"
-    ) ||
-    "Not logged in";
-
-
-  document
-    .querySelectorAll("[data-username]")
-    .forEach(function(el) {
-
-      el.textContent =
-        username;
-
-    });
-
-
-  document.getElementById(
-    "profileEmail"
-  ).textContent =
-    email;
-
-
-  if (
-    typeof updateUserDisplays ===
-    "function"
-  ) {
-
-    updateUserDisplays();
-
-  }
-
-}
-
-
-/* =========================================================
-   WITHDRAW MESSAGE
-========================================================= */
-
-function showWithdrawMessage(
-  text,
-  success
-) {
-
-  const box =
-    document.getElementById(
-      "withdrawMessage"
+    showWithdrawMessage(
+      "Unable to load your profile. Please refresh and try again.",
+      false
     );
 
-
-  box.style.display =
-    "block";
+  }
 
 
-  box.className =
-    success
-      ? "message success"
-      : "message error";
+  updateProfileUsername(
+    username
+  );
 
 
-  box.textContent =
-    text;
+  /* ---------------------------------------------------------
+     LOAD WALLET
+  --------------------------------------------------------- */
 
-}
+  let balance =
+    0;
 
 
-/* =========================================================
-   SUBMIT WITHDRAW
-   EXISTING FUNCTIONALITY PRESERVED
-========================================================= */
+  try {
 
-function submitWithdraw() {
+    const walletSnap =
+      await firebaseDb
+        .collection("wallets")
+        .doc(user.uid)
+        .get();
 
-  /*
-    Require Firebase login if available.
-  */
-
-  if (
-    typeof firebaseAuth !== "undefined" &&
-    firebaseAuth.currentUser === null
-  ) {
-
-    /*
-      Keep compatibility with the
-      existing login system.
-    */
 
     if (
-      typeof isLoggedIn === "function" &&
-      !isLoggedIn()
+      walletSnap.exists
     ) {
 
-      window.location.href =
-        "login.html";
-
-      return;
-
-    }
-
-  }
+      const walletData =
+        walletSnap.data() || {};
 
 
-  const method =
-    document.getElementById(
-      "method"
-    ).value;
-
-
-  const account =
-    document.getElementById(
-      "account"
-    ).value.trim();
-
-
-  const amount =
-    parseFloat(
-      document.getElementById(
-        "amount"
-      ).value
-    );
-
-
-  if (!account) {
-
-    showWithdrawMessage(
-      "Please enter your payment account number.",
-      false
-    );
-
-    return;
-
-  }
-
-
-  if (!amount || amount < 510) {
-
-    showWithdrawMessage(
-      "Minimum withdrawal amount is ৳510.",
-      false
-    );
-
-    return;
-
-  }
-
-
-  const balance =
-    typeof getBalance ===
-    "function"
-      ? getBalance()
-      : parseFloat(
-          localStorage.getItem(
-            "worker_balance"
-          ) || "0"
+      const walletBalance =
+        Number(
+          walletData.balance
         );
 
 
-  if (amount > balance) {
+      if (
+        Number.isFinite(
+          walletBalance
+        )
+      ) {
+
+        balance =
+          Math.max(
+            0,
+            walletBalance
+          );
+
+      }
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      "Firebase wallet read error:",
+      error
+    );
+
 
     showWithdrawMessage(
-      "Insufficient balance.",
+      "Unable to load your balance. Please refresh and try again.",
       false
+    );
+
+  }
+
+
+  updateProfileBalance(
+    balance
+  );
+
+}
+
+
+/* =========================================================
+   FIREBASE AUTH STATE
+========================================================= */
+
+function initFirebaseProfile() {
+
+  if (
+    typeof firebaseAuth ===
+      "undefined" ||
+    typeof firebaseDb ===
+      "undefined"
+  ) {
+
+    console.error(
+      "Firebase services are not available."
+    );
+
+
+    window.location.replace(
+      "login.html"
     );
 
     return;
@@ -1018,102 +848,41 @@ function submitWithdraw() {
   }
 
 
-  /*
-    Existing local withdrawal record.
-    This will be migrated to Firebase
-    in the next withdrawal step.
-  */
+  firebaseAuth.onAuthStateChanged(
+    async function(user) {
 
-  const withdrawals =
-    JSON.parse(
-      localStorage.getItem(
-        "worker_withdrawals"
-      ) || "[]"
-    );
+      if (!user) {
 
+        firebaseProfileUser =
+          null;
 
-  withdrawals.unshift({
+        window.location.replace(
+          "login.html"
+        );
 
-    id:
-      Date.now(),
+        return;
 
-    method:
-      method,
-
-    account:
-      account.length > 4
-        ? "****" +
-          account.slice(-4)
-        : account,
-
-    amount:
-      amount.toFixed(2),
-
-    status:
-      "Pending",
-
-    date:
-      new Date().toLocaleString()
-
-  });
+      }
 
 
-  localStorage.setItem(
-    "worker_withdrawals",
-    JSON.stringify(
-      withdrawals
-    )
+      await loadFirebaseProfile(
+        user
+      );
+
+
+      await loadWithdrawHistory();
+
+    }
   );
-
-
-  if (
-    typeof setBalance ===
-    "function"
-  ) {
-
-    setBalance(
-      balance - amount
-    );
-
-  }
-  else {
-
-    localStorage.setItem(
-      "worker_balance",
-      (balance - amount)
-        .toFixed(2)
-    );
-
-  }
-
-
-  document.getElementById(
-    "account"
-  ).value = "";
-
-
-  document.getElementById(
-    "amount"
-  ).value = "";
-
-
-  showWithdrawMessage(
-    "Withdrawal request submitted successfully.",
-    true
-  );
-
-
-  loadWithdrawHistory();
 
 }
 
 
 /* =========================================================
-   WITHDRAW HISTORY
-   EXISTING FUNCTIONALITY PRESERVED
+   FIREBASE WITHDRAWAL HISTORY
 ========================================================= */
 
-function loadWithdrawHistory() {
+async function loadWithdrawHistory() {
 
   const box =
     document.getElementById(
@@ -1121,15 +890,17 @@ function loadWithdrawHistory() {
     );
 
 
-  const withdrawals =
-    JSON.parse(
-      localStorage.getItem(
-        "worker_withdrawals"
-      ) || "[]"
-    );
+  if (!box) {
+    return;
+  }
 
 
-  if (!withdrawals.length) {
+  const user =
+    firebaseProfileUser ||
+    firebaseAuth.currentUser;
+
+
+  if (!user) {
 
     box.innerHTML =
       '<p class="empty-history">' +
@@ -1141,56 +912,231 @@ function loadWithdrawHistory() {
   }
 
 
-  box.innerHTML =
-    "";
+  try {
+
+    const snapshot =
+      await firebaseDb
+        .collection("withdrawals")
+        .where(
+          "userId",
+          "==",
+          user.uid
+        )
+        .get();
 
 
-  withdrawals.forEach(
-    function(item) {
-
-      const div =
-        document.createElement(
-          "div"
-        );
+    const withdrawals =
+      [];
 
 
-      div.className =
-        "history-item";
+    snapshot.forEach(
+      function(doc) {
+
+        const data =
+          doc.data() || {};
 
 
-      div.innerHTML = `
+        withdrawals.push({
 
-        <div class="history-row">
+          id:
+            doc.id,
 
-          <strong>
-            ${escapeHtmlSafe(item.method)}
-          </strong>
+          method:
+            data.method ||
+            "Payment",
 
-          <span>
-            ৳${escapeHtmlSafe(item.amount)}
-          </span>
+          account:
+            data.account ||
+            data.accountNumber ||
+            "",
 
-        </div>
+          amount:
+            Number(
+              data.amount || 0
+            ),
 
-        <div class="history-meta">
+          status:
+            data.status ||
+            "Pending",
 
-          ${escapeHtmlSafe(item.account)}
-          ·
-          ${escapeHtmlSafe(item.status)}
-          ·
-          ${escapeHtmlSafe(item.date)}
+          createdAt:
+            data.createdAt ||
+            data.date ||
+            null
 
-        </div>
+        });
 
-      `;
+      }
+    );
 
 
-      box.appendChild(
-        div
-      );
+    withdrawals.sort(
+      function(a, b) {
+
+        const aTime =
+          a.createdAt &&
+          a.createdAt.toMillis
+            ? a.createdAt.toMillis()
+            : (
+                a.createdAt
+                  ? new Date(
+                      a.createdAt
+                    ).getTime()
+                  : 0
+              );
+
+
+        const bTime =
+          b.createdAt &&
+          b.createdAt.toMillis
+            ? b.createdAt.toMillis()
+            : (
+                b.createdAt
+                  ? new Date(
+                      b.createdAt
+                    ).getTime()
+                  : 0
+              );
+
+
+        return bTime - aTime;
+
+      }
+    );
+
+
+    if (
+      !withdrawals.length
+    ) {
+
+      box.innerHTML =
+        '<p class="empty-history">' +
+        'No withdrawal history yet.' +
+        '</p>';
+
+      return;
 
     }
-  );
+
+
+    box.innerHTML =
+      "";
+
+
+    withdrawals.forEach(
+      function(item) {
+
+        const div =
+          document.createElement(
+            "div"
+          );
+
+
+        div.className =
+          "history-item";
+
+
+        let dateText =
+          "";
+
+
+        if (
+          item.createdAt &&
+          item.createdAt.toDate
+        ) {
+
+          dateText =
+            item.createdAt
+              .toDate()
+              .toLocaleString();
+
+        } else if (
+          item.createdAt
+        ) {
+
+          const parsed =
+            new Date(
+              item.createdAt
+            );
+
+
+          dateText =
+            Number.isNaN(
+              parsed.getTime()
+            )
+              ? String(
+                  item.createdAt
+                )
+              : parsed.toLocaleString();
+
+        }
+
+
+        const amountText =
+          Number.isFinite(
+            item.amount
+          )
+            ? item.amount.toFixed(2)
+            : "0.00";
+
+
+        div.innerHTML = `
+
+          <div class="history-row">
+
+            <strong>
+              ${escapeHtmlSafe(item.method)}
+            </strong>
+
+            <span>
+              ৳${escapeHtmlSafe(amountText)}
+            </span>
+
+          </div>
+
+          <div class="history-meta">
+
+            ${escapeHtmlSafe(item.account)}
+
+            ·
+
+            ${escapeHtmlSafe(item.status)}
+
+            ${
+              dateText
+                ? "· " +
+                  escapeHtmlSafe(
+                    dateText
+                  )
+                : ""
+            }
+
+          </div>
+
+        `;
+
+
+        box.appendChild(
+          div
+        );
+
+      }
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Firebase withdrawal history error:",
+      error
+    );
+
+
+    box.innerHTML =
+      '<p class="empty-history">' +
+      'Unable to load withdrawal history.' +
+      '</p>';
+
+  }
 
 }
 
@@ -1229,6 +1175,39 @@ function escapeHtmlSafe(value) {
 
 
 /* =========================================================
+   WITHDRAW
+   ---------------------------------------------------------
+   Firebase withdrawal transaction will be connected in
+   the dedicated withdrawal migration step.
+========================================================= */
+
+function submitWithdraw() {
+
+  const user =
+    firebaseProfileUser ||
+    firebaseAuth.currentUser;
+
+
+  if (!user) {
+
+    window.location.replace(
+      "login.html"
+    );
+
+    return;
+
+  }
+
+
+  showWithdrawMessage(
+    "Withdrawal system is being connected to Firebase. Please try again after the withdrawal migration is completed.",
+    false
+  );
+
+}
+
+
+/* =========================================================
    FIREBASE LOGOUT
 ========================================================= */
 
@@ -1253,18 +1232,17 @@ async function logout() {
 
   try {
 
+    await firebaseAuth.signOut();
+
+
     /*
-      Firebase logout.
+      Firebase is now the only
+      authentication source.
     */
 
-    if (
-      typeof firebaseAuth !==
-      "undefined"
-    ) {
-
-      await firebaseAuth.signOut();
-
-    }
+    window.location.replace(
+      "login.html"
+    );
 
   } catch (error) {
 
@@ -1273,39 +1251,24 @@ async function logout() {
       error
     );
 
+
+    if (logoutButton) {
+
+      logoutButton.disabled =
+        false;
+
+      logoutButton.textContent =
+        "Logout";
+
+    }
+
+
+    showWithdrawMessage(
+      "Logout failed. Please try again.",
+      false
+    );
+
   }
-
-
-  /*
-    Clear current session state.
-
-    IMPORTANT:
-    iw_device_user is NOT deleted.
-    This preserves the existing
-    one-device / one-account marker.
-  */
-
-  localStorage.removeItem(
-    "worker_logged_in"
-  );
-
-  localStorage.removeItem(
-    "worker_username"
-  );
-
-  localStorage.removeItem(
-    "worker_email"
-  );
-
-
-  /*
-    Keep worker_balance for compatibility.
-  */
-
-
-  window.location.replace(
-    "login.html"
-  );
 
 }
 
@@ -1318,44 +1281,7 @@ document.addEventListener(
   "DOMContentLoaded",
   function() {
 
-    /*
-      First load existing local UI
-      so page never appears blank.
-    */
-
-    loadProfilePage();
-
-    loadWithdrawHistory();
-
-
-    /*
-      Then Firebase takes over
-      profile + balance.
-    */
-
-    if (
-      typeof firebaseAuth !==
-      "undefined"
-    ) {
-
-      firebaseAuth.onAuthStateChanged(
-        function(user) {
-
-          if (user) {
-
-            loadFirebaseProfile();
-
-          }
-          else {
-
-            loadProfilePage();
-
-          }
-
-        }
-      );
-
-    }
+    initFirebaseProfile();
 
   }
 );

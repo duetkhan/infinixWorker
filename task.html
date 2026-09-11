@@ -266,6 +266,126 @@
       font-size: 12px;
     }
 
+    .firebase-task-title-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border: 0;
+      background: #fff;
+      color: #20283a;
+      border-radius: 18px;
+      padding: 16px 17px;
+      margin-bottom: 10px;
+      box-shadow: 0 6px 20px rgba(25,35,60,.08);
+      font: inherit;
+      font-size: 16px;
+      font-weight: 800;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .firebase-task-title-btn:active {
+      transform: scale(.99);
+    }
+
+    .firebase-task-title-arrow {
+      color: #1769e0;
+      font-size: 20px;
+      flex: 0 0 auto;
+    }
+
+    .firebase-task-detail {
+      display: none;
+      background: #fff;
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 15px;
+      box-shadow: 0 6px 20px rgba(25,35,60,.08);
+    }
+
+    .firebase-task-detail h3 {
+      margin: 0 0 10px;
+      color: #20283a;
+      font-size: 19px;
+    }
+
+    .firebase-task-detail-text {
+      color: #697386;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+      white-space: pre-wrap;
+    }
+
+    .firebase-task-start-btn {
+      width: 100%;
+      border: 0;
+      background: #1769e0;
+      color: #fff;
+      border-radius: 16px;
+      padding: 14px 16px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .firebase-task-proof-after-start {
+      display: none;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid #edf1f7;
+    }
+
+    .firebase-task-proof-after-start textarea,
+    .firebase-task-proof-after-start input {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #dfe6f0;
+      border-radius: 13px;
+      padding: 12px;
+      background: #f8faff;
+      color: #20283a;
+      font: inherit;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .firebase-task-proof-after-start textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .firebase-task-proof-label {
+      display: block;
+      color: #20283a;
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .firebase-task-submit-after-start {
+      width: 100%;
+      border: 0;
+      background: #eef5ff;
+      color: #1769e0;
+      border-radius: 14px;
+      padding: 13px 15px;
+      margin-top: 9px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .firebase-task-started-note {
+      display: none;
+      color: #1769e0;
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 9px;
+    }
+
     .firebase-task-card {
       background: #fff;
       border-radius: 20px;
@@ -2793,48 +2913,20 @@ async function loadFirebaseTasks() {
 
       const id = escapeFirebaseTaskHtml(task.id);
       const title = escapeFirebaseTaskHtml(task.title || "Untitled Task");
-      const description = escapeFirebaseTaskHtml(task.description || "");
-      const instructions = escapeFirebaseTaskHtml(task.instructions || "");
-      const url = escapeFirebaseTaskHtml(getFirebaseTaskField(task, "task_url", "taskUrl", ""));
-      const proofType = String(getFirebaseTaskField(task, "proof_type", "proofType", "none") || "none").toLowerCase();
-      const reward = Number(task.reward || 0);
-      const max = Number(getFirebaseTaskField(task, "max_completions", "maxCompletions", 0) || 0);
-      const current = Number(getFirebaseTaskField(task, "current_completions", "currentCompletions", 0) || 0);
-
       const safeId = id.replace(/[^a-zA-Z0-9_-]/g, "_");
 
       return `
-        <article class="firebase-task-card">
-          <h3>📋 ${title}</h3>
+        <button
+          class="firebase-task-title-btn"
+          type="button"
+          onclick="showFirebaseTaskDetails('${id}')">
+          <span>📋 ${title}</span>
+          <span class="firebase-task-title-arrow">›</span>
+        </button>
 
-          ${description ? `<p>${description}</p>` : ""}
-
-          <div class="firebase-task-meta">
-            <span class="firebase-task-badge">Reward: ৳${reward.toFixed(2)}</span>
-            <span class="firebase-task-badge">${max > 0 ? "Slots: " + current + " / " + max : "Unlimited"}</span>
-          </div>
-
-          ${instructions ? `<div class="firebase-task-instructions">📝 ${instructions}</div>` : ""}
-
-          <div class="firebase-task-actions">
-            ${url ? `<button class="firebase-task-url-btn" type="button" onclick="openFirebaseTask('${id}')">Open Task</button>` : ""}
-            ${proofType !== "none" ? `<button class="firebase-task-submit-btn" type="button" onclick="showFirebaseTaskProof('${safeId}')">Submit Proof</button>` : ""}
-          </div>
-
-          ${proofType !== "none" ? `
-            <div id="proof-${safeId}" class="firebase-task-proof">
-              ${proofType === "url"
-                ? `<input id="proof-input-${safeId}" type="url" placeholder="Enter proof URL">`
-                : `<textarea id="proof-input-${safeId}" placeholder="Enter your proof"></textarea>`}
-              <button
-                class="firebase-task-url-btn"
-                type="button"
-                style="margin-top:8px;"
-                onclick="submitFirebaseTaskProof('${id}','${safeId}')">
-                Send Proof
-              </button>
-            </div>
-          ` : ""}
+        <article
+          id="firebase-detail-${safeId}"
+          class="firebase-task-detail">
         </article>
       `;
 
@@ -2849,7 +2941,7 @@ async function loadFirebaseTasks() {
   }
 }
 
-function openFirebaseTask(taskId) {
+function showFirebaseTaskDetails(taskId) {
 
   const task = firebaseTasks.find(function(item) {
     return item.id === taskId;
@@ -2857,30 +2949,216 @@ function openFirebaseTask(taskId) {
 
   if (!task) return;
 
-  const url = getFirebaseTaskField(task, "task_url", "taskUrl", "");
+  const safeId = escapeFirebaseTaskHtml(taskId)
+    .replace(/[^a-zA-Z0-9_-]/g, "_");
+
+  const detail = document.getElementById(
+    "firebase-detail-" + safeId
+  );
+
+  if (!detail) return;
+
+  const title = escapeFirebaseTaskHtml(
+    task.title || "Untitled Task"
+  );
+
+  const description = escapeFirebaseTaskHtml(
+    task.description || ""
+  );
+
+  const instructions = escapeFirebaseTaskHtml(
+    task.instructions || ""
+  );
+
+  const proofType = String(
+    getFirebaseTaskField(
+      task,
+      "proof_type",
+      "proofType",
+      "none"
+    ) || "none"
+  ).toLowerCase();
+
+  const reward = Number(task.reward || 0);
+
+  const max = Number(
+    getFirebaseTaskField(
+      task,
+      "max_completions",
+      "maxCompletions",
+      0
+    ) || 0
+  );
+
+  const current = Number(
+    getFirebaseTaskField(
+      task,
+      "current_completions",
+      "currentCompletions",
+      0
+    ) || 0
+  );
+
+  const safeProofId = safeId;
+
+  detail.innerHTML = `
+    <h3>📋 ${title}</h3>
+
+    ${description
+      ? `<div class="firebase-task-detail-text"><strong>Task Details</strong><br>${description}</div>`
+      : ""}
+
+    ${instructions
+      ? `<div class="firebase-task-detail-text"><strong>Instructions</strong><br>${instructions}</div>`
+      : ""}
+
+    <div class="firebase-task-meta">
+      <span class="firebase-task-badge">Reward: ৳${reward.toFixed(2)}</span>
+      <span class="firebase-task-badge">${max > 0 ? "Slots: " + current + " / " + max : "Unlimited"}</span>
+      ${proofType !== "none" ? `<span class="firebase-task-badge">Proof: ${escapeFirebaseTaskHtml(proofType)}</span>` : ""}
+    </div>
+
+    <button
+      id="start-firebase-task-${safeId}"
+      class="firebase-task-start-btn"
+      type="button"
+      onclick="startFirebaseManagedTask('${idSafeForJs(taskId)}')">
+      Start Task
+    </button>
+
+    <div
+      id="started-note-${safeProofId}"
+      class="firebase-task-started-note">
+      Task opened. Complete the task, then submit your proof below.
+    </div>
+
+    ${proofType !== "none" ? `
+      <div
+        id="firebase-proof-after-${safeProofId}"
+        class="firebase-task-proof-after-start">
+
+        <span class="firebase-task-proof-label">
+          Proof of completion
+        </span>
+
+        ${proofType === "url"
+          ? `<input id="firebase-proof-input-${safeProofId}" type="url" placeholder="Enter proof URL">`
+          : `<textarea id="firebase-proof-input-${safeProofId}" placeholder="Enter your proof"></textarea>`}
+
+        <button
+          class="firebase-task-submit-after-start"
+          type="button"
+          onclick="submitFirebaseTaskProof('${idSafeForJs(taskId)}','${safeProofId}')">
+          Submit Proof
+        </button>
+
+      </div>
+    ` : `
+      <div
+        id="firebase-proof-after-${safeProofId}"
+        class="firebase-task-proof-after-start">
+        <span class="firebase-task-proof-label">
+          No proof is required for this task.
+        </span>
+      </div>
+    `}
+  `;
+
+  detail.style.display = "block";
+
+  detail.scrollIntoView({
+    behavior: "smooth",
+    block: "nearest"
+  });
+}
+
+function idSafeForJs(value) {
+  return String(value == null ? "" : value)
+    .replace(/\\/g, "\\\\")
+    .replace(/'/g, "\\'");
+}
+
+function startFirebaseManagedTask(taskId) {
+
+  const user = getTaskFirebaseUser();
+
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  const task = firebaseTasks.find(function(item) {
+    return item.id === taskId;
+  });
+
+  if (!task) {
+    showTaskMessage("Task not found.", "error");
+    return;
+  }
+
+  const url = getFirebaseTaskField(
+    task,
+    "task_url",
+    "taskUrl",
+    ""
+  );
 
   if (!url) {
-    showTaskMessage("This task has no URL.", "error");
+    showTaskMessage("This task has no task link.", "error");
     return;
   }
 
   try {
-    const parsed = new URL(url, window.location.href);
-    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
-      showTaskMessage("This task URL is not valid.", "error");
+
+    const parsed = new URL(
+      url,
+      window.location.href
+    );
+
+    if (
+      parsed.protocol !== "http:" &&
+      parsed.protocol !== "https:"
+    ) {
+      showTaskMessage("This task link is not valid.", "error");
       return;
     }
 
-    window.open(parsed.href, "_blank", "noopener,noreferrer");
+    window.open(
+      parsed.href,
+      "_blank",
+      "noopener,noreferrer"
+    );
+
+    const safeId = escapeFirebaseTaskHtml(taskId)
+      .replace(/[^a-zA-Z0-9_-]/g, "_");
+
+    const proofBox = document.getElementById(
+      "firebase-proof-after-" + safeId
+    );
+
+    const note = document.getElementById(
+      "started-note-" + safeId
+    );
+
+    if (proofBox) {
+      proofBox.style.display = "block";
+    }
+
+    if (note) {
+      note.style.display = "block";
+    }
+
+    showTaskMessage(
+      "Task opened. Complete it, then submit your proof.",
+      "success"
+    );
 
   } catch (error) {
-    showTaskMessage("This task URL is not valid.", "error");
-  }
-}
 
-function showFirebaseTaskProof(safeId) {
-  const box = document.getElementById("proof-" + safeId);
-  if (box) box.style.display = box.style.display === "block" ? "none" : "block";
+    console.error("Task link error:", error);
+    showTaskMessage("This task link is not valid.", "error");
+
+  }
 }
 
 async function submitFirebaseTaskProof(taskId, safeId) {
@@ -2892,8 +3170,13 @@ async function submitFirebaseTaskProof(taskId, safeId) {
     return;
   }
 
-  const input = document.getElementById("proof-input-" + safeId);
-  const proof = input ? input.value.trim() : "";
+  const input = document.getElementById(
+    "firebase-proof-input-" + safeId
+  );
+
+  const proof = input
+    ? input.value.trim()
+    : "";
 
   if (!proof) {
     showTaskMessage("Please enter your proof.", "error");
@@ -2919,27 +3202,43 @@ async function submitFirebaseTaskProof(taskId, safeId) {
       .get();
 
     if (!duplicate.empty) {
-      showTaskMessage("You have already submitted this task.", "error");
+      showTaskMessage(
+        "You have already submitted this task.",
+        "error"
+      );
       return;
     }
 
-    await firebaseDb.collection("submissions").add({
-      taskId: taskId,
-      userId: user.uid,
-      proof: proof,
-      status: "pending",
-      reward: Number(task.reward || 0),
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
+    await firebaseDb
+      .collection("submissions")
+      .add({
+        taskId: taskId,
+        userId: user.uid,
+        proof: proof,
+        status: "pending",
+        reward: Number(task.reward || 0),
+        createdAt:
+          firebase.firestore.FieldValue.serverTimestamp()
+      });
 
-    showTaskMessage("Proof submitted successfully. It is pending review.", "success");
+    showTaskMessage(
+      "Proof submitted successfully. It is pending review.",
+      "success"
+    );
 
     input.value = "";
 
   } catch (error) {
 
-    console.error("Task proof submit error:", error);
-    showTaskMessage("Unable to submit proof. Please try again.", "error");
+    console.error(
+      "Task proof submit error:",
+      error
+    );
+
+    showTaskMessage(
+      "Unable to submit proof. Please try again.",
+      "error"
+    );
 
   }
 }

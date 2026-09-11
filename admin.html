@@ -1385,470 +1385,225 @@ async function loadWithdrawals() {
     return;
   }
 
-
   const list =
     getElement("withdrawalsList");
 
-
   list.innerHTML = `
-
     <div class="loading">
       Loading withdrawals...
     </div>
-
   `;
-
 
   try {
 
     const snapshot =
       await firebaseDb
-
         .collection("withdrawals")
-
         .get();
 
-
     const withdrawals =
-      snapshot.docs
+      snapshot.docs.map(function(doc) {
+        return {
+          id: doc.id,
+          ...(doc.data() || {})
+        };
+      });
 
-        .map(
-          function(doc) {
+    withdrawals.sort(function(a, b) {
+      const aTimestamp = a.requestedAt || a.createdAt || null;
+      const bTimestamp = b.requestedAt || b.createdAt || null;
 
-            return {
+      const aTime =
+        aTimestamp &&
+        typeof aTimestamp.toMillis === "function"
+          ? aTimestamp.toMillis()
+          : 0;
 
-              id: doc.id,
+      const bTime =
+        bTimestamp &&
+        typeof bTimestamp.toMillis === "function"
+          ? bTimestamp.toMillis()
+          : 0;
 
-              ...(doc.data() || {})
+      return bTime - aTime;
+    });
 
-            };
-
-          }
-        );
-
-
-    withdrawals.sort(
-      function(a, b) {
-
-        const aTime =
-          a.createdAt &&
-          typeof a.createdAt.toMillis ===
-          "function"
-
-            ? a.createdAt.toMillis()
-
-            : 0;
-
-
-        const bTime =
-          b.createdAt &&
-          typeof b.createdAt.toMillis ===
-          "function"
-
-            ? b.createdAt.toMillis()
-
-            : 0;
-
-
-        return bTime - aTime;
-
-      }
-    );
-
-
-    getElement("withdrawCount")
-      .textContent =
-      withdrawals.length;
-
+    getElement("withdrawCount").textContent = withdrawals.length;
 
     if (!withdrawals.length) {
-
       list.innerHTML = `
-
         <div class="empty">
-
-          <div class="empty-icon">
-            💳
-          </div>
-
+          <div class="empty-icon">💳</div>
           No withdrawal requests.
-
         </div>
-
       `;
-
       return;
-
     }
-
-
-    /*
-      Load profile information for every withdrawal.
-
-      This fixes the old "User" display when
-      username/email exist inside profiles/{userId}.
-    */
 
     const profileCache = {};
 
-
     await Promise.all(
+      withdrawals.map(async function(item) {
+        const userId = String(item.userId || "");
+        if (!userId) return;
 
-      withdrawals.map(
-        async function(item) {
+        try {
+          const profileSnap =
+            await firebaseDb
+              .collection("profiles")
+              .doc(userId)
+              .get();
 
-          const userId =
-            String(
-              item.userId ||
-              ""
-            );
-
-
-          if (!userId) {
-            return;
+          if (profileSnap.exists) {
+            profileCache[userId] = profileSnap.data() || {};
           }
-
-
-          try {
-
-            const profileSnap =
-              await firebaseDb
-
-                .collection("profiles")
-
-                .doc(userId)
-
-                .get();
-
-
-            if (profileSnap.exists) {
-
-              profileCache[userId] =
-                profileSnap.data() || {};
-
-            }
-
-          } catch (error) {
-
-            console.error(
-              "Profile load error:",
-              error
-            );
-
-          }
-
+        } catch (error) {
+          console.error("Profile load error:", error);
         }
-      )
-
+      })
     );
 
+    list.innerHTML = withdrawals.map(function(item) {
 
-    list.innerHTML =
+      const status = String(item.status || "Pending");
+      const lowerStatus = status.toLowerCase();
+      let statusClass = "";
 
-      withdrawals
+      if (lowerStatus === "approved") {
+        statusClass = "approved";
+      }
 
-        .map(
-          function(item) {
+      if (lowerStatus === "rejected") {
+        statusClass = "rejected";
+      }
 
-            const status =
-              String(
-                item.status ||
-                "Pending"
-              );
+      const userId = String(item.userId || "");
+      const profile = profileCache[userId] || {};
 
+      const username = escapeHtml(
+        item.username || profile.username || "User"
+      );
 
-            const lowerStatus =
-              status.toLowerCase();
+      const email = escapeHtml(
+        item.email || profile.email || ""
+      );
 
+      const uid = escapeHtml(userId);
 
-            let statusClass =
-              "";
+      const amount = Number(item.amount || 0);
 
+      const method = escapeHtml(
+        item.method ||
+        item.paymentMethod ||
+        "Payment"
+      );
 
-            if (
-              lowerStatus ===
-              "approved"
-            ) {
+      const account = escapeHtml(
+        item.accountDetails ||
+        item.account ||
+        item.payment ||
+        item.paymentMasked ||
+        "Not available"
+      );
 
-              statusClass =
-                "approved";
+      const requestedTimestamp =
+        item.requestedAt || item.createdAt || null;
 
-            }
+      const date = escapeHtml(
+        formatDate(requestedTimestamp)
+      );
 
+      const id = escapeHtml(item.id);
+      const canAct = lowerStatus === "pending";
 
-            if (
-              lowerStatus ===
-              "rejected"
-            ) {
+      return `
+        <div class="data-row">
 
-              statusClass =
-                "rejected";
+          <div class="data-main">
+            <div>
 
-            }
+              <div class="data-name">
+                👤 Username: ${username}
+              </div>
 
+              <div class="withdraw-details">
 
-            const userId =
-              String(
-                item.userId ||
-                ""
-              );
+                📧 Email:
+                <strong>${email || "Not available"}</strong>
+                <br>
 
+                🆔 UID:
+                <strong>${uid || "Not available"}</strong>
+                <br>
 
-            const profile =
-              profileCache[userId] ||
-              {};
+                💰 Amount:
+                <strong>৳${amount.toFixed(2)}</strong>
+                <br>
 
+                💳 Method:
+                <strong>${method}</strong>
+                <br>
 
-            /*
-              Prefer withdrawal snapshot values.
-              If missing, use Firebase profile.
-            */
+                🏦 Account:
+                <strong class="withdraw-account">${account}</strong>
+                <br>
 
-            const username =
-              escapeHtml(
-
-                item.username ||
-
-                profile.username ||
-
-                "User"
-
-              );
-
-
-            const email =
-              escapeHtml(
-
-                item.email ||
-
-                profile.email ||
-
-                ""
-
-              );
-
-
-            const uid =
-              escapeHtml(
-                userId
-              );
-
-
-            const amount =
-              Number(
-                item.amount || 0
-              );
-
-
-            const method =
-              escapeHtml(
-
-                item.method ||
-
-                item.paymentMethod ||
-
-                "Payment"
-
-              );
-
-
-            /*
-              New withdrawal records use
-              accountDetails.
-
-              Old records may only have
-              paymentMasked.
-            */
-
-            const account =
-              escapeHtml(
-
-                item.accountDetails ||
-
-                item.account ||
-
-                item.payment ||
-
-                item.paymentMasked ||
-
-                "Not available"
-
-              );
-
-
-            const date =
-              escapeHtml(
-                formatDate(
-                  item.createdAt
-                )
-              );
-
-
-            const id =
-              escapeHtml(
-                item.id
-              );
-
-
-            const canAct =
-              lowerStatus ===
-              "pending";
-
-
-            return `
-
-              <div class="data-row">
-
-
-                <div class="data-main">
-
-                  <div>
-
-                    <div class="data-name">
-
-                      👤 Username:
-                      ${username}
-
-                    </div>
-
-
-                    <div class="withdraw-details">
-
-
-                      📧 Email:
-                      <strong>
-                        ${email || "Not available"}
-                      </strong>
-
-
-                      <br>
-
-
-                      🆔 UID:
-                      <strong>
-                        ${uid || "Not available"}
-                      </strong>
-
-
-                      <br>
-
-
-                      💰 Amount:
-                      <strong>
-                        ৳${amount.toFixed(2)}
-                      </strong>
-
-
-                      <br>
-
-
-                      💳 Method:
-                      <strong>
-                        ${method}
-                      </strong>
-
-
-                      <br>
-
-
-                      🏦 Account:
-                      <strong class="withdraw-account">
-                        ${account}
-                      </strong>
-
-
-                      <br>
-
-
-                      📅 Requested:
-                      <strong>
-                        ${date}
-                      </strong>
-
-
-                    </div>
-
-                  </div>
-
-
-                </div>
-
-
-                <span
-                  class="status ${statusClass}"
-                >
-                  ${escapeHtml(status)}
-                </span>
-
-
-                ${
-                  canAct
-
-                    ? `
-
-                      <div class="action-row">
-
-
-                        <button
-                          class="action-btn approve-btn"
-                          type="button"
-                          onclick="approveWithdrawal('${id}')"
-                        >
-                          Approve
-                        </button>
-
-
-                        <button
-                          class="action-btn reject-btn"
-                          type="button"
-                          onclick="rejectWithdrawal('${id}')"
-                        >
-                          Reject
-                        </button>
-
-
-                      </div>
-
-                    `
-
-                    : ""
-
-                }
-
+                📅 Requested:
+                <strong>${date}</strong>
 
               </div>
 
-            `;
+            </div>
+          </div>
 
+          <span class="status ${statusClass}">
+            ${escapeHtml(status)}
+          </span>
+
+          ${
+            canAct
+              ? `
+                <div class="action-row">
+
+                  <button
+                    class="action-btn approve-btn"
+                    type="button"
+                    onclick="approveWithdrawal('${id}')"
+                  >
+                    Approve
+                  </button>
+
+                  <button
+                    class="action-btn reject-btn"
+                    type="button"
+                    onclick="rejectWithdrawal('${id}')"
+                  >
+                    Reject
+                  </button>
+
+                </div>
+              `
+              : ""
           }
-        )
 
-        .join("");
+        </div>
+      `;
 
+    }).join("");
 
   } catch (error) {
 
-    console.error(
-      "Withdrawal load error:",
-      error
-    );
-
+    console.error("Withdrawal load error:", error);
 
     list.innerHTML = `
-
       <div class="empty">
         Unable to load withdrawal requests.
       </div>
-
     `;
-
 
     showError(
       "Withdrawals: " +
-      (
-        error.message ||
-        "Unable to load withdrawals."
-      )
+      (error.message || "Unable to load withdrawals.")
     );
 
   }

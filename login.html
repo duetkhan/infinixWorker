@@ -933,11 +933,67 @@ document
 
       /* =====================================================
          STEP 4
-         REDIRECT
+         ROLE-BASED REDIRECT
 
-         Firebase Auth automatically maintains
-         the authentication session.
+         Firebase Auth confirms the login.
+         Firestore profile role decides where
+         the authenticated account is sent:
+
+         admin -> admin.html
+         user  -> index.html
       ===================================================== */
+
+      let redirectPage =
+        "index.html";
+
+      try {
+
+        const profileSnap =
+          await firebaseDb
+            .collection("profiles")
+            .doc(user.uid)
+            .get();
+
+        if (profileSnap.exists) {
+
+          const profileData =
+            profileSnap.data() || {};
+
+          const role =
+            String(
+              profileData.role || "user"
+            )
+            .trim()
+            .toLowerCase();
+
+          if (role === "admin") {
+            redirectPage =
+              "admin.html";
+          }
+
+        }
+
+      } catch (error) {
+
+        /*
+          Login is already successful.
+          If the role cannot be read, use the
+          normal user dashboard as the safe fallback.
+        */
+
+        console.warn(
+          "Role read warning:",
+          error
+        );
+
+      }
+
+
+      console.log(
+        "Login redirect:",
+        redirectPage
+      );
+
 
       showMessage(
         "Login successful. Redirecting...",
@@ -949,7 +1005,7 @@ document
         function() {
 
           window.location.href =
-            "index.html";
+            redirectPage;
 
         },
         700

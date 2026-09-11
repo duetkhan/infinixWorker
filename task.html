@@ -3030,8 +3030,40 @@ async function loadMyTaskSubmissions() {
       .collection("submissions")
       .where("userId", "==", user.uid)
       .get();
-    const items = snapshot.docs.map(function(doc) {
+    let items = snapshot.docs.map(function(doc) {
       return { id: doc.id, ...(doc.data() || {}) };
+    });
+
+    // If a revision has already been resubmitted, keep the old revision
+    // record in Firestore for audit/reason purposes, but hide that old
+    // revision entry from the user's visible history. The new pending
+    // submission is the only visible history entry for that task.
+    const latestByTask = {};
+    items.forEach(function(item) {
+      const key = String(item.taskId || "");
+      const ts = item.createdAt && typeof item.createdAt.toMillis === "function"
+        ? item.createdAt.toMillis()
+        : 0;
+      if (!latestByTask[key] || ts > latestByTask[key].time) {
+        latestByTask[key] = { id: item.id, time: ts, status: String(item.status || "").toLowerCase() };
+      }
+    });
+
+    items = items.filter(function(item) {
+      const key = String(item.taskId || "");
+      const status = String(item.status || "").toLowerCase();
+      const latest = latestByTask[key];
+
+      // Once a new submission references a revision, never show the old
+      // revision again. This avoids the serverTimestamp timing problem.
+      if (status === "revision") {
+        const replacedByNewSubmission = items.some(function(other) {
+          return String(other.resubmittedFrom || "") === String(item.id);
+        });
+        if (replacedByNewSubmission) return false;
+        if (latest && latest.id !== item.id) return false;
+      }
+      return true;
     });
 
     items.sort(function(a, b) {
@@ -3340,20 +3372,22 @@ async function submitFirebaseTaskProof(taskId, safeId) {
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
 
-    // The previous revision submission is no longer needed.
-    // Remove it from the user's history after the new submission is saved.
+    // Remove the old revision from local history immediately. Also delete it
+    // from Firestore when the security rule permits owner deletion of a
+    // revision. Even if deletion is denied, the resubmittedFrom link above
+    // guarantees the old Resubmit button will not reappear.
     if (latest && String(latest.status || "").toLowerCase() === "revision") {
+      firebaseTaskSubmissions = firebaseTaskSubmissions.filter(function(item) {
+        return String(item.id) !== String(latest.id);
+      });
       try {
         await firebaseDb.collection("submissions").doc(latest.id).delete();
       } catch (deleteError) {
-        console.error("Old revision deletion error:", deleteError);
-        showTaskMessage("Task resubmitted, but the previous revision record could not be removed.", "error");
-        await loadMyTaskSubmissions();
-        return;
+        console.warn("Old revision deletion failed; it will remain hidden from user history.", deleteError);
       }
     }
 
-    showTaskMessage("Resubmitted successfully. It is pending admin review.", "success");
+    showTaskMessage("Resubmitted successful. Your new submission is pending admin review.", "success");
 
     const detail = document.getElementById("firebase-detail-" + safeId);
     if (detail) {

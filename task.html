@@ -19,6 +19,7 @@
   </script>
 
   <style>
+
     .task-page {
       min-height: 100vh;
       padding-bottom: 145px;
@@ -120,348 +121,482 @@
     }
 
     .task-card p {
-      margin: 6px 0;
-      color: #697386;
-      font-size: 12px;
-      line-height: 1.6;
+      margin: 0 0 12px;
+      color: #70798b;
+      font-size: 13px;
+      line-height: 1.55;
     }
 
-    .task-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 13px;
-    }
-
-    .task-meta span {
-      background: #eef5ff;
+    .task-reward {
+      display: inline-block;
+      background: #eaf2ff;
       color: #1769e0;
       border-radius: 10px;
       padding: 7px 10px;
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-    .primary-btn {
-      width: 100%;
-      border: 0;
-      border-radius: 15px;
-      background: #1769e0;
-      color: #fff;
-      padding: 14px;
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 800;
-      cursor: pointer;
-      margin-top: 14px;
+      margin-bottom: 12px;
     }
 
-    .primary-btn:disabled {
-      opacity: .55;
+    .task-limit {
+      display: block;
+      color: #70798b;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+
+    .btn {
+      width: 100%;
+      min-height: 46px;
+      border: 0;
+      border-radius: 13px;
+      background: linear-gradient(
+        135deg,
+        #1769e0,
+        #0755c9
+      );
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow:
+        0 5px 14px rgba(23,105,224,.18);
+    }
+
+    .btn.success {
+      background: #168f5b;
+      box-shadow:
+        0 5px 14px rgba(22,143,91,.15);
+    }
+
+    .btn:active {
+      transform: scale(.98);
+    }
+
+    .btn:disabled {
+      opacity: .65;
       cursor: not-allowed;
     }
 
-    .secondary-btn {
-      width: 100%;
-      border: 0;
-      border-radius: 15px;
-      background: #eef5ff;
+    .task-timer {
+      display: none;
+      margin-top: 12px;
+      padding: 10px;
+      background: #f4f7fc;
+      border-radius: 11px;
+      text-align: center;
       color: #1769e0;
-      padding: 13px;
       font-size: 13px;
       font-weight: 800;
-      cursor: pointer;
-      margin-top: 10px;
     }
 
-    .task-title-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .task-title-btn {
-      width: 100%;
-      border: 0;
-      background: #f7f9fd;
-      color: #1769e0;
-      text-align: left;
-      padding: 15px;
-      border-radius: 14px;
-      font-size: 14px;
-      font-weight: 800;
-      cursor: pointer;
-      box-shadow:
-        inset 0 0 0 1px #edf0f6;
-    }
-
-    .task-title-btn:active {
-      transform: scale(.99);
-    }
-
-    .details-box {
+    .task-message {
       display: none;
-    }
-
-    .details-box.active {
-      display: block;
-    }
-
-    .details-title {
-      color: #1769e0;
-      font-size: 20px;
-      font-weight: 800;
-      margin: 0 0 10px;
-    }
-
-    .details-label {
-      color: #20283a;
-      font-size: 13px;
-      font-weight: 800;
-      margin-top: 14px;
-      margin-bottom: 5px;
-    }
-
-    .details-text {
-      color: #687386;
-      font-size: 12px;
-      line-height: 1.65;
-      white-space: pre-wrap;
-    }
-
-    .proof-section {
-      display: none;
-      margin-top: 15px;
-      padding-top: 15px;
-      border-top: 1px solid #e8ebf1;
-    }
-
-    .proof-section.active {
-      display: block;
-    }
-
-    .proof-title {
-      margin: 0 0 12px;
-      color: #20283a;
-      font-size: 15px;
-      font-weight: 800;
-    }
-
-    .proof-help {
-      color: #7b8494;
-      font-size: 12px;
-      line-height: 1.55;
-      margin: 8px 0 12px;
-    }
-
-    .proof-input {
-      width: 100%;
-      border: 1px solid #dfe4ed;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      padding: 12px;
       border-radius: 13px;
-      background: #fafbfe;
-      padding: 12px;
       font-size: 13px;
-      color: #20283a;
-      outline: none;
+      line-height: 1.45;
     }
 
-    textarea.proof-input {
+    .success-message {
+      background: #eaf8f1;
+      color: #14754b;
+    }
+
+    .error-message {
+      background: #fff0f0;
+      color: #b33b3b;
+    }
+
+    .top-ad {
+      width: 320px;
+      height: 50px;
+      max-width: calc(100vw - 10px);
+      margin: 8px auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .native-ad {
+      width: 100%;
       min-height: 100px;
-      resize: vertical;
+      margin: 10px 0 12px;
+      border-radius: 15px;
+      overflow: hidden;
+      background: #fff;
     }
 
-    .file-box {
-      width: 100%;
-      border: 1px solid #dfe4ed;
-      border-radius: 14px;
-      background: #fafbfe;
-      padding: 12px;
+    .below-banner {
+      width: 320px;
+      height: 50px;
+      max-width: calc(100vw - 10px);
+      margin: 10px auto 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
     }
 
-    .file-box input {
-      width: 100%;
-      font-size: 13px;
+
+    .firebase-tasks-section {
+      margin: 15px 0;
     }
 
-    .selected-file {
-      margin-top: 8px;
-      color: #1769e0;
-      font-size: 12px;
-      font-weight: 700;
-      word-break: break-word;
-    }
-
-    .submission-card {
+    .firebase-tasks-header {
       background: #fff;
       border-radius: 18px;
-      padding: 15px;
-      margin-bottom: 11px;
-      box-shadow:
-        0 6px 20px rgba(25,35,60,.07);
+      padding: 15px 17px;
+      margin-bottom: 12px;
+      box-shadow: 0 6px 20px rgba(25,35,60,.08);
     }
 
-    .submission-top {
+    .firebase-tasks-header h2 {
+      margin: 0;
+      color: #20283a;
+      font-size: 18px;
+    }
+
+    .firebase-tasks-header p {
+      margin: 5px 0 0;
+      color: #7a8394;
+      font-size: 12px;
+    }
+
+    .firebase-task-title-btn {
+      width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
+      border: 0;
+      background: #fff;
+      color: #20283a;
+      border-radius: 18px;
+      padding: 16px 17px;
+      margin-bottom: 10px;
+      box-shadow: 0 6px 20px rgba(25,35,60,.08);
+      font: inherit;
+      font-size: 16px;
+      font-weight: 800;
+      text-align: left;
+      cursor: pointer;
     }
 
-    .submission-task-title {
+    .firebase-task-title-btn:active {
+      transform: scale(.99);
+    }
+
+    .firebase-task-title-arrow {
+      color: #1769e0;
+      font-size: 20px;
+      flex: 0 0 auto;
+    }
+
+    .firebase-task-detail {
+      display: none;
+      background: #fff;
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 15px;
+      box-shadow: 0 6px 20px rgba(25,35,60,.08);
+    }
+
+    .firebase-task-detail h3 {
+      margin: 0 0 10px;
+      color: #20283a;
+      font-size: 19px;
+    }
+
+    .firebase-task-detail-text {
+      color: #697386;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+      white-space: pre-wrap;
+    }
+
+    .firebase-task-start-btn {
+      width: 100%;
+      border: 0;
+      background: #1769e0;
+      color: #fff;
+      border-radius: 16px;
+      padding: 14px 16px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .firebase-task-proof-after-start {
+      display: none;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid #edf1f7;
+    }
+
+    .firebase-task-proof-after-start textarea,
+    .firebase-task-proof-after-start input {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #dfe6f0;
+      border-radius: 13px;
+      padding: 12px;
+      background: #f8faff;
+      color: #20283a;
+      font: inherit;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .firebase-task-proof-after-start textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .firebase-task-proof-label {
+      display: block;
       color: #20283a;
       font-size: 13px;
       font-weight: 800;
+      margin-bottom: 8px;
     }
 
-    .status-badge {
-      border-radius: 9px;
-      padding: 5px 8px;
-      font-size: 10px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .status-pending {
-      background: #fff5df;
-      color: #b47700;
-    }
-
-    .status-approved {
-      background: #eaf9ef;
-      color: #188545;
-    }
-
-    .status-revision {
-      background: #fff1df;
-      color: #b86a00;
-    }
-
-    .status-rejected {
-      background: #ffecec;
-      color: #b43b3b;
-    }
-
-    .submission-info {
-      margin-top: 8px;
-      color: #747e8f;
-      font-size: 11px;
-      line-height: 1.55;
-    }
-
-    .reason-box {
+    .firebase-task-submit-after-start {
+      width: 100%;
+      border: 0;
+      background: #eef5ff;
+      color: #1769e0;
+      border-radius: 14px;
+      padding: 13px 15px;
       margin-top: 9px;
-      background: #fff5f5;
-      color: #a43e3e;
-      border-radius: 10px;
-      padding: 10px;
-      font-size: 11px;
-      line-height: 1.5;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
     }
 
-    .empty-box {
-      background: #fff;
-      border-radius: 18px;
-      padding: 20px;
-      text-align: center;
-      color: #7c8595;
-      font-size: 12px;
-      box-shadow:
-        0 6px 20px rgba(25,35,60,.07);
-    }
-
-    .error-box {
+    .firebase-task-started-note {
       display: none;
-      background: #fff0f0;
-      color: #b23c3c;
-      border-radius: 14px;
-      padding: 12px;
-      margin-bottom: 14px;
+      color: #1769e0;
       font-size: 12px;
-      line-height: 1.5;
+      font-weight: 700;
+      margin-top: 9px;
     }
 
-    .success-box {
-      display: none;
-      background: #edf9f1;
-      color: #23804b;
-      border-radius: 14px;
-      padding: 12px;
-      margin-bottom: 14px;
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    .loading-box {
+    .firebase-task-card {
       background: #fff;
-      border-radius: 18px;
-      padding: 20px;
-      text-align: center;
-      color: #7b8493;
-      font-size: 12px;
-      box-shadow:
-        0 6px 20px rgba(25,35,60,.07);
-    }
-
-    .ad-top {
-      display: flex;
-      justify-content: center;
-      margin: 0 0 14px;
-      min-height: 50px;
-    }
-
-    .native-ad {
-      display: flex;
-      justify-content: center;
-      margin-top: 16px;
-      margin-bottom: 10px;
-      min-height: 100px;
-    }
-
-    .bottom-ad {
-      display: flex;
-      justify-content: center;
-      margin-top: 8px;
+      border-radius: 20px;
+      padding: 17px;
       margin-bottom: 15px;
-      min-height: 50px;
+      box-shadow: 0 6px 20px rgba(25,35,60,.08);
     }
 
-    .bottom-nav {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 100;
+    .firebase-task-card h3 {
+      margin: 0 0 8px;
+      color: #20283a;
+      font-size: 17px;
     }
 
-    .proof-image-preview {
-      display: none;
-      max-width: 100%;
-      max-height: 240px;
-      border-radius: 12px;
-      margin-top: 10px;
-      object-fit: contain;
-      background: #f4f6fa;
-    }
-
-    .proof-image-preview.active {
-      display: block;
-    }
-
-    .revision-note {
-      background: #fff8ea;
-      color: #9a6900;
-      border-radius: 12px;
-      padding: 11px;
-      margin-top: 10px;
-      font-size: 11px;
+    .firebase-task-card p {
+      margin: 0 0 10px;
+      color: #697386;
+      font-size: 13px;
       line-height: 1.5;
     }
-  </style>
+
+    .firebase-task-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 10px 0 12px;
+    }
+
+    .firebase-task-badge {
+      display: inline-block;
+      background: #eef5ff;
+      color: #1769e0;
+      border-radius: 10px;
+      padding: 6px 9px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .firebase-task-instructions {
+      background: #f8faff;
+      border-radius: 12px;
+      padding: 11px 12px;
+      margin: 10px 0;
+      color: #596579;
+      font-size: 12px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+
+    .firebase-task-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .firebase-task-url-btn,
+    .firebase-task-submit-btn {
+      width: 100%;
+      min-height: 44px;
+      border: 0;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .firebase-task-url-btn {
+      background: linear-gradient(135deg, #1769e0, #0755c9);
+      color: #fff;
+    }
+
+    .firebase-task-submit-btn {
+      background: #eef5ff;
+      color: #1769e0;
+    }
+
+    .firebase-task-proof {
+      display: none;
+      margin-top: 10px;
+    }
+
+    .firebase-task-proof textarea,
+    .firebase-task-proof input {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #dce2eb;
+      border-radius: 12px;
+      padding: 11px 12px;
+      background: #f9fbff;
+      color: #20283a;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .firebase-task-proof textarea {
+      min-height: 82px;
+      resize: vertical;
+    }
+
+    .firebase-task-empty {
+      background: #fff;
+      border-radius: 18px;
+      padding: 18px;
+      text-align: center;
+      color: #7a8394;
+      font-size: 13px;
+      box-shadow: 0 6px 20px rgba(25,35,60,.08);
+    }
+
+  
+    .firebase-my-submissions {
+      margin-top: 15px;
+    }
+
+    .my-submission-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 10px;
+      box-shadow: 0 6px 20px rgba(25,35,60,.08);
+    }
+
+    .my-submission-title {
+      color: #20283a;
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .my-submission-status {
+      display: inline-block;
+      border-radius: 10px;
+      padding: 6px 9px;
+      font-size: 11px;
+      font-weight: 800;
+      background: #eef3fb;
+      color: #586579;
+      margin-bottom: 8px;
+    }
+
+    .my-submission-status.approved { background:#eaf8f1; color:#14754b; }
+    .my-submission-status.revision { background:#fff7e6; color:#9a6500; }
+    .my-submission-status.rejected { background:#fff0f0; color:#b33b3b; }
+
+    .my-submission-reason {
+      background: #f7f9fc;
+      border-radius: 11px;
+      padding: 10px;
+      color: #5d687a;
+      font-size: 12px;
+      line-height: 1.5;
+      margin-bottom: 9px;
+    }
+
+    .firebase-proof-preview {
+      margin-top: 8px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .firebase-proof-preview img {
+      display: block;
+      width: 100%;
+      max-height: 260px;
+      object-fit: contain;
+      background: #f4f7fb;
+    }
+
+    .proof-upload-note {
+      margin-top: 7px;
+      color: #748095;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+</style>
 </head>
 
 <body>
 
-<div class="task-page">
+<div
+  id="app"
+  class="task-page"
+>
 
+  <!-- TOP 320x50 -->
+  <div class="top-ad">
+
+    <script>
+      atOptions = {
+        'key':
+          'b529261b98306ae1169a6bf5b991c3d4',
+        'format':
+          'iframe',
+        'height':
+          50,
+        'width':
+          320,
+        'params': {}
+      };
+    </script>
+
+    <script
+      src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js">
+    </script>
+
+  </div>
+
+
+  <!-- HEADER -->
   <header class="task-header">
 
     <div class="header-row">
@@ -469,20 +604,18 @@
       <button
         class="back-button"
         type="button"
-        onclick="goBack()">
-        ‹
+        onclick="window.location.href='index.html'">
+        ←
       </button>
 
-      <div>
-        <h1 class="header-title">
-          Task
-        </h1>
-      </div>
+      <h1 class="header-title">
+        Complete Task & Earn
+      </h1>
 
     </div>
 
     <div class="header-subtitle">
-      Complete tasks and earn rewards
+      Complete genuine activities and earn rewards
     </div>
 
   </header>
@@ -490,348 +623,177 @@
 
   <main class="task-content">
 
-    <!-- TOP 320x50 -->
-    <div class="ad-top">
-
-      <script>
-        atOptions = {
-          'key' : 'b529261b98306ae1169a6bf5b991c3d4',
-          'format' : 'iframe',
-          'height' : 50,
-          'width' : 320,
-          'params' : {}
-        };
-      </script>
-
-      <script
-        src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js">
-      </script>
-
-    </div>
-
-
+    <!-- USER BALANCE -->
     <div class="balance-box">
 
-      <div class="username" id="taskUsername">
-        Loading...
+      <div class="username">
+        <span data-username>
+          Guest User
+        </span>
       </div>
 
       <div class="balance">
-        ৳<span id="taskBalance">0.00</span>
+        ৳<span data-balance>
+          0.00
+        </span>
       </div>
 
     </div>
 
 
-    <div
-      class="error-box"
-      id="taskError">
-    </div>
-
-
-    <div
-      class="success-box"
-      id="taskSuccess">
-    </div>
-
-
+    <!-- NOTICE -->
     <div class="notice">
+      Please complete the required activity genuinely.
+      Rewards are not given for simply clicking
+      advertisements.
+    </div>
 
-      Complete the task according to the instructions.
-      After completing it, submit the required proof.
-      Your submission will be reviewed by admin.
+
+    <!-- =========================================
+         VISIT WEB
+    ========================================== -->
+
+    <div class="task-card">
+
+      <h3>
+        🌐 Visit Web & Earn
+      </h3>
+
+      <p>
+        Open the activity through Smartlink and remain
+        on the activity for the full required time.
+        Leaving early gives no reward.
+      </p>
+
+      <div class="task-reward">
+        Reward: ৳3.00
+      </div>
+
+      <span class="task-limit">
+        Daily limit: 10 visits
+      </span>
+
+      <button
+        id="webStartBtn"
+        class="btn"
+        type="button"
+        onclick="startWebTask()">
+        Visit Web
+      </button>
+
+      <div
+        id="webTimer"
+        class="task-timer">
+      </div>
+
+      <button
+        id="webCompleteBtn"
+        class="btn success"
+        type="button"
+        style="display:none; margin-top:10px;"
+        onclick="completeWebTask()">
+        Complete Task
+      </button>
 
     </div>
 
 
-    <!-- SPECIAL EARNING TASKS -->
+    <!-- =========================================
+         WATCH & EARN
+    ========================================== -->
 
-    <section class="task-card">
+    <div class="task-card">
 
       <h3>
-        Visit Web &amp; Earn
+        ▶️ Watch & Earn
       </h3>
 
       <p>
-        Visit the website and complete the required activity.
+        Watch the available advertisement completely.
+        You can watch up to 30 rewarded ads per day.
       </p>
 
-      <div class="task-meta">
-
-        <span>
-          Reward: ৳3.00
-        </span>
-
-        <span>
-          Daily limit: 10
-        </span>
-
+      <div class="task-reward">
+        Reward: ৳1.50 per ad
       </div>
 
+      <span class="task-limit">
+        Daily limit: 30 ads
+      </span>
+
       <button
-        class="primary-btn"
+        id="watchStartBtn"
+        class="btn"
         type="button"
-        id="visitWebBtn"
-        onclick="startVisitWebTask()">
-        Visit Web &amp; Earn
+        onclick="startWatchTask()">
+        Watch Now
       </button>
 
       <div
-        id="visitWebStatus"
-        class="proof-help">
-      </div>
-
-    </section>
-
-
-    <section class="task-card">
-
-      <h3>
-        Watch &amp; Earn
-      </h3>
-
-      <p>
-        Watch the required video/ad completely and complete the required activity.
-      </p>
-
-      <div class="task-meta">
-
-        <span>
-          Reward: ৳1.50
-        </span>
-
-        <span>
-          Daily limit: 30
-        </span>
-
+        id="watchTimer"
+        class="task-timer">
       </div>
 
       <button
-        class="primary-btn"
+        id="watchCompleteBtn"
+        class="btn success"
         type="button"
-        id="watchEarnBtn"
-        onclick="startWatchEarnTask()">
-        Watch &amp; Earn
+        style="display:none;">
+        Complete
       </button>
 
-      <div
-        id="watchEarnStatus"
-        class="proof-help">
-      </div>
-
-    </section>
+    </div>
 
 
-    <!-- ADMIN TASK LIST -->
-
-    <section class="task-card">
-
-      <h3>
-        Available Tasks
-      </h3>
-
-      <p>
-        Tap a task title to view its details.
-      </p>
-
-      <div
-        id="taskList"
-        class="task-title-list">
-
-        <div class="loading-box">
-          Loading tasks...
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- TASK DETAILS -->
+    <!-- =========================================
+         ADMIN MANAGED FIREBASE TASKS
+    ========================================== -->
 
     <section
-      class="task-card details-box"
-      id="taskDetails">
+      id="firebaseTasksSection"
+      class="firebase-tasks-section"
+      style="display:none;">
 
-      <h2
-        class="details-title"
-        id="detailsTitle">
-      </h2>
-
-
-      <div class="details-label">
-        Task Details
-      </div>
-
-      <div
-        class="details-text"
-        id="detailsDescription">
-      </div>
-
-
-      <div class="details-label">
-        Instructions
-      </div>
-
-      <div
-        class="details-text"
-        id="detailsInstructions">
-      </div>
-
-
-      <div class="task-meta">
-
-        <span>
-          Reward:
-          ৳<span id="detailsReward">0.00</span>
-        </span>
-
-        <span>
-          Slots:
-          <span id="detailsSlots">0 / 0</span>
-        </span>
-
-        <span>
-          Proof:
-          <span id="detailsProofType">none</span>
-        </span>
-
-      </div>
-
-
-      <button
-        class="primary-btn"
-        type="button"
-        id="startTaskBtn"
-        onclick="startSelectedTask()">
-        Start Task
-      </button>
-
-
-      <div
-        id="startedMessage"
-        class="proof-help">
-      </div>
-
-
-      <!-- PROOF -->
-
-      <div
-        class="proof-section"
-        id="proofSection">
-
-        <h3 class="proof-title">
-          Proof of completion
-        </h3>
-
-
-        <div
-          id="proofInstruction"
-          class="proof-help">
+      <div class="firebase-tasks-header">
+        <div>
+          <h2>📋 Available Tasks</h2>
+          <p>Complete the tasks added by the administrator.</p>
         </div>
+      </div>
 
-
-        <!-- TEXT PROOF -->
-
-        <div
-          id="textProofWrap"
-          style="display:none;">
-
-          <textarea
-            id="textProof"
-            class="proof-input"
-            placeholder="Enter your proof">
-          </textarea>
-
+      <div id="firebaseTasksList">
+        <div class="firebase-task-empty">
+          Loading tasks...
         </div>
-
-
-        <!-- URL PROOF -->
-
-        <div
-          id="urlProofWrap"
-          style="display:none;">
-
-          <input
-            id="urlProof"
-            class="proof-input"
-            type="url"
-            placeholder="https://example.com/your-proof"
-          >
-
-        </div>
-
-
-        <!-- IMAGE PROOF -->
-
-        <div
-          id="imageProofWrap"
-          style="display:none;">
-
-          <div class="file-box">
-
-            <input
-              id="imageProof"
-              type="file"
-              accept="image/*"
-            >
-
-          </div>
-
-          <div class="proof-help">
-            Attach a screenshot from your phone.
-            The image will be compressed before upload.
-          </div>
-
-          <div
-            id="selectedFileName"
-            class="selected-file">
-          </div>
-
-          <img
-            id="proofPreview"
-            class="proof-image-preview"
-            alt="Proof preview"
-          >
-
-        </div>
-
-
-        <button
-          class="primary-btn"
-          type="button"
-          id="submitTaskBtn"
-          onclick="submitSelectedTask()">
-          Submit Task
-        </button>
-
       </div>
 
     </section>
 
 
-    <!-- MY SUBMISSIONS -->
+    <!-- MY TASK SUBMISSIONS -->
+    <section
+      id="myTaskSubmissions"
+      class="firebase-my-submissions"
+      style="display:none;">
 
-    <section class="task-card">
-
-      <h3>
-        My Task Submissions
-      </h3>
-
-      <div
-        id="mySubmissions">
-
-        <div class="loading-box">
-          Loading your submissions...
+      <div class="firebase-tasks-header">
+        <div>
+          <h2>📝 My Task Submissions</h2>
+          <p>Check approval status and admin revision/rejection reasons.</p>
         </div>
-
       </div>
 
     </section>
 
 
-    <!-- NATIVE AD - BOTTOM -->
+    <!-- MESSAGE -->
+    <div
+      id="taskMessage"
+      class="task-message">
+    </div>
 
+
+    <!-- BOTTOM NATIVE 2:1 -->
     <div class="native-ad">
 
       <script
@@ -848,16 +810,19 @@
 
 
     <!-- BOTTOM 320x50 -->
-
-    <div class="bottom-ad">
+    <div class="below-banner">
 
       <script>
         atOptions = {
-          'key' : 'b529261b98306ae1169a6bf5b991c3d4',
-          'format' : 'iframe',
-          'height' : 50,
-          'width' : 320,
-          'params' : {}
+          'key':
+            'b529261b98306ae1169a6bf5b991c3d4',
+          'format':
+            'iframe',
+          'height':
+            50,
+          'width':
+            320,
+          'params': {}
         };
       </script>
 
@@ -871,2146 +836,2675 @@
 
 
   <!-- BOTTOM NAV -->
-
   <nav class="bottom-nav">
 
-    <div class="nav-inner">
+    <a href="index.html">
+      <span class="nav-icon">⌂</span>
+      <span>Home</span>
+    </a>
 
-      <a
-        href="index.html"
-        class="nav-item">
+    <a
+      href="https://lsr-video-downloaders.vercel.app/">
+      <span class="nav-icon">🌐</span>
+      <span>Website</span>
+    </a>
 
-        <span class="nav-icon">
-          ⌂
-        </span>
+    <a
+      href="https://t.me/bitbytee_bot"
+      target="_blank"
+      rel="noopener noreferrer">
+      <span class="nav-icon">✈</span>
+      <span>Telegram</span>
+    </a>
 
-        <span>
-          Home
-        </span>
+    <button
+      type="button"
+      onclick="openProfile()">
+      <span class="nav-icon">👤</span>
+      <span>Profile</span>
+    </button>
 
-      </a>
-
-
-      <a
-        href="https://lsr-video-downloaders.vercel.app/"
-        class="nav-item">
-
-        <span class="nav-icon">
-          ◉
-        </span>
-
-        <span>
-          Website
-        </span>
-
-      </a>
-
-
-      <a
-        href="https://t.me/bitbytee_bot"
-        class="nav-item"
-        target="_blank"
-        rel="noopener">
-
-        <span class="nav-icon">
-          ✈
-        </span>
-
-        <span>
-          Telegram
-        </span>
-
-      </a>
-
-
-      <a
-        href="profile.html"
-        class="nav-item">
-
-        <span class="nav-icon">
-          ●
-        </span>
-
-        <span>
-          Profile
-        </span>
-
-      </a>
-
-
-      <a
-        href="more.html"
-        class="nav-item">
-
-        <span class="nav-icon">
-          ☰
-        </span>
-
-        <span>
-          More
-        </span>
-
-      </a>
-
-    </div>
+    <button
+      type="button"
+      onclick="openMore()">
+      <span class="nav-icon">☰</span>
+      <span>More</span>
+    </button>
 
   </nav>
 
 </div>
 
 
-<!-- FIREBASE -->
+<!-- =========================================================
+     APP CORE
+========================================================= -->
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="app.js"></script>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<!-- =========================================================
+     FIREBASE
+========================================================= -->
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 
 <script src="firebase-config.js"></script>
 
 
 <script>
 
-  /*
-   * Firebase
-   */
+/* =========================================================
+   SETTINGS
+========================================================= */
 
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
+const WEB_REWARD =
+  3.00;
+
+const WEB_DAILY_LIMIT =
+  10;
+
+const WEB_WAIT =
+  60;
+
+
+const WATCH_REWARD =
+  1.50;
+
+const WATCH_DAILY_LIMIT =
+  30;
+
+
+/* =========================================================
+   FIREBASE STATE
+========================================================= */
+
+let firebaseAuthReady =
+  false;
+
+let firebaseTaskUser =
+  null;
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+function showTaskMessage(
+  text,
+  type
+) {
+
+  const box =
+    document.getElementById(
+      "taskMessage"
+    );
+
+  if (!box) {
+    return;
   }
 
-  const firebaseAuth =
-    firebase.auth();
+  box.style.display =
+    "block";
 
-  const firebaseDb =
-    firebase.firestore();
+  box.className =
+    "task-message " +
+    (
+      type === "success"
+        ? "success-message"
+        : "error-message"
+    );
 
+  box.textContent =
+    text;
 
-  /*
-   * State
-   */
-
-  let currentUser = null;
-
-  let selectedTask = null;
-
-  let selectedProofImage = "";
-
-  let taskStarted = false;
+}
 
 
-  /*
-   * Helpers
-   */
+/* =========================================================
+   FIREBASE USER
+========================================================= */
 
-  function $(id) {
+function getTaskFirebaseUser() {
 
-    return document.getElementById(id);
+  if (
+    typeof firebaseAuth !==
+      "undefined" &&
+    firebaseAuth.currentUser
+  ) {
 
-  }
-
-
-  function showError(message) {
-
-    const box =
-      $("taskError");
-
-    box.textContent =
-      message || "Something went wrong.";
-
-    box.style.display =
-      "block";
-
-    $("taskSuccess").style.display =
-      "none";
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-
-  }
-
-
-  function showSuccess(message) {
-
-    const box =
-      $("taskSuccess");
-
-    box.textContent =
-      message || "Success.";
-
-    box.style.display =
-      "block";
-
-    $("taskError").style.display =
-      "none";
-
-  }
-
-
-  function clearMessages() {
-
-    $("taskError").style.display =
-      "none";
-
-    $("taskSuccess").style.display =
-      "none";
+    return firebaseAuth.currentUser;
 
   }
 
 
-  function money(value) {
+  if (
+    typeof window.firebaseAuth !==
+      "undefined" &&
+    window.firebaseAuth.currentUser
+  ) {
 
-    const n =
-      Number(value || 0);
-
-    return n.toFixed(2);
-
-  }
-
-
-  function escapeHtml(value) {
-
-    return String(value ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+    return window.firebaseAuth.currentUser;
 
   }
 
 
-  function formatDate(timestamp) {
+  return null;
 
-    if (!timestamp) {
-      return "Just now";
+}
+
+
+/* =========================================================
+   UPDATE BALANCE UI
+========================================================= */
+
+function updateTaskBalance(
+  balance
+) {
+
+  const elements =
+    document.querySelectorAll(
+      "[data-balance]"
+    );
+
+  let value =
+    Number(balance);
+
+
+  if (
+    !Number.isFinite(value) ||
+    value < 0
+  ) {
+
+    value =
+      0;
+
+  }
+
+
+  elements.forEach(
+    function(element) {
+
+      element.textContent =
+        value.toFixed(2);
+
     }
+  );
 
-    try {
+}
 
-      const date =
-        timestamp.toDate
-          ? timestamp.toDate()
-          : new Date(timestamp);
 
-      return date.toLocaleString();
+/* =========================================================
+   UPDATE USERNAME UI
+========================================================= */
+
+function updateTaskUsername(
+  username
+) {
+
+  const elements =
+    document.querySelectorAll(
+      "[data-username]"
+    );
+
+  const name =
+    username &&
+    String(username).trim()
+      ? String(username).trim()
+      : "Guest User";
+
+
+  elements.forEach(
+    function(element) {
+
+      element.textContent =
+        name;
 
     }
-    catch (error) {
+  );
 
-      return "Just now";
+}
 
-    }
+
+/* =========================================================
+   LOAD FIREBASE BALANCE
+========================================================= */
+
+async function loadTaskFirebaseBalance() {
+
+  const user =
+    getTaskFirebaseUser();
+
+
+  if (!user) {
+
+    updateTaskBalance(
+      0
+    );
+
+    return 0;
 
   }
 
 
-  function normalizeProofType(type) {
+  try {
 
-    const value =
-      String(type || "none")
-        .toLowerCase()
-        .trim();
+    const walletRef =
+      firebaseDb
+        .collection("wallets")
+        .doc(user.uid);
+
+
+    const walletSnap =
+      await walletRef.get();
+
 
     if (
-      value === "image" ||
-      value === "screenshot"
+      walletSnap.exists
     ) {
-      return "image";
-    }
 
-    if (value === "url") {
-      return "url";
-    }
+      const data =
+        walletSnap.data() || {};
 
-    if (value === "text") {
-      return "text";
-    }
 
-    return "none";
+      const balance =
+        Number(
+          data.balance || 0
+        );
 
-  }
 
-
-  /*
-   * Back
-   */
-
-  function goBack() {
-
-    window.location.href =
-      "index.html";
-
-  }
-
-
-  /*
-   * Username
-   */
-
-  function updateTaskUsername(username) {
-
-    $("taskUsername").textContent =
-      username || "User";
-
-  }
-
-
-  /*
-   * Firebase balance
-   */
-
-  async function loadTaskFirebaseBalance() {
-
-    if (!currentUser) {
-      return;
-    }
-
-    try {
-
-      const walletSnap =
-        await firebaseDb
-          .collection("wallets")
-          .doc(currentUser.uid)
-          .get();
-
-      let balance = 0;
-
-      if (walletSnap.exists) {
-
-        const data =
-          walletSnap.data() || {};
-
-        balance =
-          Number(
-            data.balance ||
-            data.total_earned ||
-            0
-          );
-
-      }
-
-      $("taskBalance").textContent =
-        money(balance);
-
-    }
-    catch (error) {
-
-      console.warn(
-        "Balance load error:",
-        error
-      );
-
-    }
-
-  }
-
-
-  /*
-   * Firebase tasks
-   */
-
-  async function loadFirebaseTasks() {
-
-    const list =
-      $("taskList");
-
-    list.innerHTML =
-      '<div class="loading-box">Loading tasks...</div>';
-
-    try {
-
-      const snapshot =
-        await firebaseDb
-          .collection("tasks")
-          .where("status", "==", "active")
-          .get();
-
-      const tasks = [];
-
-      snapshot.forEach(doc => {
-
-        const data =
-          doc.data() || {};
-
-        const max =
-          Number(
-            data.max_completions ||
-            0
-          );
-
-        const current =
-          Number(
-            data.current_completions ||
-            0
-          );
-
-        if (
-          max > 0 &&
-          current >= max
-        ) {
-          return;
-        }
-
-        tasks.push({
-          id: doc.id,
-          ...data
-        });
-
-      });
-
-
-      tasks.sort((a, b) => {
-
-        const aTime =
-          a.createdAt &&
-          a.createdAt.toMillis
-            ? a.createdAt.toMillis()
-            : 0;
-
-        const bTime =
-          b.createdAt &&
-          b.createdAt.toMillis
-            ? b.createdAt.toMillis()
-            : 0;
-
-        return bTime - aTime;
-
-      });
-
-
-      if (!tasks.length) {
-
-        list.innerHTML =
-          '<div class="empty-box">No available tasks right now.</div>';
-
-        return;
-
-      }
-
-
-      list.innerHTML =
-        "";
-
-
-      tasks.forEach(task => {
-
-        const button =
-          document.createElement("button");
-
-        button.type =
-          "button";
-
-        button.className =
-          "task-title-btn";
-
-        button.textContent =
-          task.title ||
-          "Untitled Task";
-
-        button.onclick =
-          () => openTaskDetails(task);
-
-        list.appendChild(button);
-
-      });
-
-    }
-    catch (error) {
-
-      console.error(
-        "Task loading error:",
-        error
-      );
-
-      list.innerHTML =
-        '<div class="empty-box">Unable to load available tasks.</div>';
-
-    }
-
-  }
-
-
-  /*
-   * Open task details
-   */
-
-  function openTaskDetails(task) {
-
-    clearMessages();
-
-    selectedTask =
-      task;
-
-    taskStarted =
-      false;
-
-    selectedProofImage =
-      "";
-
-    $("taskDetails")
-      .classList
-      .add("active");
-
-
-    $("detailsTitle").textContent =
-      task.title ||
-      "Task";
-
-
-    $("detailsDescription").textContent =
-      task.description ||
-      "No task details provided.";
-
-
-    $("detailsInstructions").textContent =
-      task.instructions ||
-      "Follow the task instructions and submit the required proof.";
-
-
-    $("detailsReward").textContent =
-      money(task.reward);
-
-
-    const max =
-      Number(
-        task.max_completions ||
-        0
-      );
-
-    const current =
-      Number(
-        task.current_completions ||
-        0
+      updateTaskBalance(
+        balance
       );
 
 
-    $("detailsSlots").textContent =
-      `${current} / ${max || "∞"}`;
-
-
-    const proofType =
-      normalizeProofType(
-        task.proof_type
-      );
-
-
-    $("detailsProofType").textContent =
-      proofType;
-
-
-    $("startTaskBtn").disabled =
-      false;
-
-    $("startTaskBtn").textContent =
-      "Start Task";
-
-
-    $("startedMessage").textContent =
-      "";
-
-
-    $("proofSection")
-      .classList
-      .remove("active");
-
-
-    resetProofFields();
-
-
-    $("taskDetails").scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-
-  }
-
-
-  /*
-   * Reset proof
-   */
-
-  function resetProofFields() {
-
-    $("textProofWrap").style.display =
-      "none";
-
-    $("urlProofWrap").style.display =
-      "none";
-
-    $("imageProofWrap").style.display =
-      "none";
-
-
-    $("textProof").value =
-      "";
-
-    $("urlProof").value =
-      "";
-
-    $("imageProof").value =
-      "";
-
-    $("selectedFileName").textContent =
-      "";
-
-    $("proofPreview").src =
-      "";
-
-    $("proofPreview")
-      .classList
-      .remove("active");
-
-    selectedProofImage =
-      "";
-
-  }
-
-
-  /*
-   * Start selected admin task
-   */
-
-  function startSelectedTask() {
-
-    clearMessages();
-
-    if (!selectedTask) {
-
-      showError(
-        "Please select a task first."
-      );
-
-      return;
+      return balance;
 
     }
 
 
-    if (!currentUser) {
+    /*
+      Fallback to profile only
+      if wallet does not exist.
+    */
 
-      window.location.href =
-        "login.html";
+    const profileRef =
+      firebaseDb
+        .collection("profiles")
+        .doc(user.uid);
 
-      return;
+
+    const profileSnap =
+      await profileRef.get();
+
+
+    if (
+      profileSnap.exists
+    ) {
+
+      const data =
+        profileSnap.data() || {};
+
+
+      const balance =
+        Number(
+          data.balance || 0
+        );
+
+
+      updateTaskBalance(
+        balance
+      );
+
+
+      return balance;
 
     }
 
 
-    taskStarted =
-      true;
+    updateTaskBalance(
+      0
+    );
 
 
-    const taskUrl =
-      String(
-        selectedTask.task_url ||
-        ""
-      ).trim();
+    return 0;
 
+  }
+  catch (error) {
 
-    $("startTaskBtn").disabled =
-      true;
-
-    $("startTaskBtn").textContent =
-      "Task Started";
-
-
-    $("startedMessage").textContent =
-      "Task opened. Complete the task, then submit your proof below.";
-
-
-    showProofFields(
-      normalizeProofType(
-        selectedTask.proof_type
-      )
+    console.error(
+      "Firebase balance load error:",
+      error
     );
 
 
     /*
-     * External task link
-     */
+      IMPORTANT:
 
-    if (taskUrl) {
+      No localStorage fallback.
+      Firebase is the only balance source.
+    */
 
-      try {
+    updateTaskBalance(
+      0
+    );
 
-        window.open(
-          taskUrl,
-          "_blank",
-          "noopener,noreferrer"
-        );
 
-      }
-      catch (error) {
+    return 0;
 
-        window.location.href =
-          taskUrl;
+  }
 
-      }
+}
 
-    }
 
+/* =========================================================
+   REWARD CLAIM ID
+========================================================= */
+
+function makeRewardClaimId(
+  user,
+  rewardType
+) {
+
+  if (!user) {
+    return "";
   }
 
 
   /*
-   * Show proof
-   */
+    Claim ID is only used to prevent
+    duplicate requests from the same
+    browser session/day.
 
-  function showProofFields(proofType) {
+    The actual reward amount and
+    daily limit are decided by the
+    server.
+  */
 
-    $("proofSection")
-      .classList
-      .add("active");
-
-
-    $("proofInstruction").textContent =
-      proofType === "image"
-        ? "Attach a screenshot proving that you completed the task."
-        : proofType === "url"
-          ? "Submit the URL requested by the task."
-          : proofType === "text"
-            ? "Enter the proof requested by the task."
-            : "Submit the task after completing it.";
+  const today =
+    new Date()
+      .toISOString()
+      .slice(0, 10);
 
 
-    if (proofType === "image") {
+  const randomPart =
+    Math.random()
+      .toString(36)
+      .slice(2) +
+    Date.now()
+      .toString(36);
 
-      $("imageProofWrap").style.display =
-        "block";
 
-    }
-    else if (proofType === "url") {
+  return (
+    user.uid +
+    "_" +
+    rewardType +
+    "_" +
+    today +
+    "_" +
+    randomPart
+  );
 
-      $("urlProofWrap").style.display =
-        "block";
+}
 
-    }
-    else if (proofType === "text") {
 
-      $("textProofWrap").style.display =
-        "block";
+/* =========================================================
+   SECURE FIREBASE REWARD API
+========================================================= */
 
-    }
+async function addFirebaseReward(
+  reward,
+  rewardType,
+  claimId
+) {
+
+  const user =
+    getTaskFirebaseUser();
+
+
+  if (!user) {
+
+    throw new Error(
+      "LOGIN_REQUIRED"
+    );
 
   }
 
 
-  /*
-   * Image compression
-   */
+  if (
+    !rewardType ||
+    typeof rewardType !==
+      "string"
+  ) {
 
-  function compressImage(file) {
+    throw new Error(
+      "INVALID_REWARD_TYPE"
+    );
 
-    return new Promise(
-      (resolve, reject) => {
+  }
 
-        if (!file) {
 
-          reject(
-            new Error("No image selected.")
-          );
+  if (
+    !claimId ||
+    typeof claimId !==
+      "string"
+  ) {
 
-          return;
+    throw new Error(
+      "CLAIM_ID_REQUIRED"
+    );
 
+  }
+
+
+  let idToken;
+
+
+  try {
+
+    idToken =
+      await user.getIdToken(
+        true
+      );
+
+  }
+  catch (error) {
+
+    console.error(
+      "Firebase token error:",
+      error
+    );
+
+    throw new Error(
+      "AUTH_TOKEN_ERROR"
+    );
+
+  }
+
+
+  let response;
+
+
+  try {
+
+    response =
+      await fetch(
+        "/api/reward",
+        {
+          method:
+            "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+
+            "Authorization":
+              "Bearer " +
+              idToken
+          },
+
+          body:
+            JSON.stringify({
+              rewardType:
+                rewardType,
+
+              claimId:
+                claimId
+            })
         }
+      );
+
+  }
+  catch (error) {
+
+    console.error(
+      "Reward API network error:",
+      error
+    );
+
+    throw new Error(
+      "REWARD_SERVER_ERROR"
+    );
+
+  }
 
 
-        if (
-          !file.type ||
-          !file.type.startsWith("image/")
-        ) {
-
-          reject(
-            new Error("Please select an image file.")
-          );
-
-          return;
-
-        }
+  let data = {};
 
 
-        const reader =
-          new FileReader();
+  try {
+
+    data =
+      await response.json();
+
+  }
+  catch (error) {
+
+    console.error(
+      "Reward API JSON error:",
+      error
+    );
+
+    throw new Error(
+      "REWARD_SERVER_ERROR"
+    );
+
+  }
 
 
-        reader.onload =
-          event => {
+  if (!response.ok) {
 
-            const image =
-              new Image();
+    if (
+      data.error ===
+      "REWARD_ALREADY_CLAIMED"
+    ) {
 
+      throw new Error(
+        "REWARD_ALREADY_CLAIMED"
+      );
 
-            image.onload =
-              () => {
-
-                const maxSide =
-                  1200;
-
-                let width =
-                  image.width;
-
-                let height =
-                  image.height;
+    }
 
 
-                if (
-                  width > maxSide ||
-                  height > maxSide
-                ) {
+    if (
+      data.error ===
+      "DAILY_LIMIT_REACHED"
+    ) {
 
-                  const ratio =
-                    Math.min(
-                      maxSide / width,
-                      maxSide / height
-                    );
+      throw new Error(
+        "DAILY_LIMIT_REACHED"
+      );
 
-                  width =
-                    Math.round(
-                      width * ratio
-                    );
-
-                  height =
-                    Math.round(
-                      height * ratio
-                    );
-
-                }
+    }
 
 
-                const canvas =
-                  document.createElement(
-                    "canvas"
-                  );
+    if (
+      data.error ===
+        "AUTH_REQUIRED" ||
+      data.error ===
+        "INVALID_AUTH_TOKEN"
+    ) {
+
+      throw new Error(
+        "LOGIN_REQUIRED"
+      );
+
+    }
 
 
-                canvas.width =
-                  width;
+    if (
+      data.error ===
+      "INVALID_REWARD_TYPE"
+    ) {
 
-                canvas.height =
-                  height;
+      throw new Error(
+        "INVALID_REWARD_TYPE"
+      );
 
-
-                const ctx =
-                  canvas.getContext(
-                    "2d"
-                  );
-
-
-                ctx.drawImage(
-                  image,
-                  0,
-                  0,
-                  width,
-                  height
-                );
+    }
 
 
-                let quality =
-                  0.78;
+    if (
+      data.error ===
+      "CLAIM_ID_REQUIRED"
+    ) {
 
-                let dataUrl =
-                  canvas.toDataURL(
-                    "image/jpeg",
-                    quality
-                  );
+      throw new Error(
+        "CLAIM_ID_REQUIRED"
+      );
 
-
-                /*
-                 * Keep image safely below Firestore
-                 * document limit.
-                 */
-
-                while (
-                  dataUrl.length > 850000 &&
-                  quality > 0.35
-                ) {
-
-                  quality -=
-                    0.08;
-
-                  dataUrl =
-                    canvas.toDataURL(
-                      "image/jpeg",
-                      quality
-                    );
-
-                }
+    }
 
 
-                if (
-                  dataUrl.length > 950000
-                ) {
+    throw new Error(
+      "REWARD_SERVER_ERROR"
+    );
 
-                  reject(
-                    new Error(
-                      "Image is too large. Please select a smaller screenshot."
-                    )
-                  );
-
-                  return;
-
-                }
+  }
 
 
-                resolve(
-                  dataUrl
-                );
-
-              };
-
-
-            image.onerror =
-              () => {
-
-                reject(
-                  new Error(
-                    "Unable to read the image."
-                  )
-                );
-
-              };
+  const resultingBalance =
+    Number(
+      data.balance
+    );
 
 
-            image.src =
-              event.target.result;
-
-          };
-
-
-        reader.onerror =
-          () => {
-
-            reject(
-              new Error(
-                "Unable to read selected file."
-              )
-            );
-
-          };
+  const serverReward =
+    Number(
+      data.reward
+    );
 
 
-        reader.readAsDataURL(
-          file
-        );
+  if (
+    !Number.isFinite(
+      resultingBalance
+    )
+  ) {
 
-      }
+    throw new Error(
+      "INVALID_SERVER_BALANCE"
+    );
+
+  }
+
+
+  if (
+    !Number.isFinite(
+      serverReward
+    ) ||
+    serverReward <= 0
+  ) {
+
+    throw new Error(
+      "INVALID_SERVER_REWARD"
     );
 
   }
 
 
   /*
-   * Image selection
-   */
+    IMPORTANT:
 
-  $("imageProof").addEventListener(
-    "change",
-    async function () {
+    No worker_balance localStorage.
+    Firebase server result is the source.
+  */
 
-      clearMessages();
-
-      const file =
-        this.files &&
-        this.files[0];
+  updateTaskBalance(
+    resultingBalance
+  );
 
 
-      if (!file) {
+  return resultingBalance;
 
-        return;
-
-      }
+}
 
 
-      $("selectedFileName").textContent =
-        `Selected: ${file.name}`;
+/* =========================================================
+   VISIT WEB STATE
+========================================================= */
+
+let webInterval =
+  null;
+
+let webStartedAt =
+  0;
+
+let webTaskActive =
+  false;
 
 
-      try {
+/* =========================================================
+   VISIT WEB DAILY UI CACHE
+========================================================= */
 
-        selectedProofImage =
-          await compressImage(
-            file
+function getWebDailyData() {
+
+  const today =
+    new Date()
+      .toISOString()
+      .slice(0, 10);
+
+
+  const dateKey =
+    "iw_web_task_date";
+
+  const countKey =
+    "iw_web_task_count";
+
+
+  const savedDate =
+    localStorage.getItem(
+      dateKey
+    );
+
+
+  let count =
+    parseInt(
+      localStorage.getItem(
+        countKey
+      ) || "0",
+      10
+    );
+
+
+  if (
+    savedDate !==
+    today
+  ) {
+
+    count =
+      0;
+
+  }
+
+
+  if (
+    !Number.isFinite(count) ||
+    count < 0
+  ) {
+
+    count =
+      0;
+
+  }
+
+
+  return {
+    date:
+      today,
+
+    count:
+      count
+  };
+
+}
+
+
+/* =========================================================
+   SAVE WEB DAILY UI CACHE
+========================================================= */
+
+function saveWebDailyCount(
+  count
+) {
+
+  const today =
+    new Date()
+      .toISOString()
+      .slice(0, 10);
+
+
+  localStorage.setItem(
+    "iw_web_task_date",
+    today
+  );
+
+
+  localStorage.setItem(
+    "iw_web_task_count",
+    String(
+      Math.max(
+        0,
+        Number(count) || 0
+      )
+    )
+  );
+
+}
+
+
+/* =========================================================
+   START WEB TASK
+========================================================= */
+
+function startWebTask() {
+
+  if (
+    !firebaseAuthReady
+  ) {
+
+    showTaskMessage(
+      "Please wait a moment and try again.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  const user =
+    getTaskFirebaseUser();
+
+
+  if (!user) {
+
+    window.location.href =
+      "login.html";
+
+    return;
+
+  }
+
+
+  const data =
+    getWebDailyData();
+
+
+  if (
+    data.count >=
+    WEB_DAILY_LIMIT
+  ) {
+
+    showTaskMessage(
+      "Today's Visit Web limit is completed: 10/10.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  if (
+    webTaskActive
+  ) {
+
+    return;
+
+  }
+
+
+  const startBtn =
+    document.getElementById(
+      "webStartBtn"
+    );
+
+
+  const timer =
+    document.getElementById(
+      "webTimer"
+    );
+
+
+  const completeBtn =
+    document.getElementById(
+      "webCompleteBtn"
+    );
+
+
+  /*
+    Existing Smartlink behavior.
+  */
+
+  const smartlink =
+    "https://www.profitableratecpmnetwork.com/xujhdqwep?key=a7974e14e4446b0e7745df0efe2ed3e9";
+
+
+  window.open(
+    smartlink,
+    "_blank",
+    "noopener,noreferrer"
+  );
+
+
+  webStartedAt =
+    Date.now();
+
+
+  webTaskActive =
+    true;
+
+
+  startBtn.style.display =
+    "none";
+
+
+  completeBtn.style.display =
+    "none";
+
+
+  timer.style.display =
+    "block";
+
+
+  let remaining =
+    WEB_WAIT;
+
+
+  timer.textContent =
+    "Stay on the activity. Remaining: " +
+    remaining +
+    "s";
+
+
+  clearInterval(
+    webInterval
+  );
+
+
+  webInterval =
+    setInterval(
+      function() {
+
+        if (
+          !webTaskActive
+        ) {
+
+          clearInterval(
+            webInterval
+          );
+
+          return;
+
+        }
+
+
+        const elapsed =
+          Math.floor(
+            (
+              Date.now() -
+              webStartedAt
+            ) / 1000
           );
 
 
-        $("proofPreview").src =
-          selectedProofImage;
+        remaining =
+          Math.max(
+            0,
+            WEB_WAIT -
+            elapsed
+          );
 
 
-        $("proofPreview")
-          .classList
-          .add("active");
+        if (
+          remaining > 0
+        ) {
 
-      }
-      catch (error) {
+          timer.textContent =
+            "Stay on the activity. Remaining: " +
+            remaining +
+            "s";
 
-        selectedProofImage =
-          "";
+        }
+        else {
 
-        $("proofPreview").src =
-          "";
-
-        $("proofPreview")
-          .classList
-          .remove("active");
+          clearInterval(
+            webInterval
+          );
 
 
-        showError(
-          error.message ||
-          "Unable to process image."
+          timer.textContent =
+            "1 minute completed. You can complete the task.";
+
+
+          completeBtn.style.display =
+            "block";
+
+        }
+
+      },
+      1000
+    );
+
+}
+
+
+/* =========================================================
+   VISIBILITY CHECK
+========================================================= */
+
+document.addEventListener(
+  "visibilitychange",
+  function() {
+
+    if (
+      document.visibilityState ===
+      "visible" &&
+      webTaskActive
+    ) {
+
+      const elapsed =
+        Math.floor(
+          (
+            Date.now() -
+            webStartedAt
+          ) / 1000
         );
 
+
+      if (
+        elapsed <
+        WEB_WAIT
+      ) {
+
+        cancelEarlyWebTask();
+
       }
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   FOCUS CHECK
+========================================================= */
+
+window.addEventListener(
+  "focus",
+  function() {
+
+    if (
+      !webTaskActive
+    ) {
+
+      return;
+
+    }
+
+
+    const elapsed =
+      Math.floor(
+        (
+          Date.now() -
+          webStartedAt
+        ) / 1000
+      );
+
+
+    if (
+      elapsed <
+      WEB_WAIT
+    ) {
+
+      cancelEarlyWebTask();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   CANCEL EARLY WEB TASK
+========================================================= */
+
+function cancelEarlyWebTask() {
+
+  clearInterval(
+    webInterval
+  );
+
+
+  webTaskActive =
+    false;
+
+
+  webStartedAt =
+    0;
+
+
+  const startBtn =
+    document.getElementById(
+      "webStartBtn"
+    );
+
+
+  const timer =
+    document.getElementById(
+      "webTimer"
+    );
+
+
+  const completeBtn =
+    document.getElementById(
+      "webCompleteBtn"
+    );
+
+
+  if (startBtn) {
+
+    startBtn.style.display =
+      "block";
+
+  }
+
+
+  if (completeBtn) {
+
+    completeBtn.style.display =
+      "none";
+
+  }
+
+
+  if (timer) {
+
+    timer.style.display =
+      "block";
+
+
+    timer.textContent =
+      "Returned too early. No reward.";
+
+  }
+
+
+  showTaskMessage(
+    "You returned before 1 minute. No reward was added.",
+    "error"
+  );
+
+}
+
+
+/* =========================================================
+   COMPLETE WEB TASK
+========================================================= */
+
+async function completeWebTask() {
+
+  if (
+    !firebaseAuthReady
+  ) {
+
+    showTaskMessage(
+      "Please wait a moment and try again.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  const user =
+    getTaskFirebaseUser();
+
+
+  if (!user) {
+
+    window.location.href =
+      "login.html";
+
+    return;
+
+  }
+
+
+  if (
+    !webStartedAt ||
+    !webTaskActive
+  ) {
+
+    showTaskMessage(
+      "Please start the Visit Web task first.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  const elapsed =
+    Math.floor(
+      (
+        Date.now() -
+        webStartedAt
+      ) / 1000
+    );
+
+
+  if (
+    elapsed <
+    WEB_WAIT
+  ) {
+
+    showTaskMessage(
+      "You must stay for the full 1 minute.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  const data =
+    getWebDailyData();
+
+
+  if (
+    data.count >=
+    WEB_DAILY_LIMIT
+  ) {
+
+    showTaskMessage(
+      "Today's Visit Web limit is completed.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  const confirmed =
+    confirm(
+      "Did you genuinely complete the required activity?"
+    );
+
+
+  if (!confirmed) {
+
+    showTaskMessage(
+      "No reward was added. Please complete the required activity.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  const completeBtn =
+    document.getElementById(
+      "webCompleteBtn"
+    );
+
+
+  const startBtn =
+    document.getElementById(
+      "webStartBtn"
+    );
+
+
+  completeBtn.disabled =
+    true;
+
+
+  completeBtn.textContent =
+    "Processing...";
+
+
+  try {
+
+    /*
+      Server decides the real reward.
+
+      The reward argument is retained
+      only for compatibility.
+    */
+
+    const newBalance =
+      await addFirebaseReward(
+        WEB_REWARD,
+        "visit_web",
+        makeRewardClaimId(
+          user,
+          "visit_web"
+        )
+      );
+
+
+    const newCount =
+      data.count + 1;
+
+
+    saveWebDailyCount(
+      newCount
+    );
+
+
+    webTaskActive =
+      false;
+
+
+    webStartedAt =
+      0;
+
+
+    clearInterval(
+      webInterval
+    );
+
+
+    completeBtn.style.display =
+      "none";
+
+
+    startBtn.style.display =
+      newCount >=
+      WEB_DAILY_LIMIT
+        ? "none"
+        : "block";
+
+
+    if (
+      newCount >=
+      WEB_DAILY_LIMIT
+    ) {
+
+      showTaskMessage(
+        "Visit completed. ৳3.00 added. Today's limit 10/10 is completed.",
+        "success"
+      );
+
+    }
+    else {
+
+      showTaskMessage(
+        "Visit completed. ৳3.00 added to your balance. " +
+        newCount +
+        "/10 completed today.",
+        "success"
+      );
+
+    }
+
+
+    updateTaskBalance(
+      newBalance
+    );
+
+  }
+  catch (error) {
+
+    console.error(
+      "Visit reward error:",
+      error
+    );
+
+
+    if (
+      error.message ===
+      "LOGIN_REQUIRED"
+    ) {
+
+      window.location.href =
+        "login.html";
+
+    }
+    else if (
+      error.message ===
+      "DAILY_LIMIT_REACHED"
+    ) {
+
+      showTaskMessage(
+        "Today's reward limit has been reached.",
+        "error"
+      );
+
+    }
+    else if (
+      error.message ===
+      "REWARD_ALREADY_CLAIMED"
+    ) {
+
+      showTaskMessage(
+        "This reward has already been claimed.",
+        "error"
+      );
+
+    }
+    else {
+
+      showTaskMessage(
+        "Reward could not be added. Please try again.",
+        "error"
+      );
+
+    }
+
+  }
+  finally {
+
+    completeBtn.disabled =
+      false;
+
+
+    completeBtn.textContent =
+      "Complete Task";
+
+  }
+
+}
+
+
+/* =========================================================
+   WATCH & EARN
+========================================================= */
+
+let watchBusy =
+  false;
+
+
+/* =========================================================
+   GET WATCH DATA
+========================================================= */
+
+function getWatchDailyData() {
+
+  const today =
+    new Date()
+      .toISOString()
+      .slice(0, 10);
+
+
+  const saved =
+    localStorage.getItem(
+      "iw_watch_daily"
+    );
+
+
+  if (!saved) {
+
+    return {
+      date:
+        today,
+
+      count:
+        0
+    };
+
+  }
+
+
+  try {
+
+    const data =
+      JSON.parse(
+        saved
+      );
+
+
+    if (
+      data.date !==
+      today
+    ) {
+
+      return {
+        date:
+          today,
+
+        count:
+          0
+      };
+
+    }
+
+
+    let count =
+      Number(
+        data.count
+      );
+
+
+    if (
+      !Number.isFinite(count) ||
+      count < 0
+    ) {
+
+      count =
+        0;
+
+    }
+
+
+    return {
+      date:
+        today,
+
+      count:
+        count
+    };
+
+  }
+  catch (error) {
+
+    return {
+      date:
+        today,
+
+      count:
+        0
+    };
+
+  }
+
+}
+
+
+/* =========================================================
+   SAVE WATCH DATA
+========================================================= */
+
+function saveWatchDailyCount(
+  count
+) {
+
+  const today =
+    new Date()
+      .toISOString()
+      .slice(0, 10);
+
+
+  localStorage.setItem(
+    "iw_watch_daily",
+    JSON.stringify({
+      date:
+        today,
+
+      count:
+        Math.max(
+          0,
+          Number(count) || 0
+        )
+    })
+  );
+
+}
+
+
+/* =========================================================
+   UPDATE WATCH STATUS
+========================================================= */
+
+function updateWatchStatus() {
+
+  const data =
+    getWatchDailyData();
+
+
+  const startBtn =
+    document.getElementById(
+      "watchStartBtn"
+    );
+
+
+  const timer =
+    document.getElementById(
+      "watchTimer"
+    );
+
+
+  if (
+    !startBtn ||
+    !timer
+  ) {
+
+    return;
+
+  }
+
+
+  if (
+    data.count >=
+    WATCH_DAILY_LIMIT
+  ) {
+
+    startBtn.style.display =
+      "none";
+
+
+    timer.style.display =
+      "block";
+
+
+    timer.textContent =
+      "Today completed ✓ 30/30 ads";
+
+
+    return;
+
+  }
+
+
+  startBtn.style.display =
+    "block";
+
+
+  startBtn.disabled =
+    false;
+
+
+  timer.style.display =
+    "block";
+
+
+  timer.textContent =
+    "Today: " +
+    data.count +
+    "/" +
+    WATCH_DAILY_LIMIT +
+    " ads";
+
+}
+
+
+/* =========================================================
+   START WATCH TASK
+========================================================= */
+
+function startWatchTask() {
+
+  if (
+    !firebaseAuthReady
+  ) {
+
+    showTaskMessage(
+      "Please wait a moment and try again.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  const user =
+    getTaskFirebaseUser();
+
+
+  if (!user) {
+
+    window.location.href =
+      "login.html";
+
+    return;
+
+  }
+
+
+  if (
+    watchBusy
+  ) {
+
+    return;
+
+  }
+
+
+  const data =
+    getWatchDailyData();
+
+
+  if (
+    data.count >=
+    WATCH_DAILY_LIMIT
+  ) {
+
+    updateWatchStatus();
+
+
+    showTaskMessage(
+      "Today's Watch & Earn limit is completed: 30/30 ads.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  const startBtn =
+    document.getElementById(
+      "watchStartBtn"
+    );
+
+
+  const timer =
+    document.getElementById(
+      "watchTimer"
+    );
+
+
+  if (
+    typeof show_11761461 !==
+    "function"
+  ) {
+
+    showTaskMessage(
+      "Advertisement is not available right now. Please try again.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  watchBusy =
+    true;
+
+
+  startBtn.disabled =
+    true;
+
+
+  startBtn.style.display =
+    "none";
+
+
+  timer.style.display =
+    "block";
+
+
+  timer.textContent =
+    "Loading advertisement...";
+
+
+  /*
+    Monetag controls whether the ad
+    actually completed.
+  */
+
+  Promise.resolve(
+    show_11761461()
+  )
+  .then(
+    function() {
+
+      completeWatchAd();
+
+    }
+  )
+  .catch(
+    function(error) {
+
+      console.error(
+        "Monetag error:",
+        error
+      );
+
+
+      watchBusy =
+        false;
+
+
+      startBtn.style.display =
+        "block";
+
+
+      startBtn.disabled =
+        false;
+
+
+      const current =
+        getWatchDailyData();
+
+
+      timer.textContent =
+        "Today: " +
+        current.count +
+        "/" +
+        WATCH_DAILY_LIMIT +
+        " ads";
+
+
+      showTaskMessage(
+        "The advertisement was not completed. No reward was added.",
+        "error"
+      );
 
     }
   );
 
+}
 
-  /*
-   * Submit selected task
-   */
 
-  async function submitSelectedTask() {
+/* =========================================================
+   COMPLETE WATCH AD
+========================================================= */
 
-    clearMessages();
+function completeWatchAd() {
 
-    if (!currentUser) {
+  const data =
+    getWatchDailyData();
 
-      window.location.href =
-        "login.html";
 
-      return;
+  if (
+    data.count >=
+    WATCH_DAILY_LIMIT
+  ) {
 
-    }
+    watchBusy =
+      false;
 
 
-    if (!selectedTask) {
+    updateWatchStatus();
 
-      showError(
-        "Please select a task."
-      );
 
-      return;
-
-    }
-
-
-    if (!taskStarted) {
-
-      showError(
-        "Please click Start Task first."
-      );
-
-      return;
-
-    }
-
-
-    const proofType =
-      normalizeProofType(
-        selectedTask.proof_type
-      );
-
-
-    let proof =
-      "";
-
-    let proofImage =
-      "";
-
-
-    if (proofType === "text") {
-
-      proof =
-        $("textProof")
-          .value
-          .trim();
-
-
-      if (!proof) {
-
-        showError(
-          "Please enter your proof."
-        );
-
-        return;
-
-      }
-
-    }
-
-
-    if (proofType === "url") {
-
-      proof =
-        $("urlProof")
-          .value
-          .trim();
-
-
-      if (!proof) {
-
-        showError(
-          "Please enter the proof URL."
-        );
-
-        return;
-
-      }
-
-
-      try {
-
-        new URL(proof);
-
-      }
-      catch (error) {
-
-        showError(
-          "Please enter a valid URL."
-        );
-
-        return;
-
-      }
-
-    }
-
-
-    if (proofType === "image") {
-
-      proofImage =
-        selectedProofImage;
-
-
-      if (!proofImage) {
-
-        showError(
-          "Please attach a screenshot."
-        );
-
-        return;
-
-      }
-
-    }
-
-
-    const button =
-      $("submitTaskBtn");
-
-
-    button.disabled =
-      true;
-
-    button.textContent =
-      "Submitting...";
-
-
-    try {
-
-      /*
-       * Check own existing submissions only.
-       *
-       * This is important because Firebase rules
-       * do not allow a normal user to read every
-       * submission in the collection.
-       */
-
-      const existingSnap =
-        await firebaseDb
-          .collection("submissions")
-          .where(
-            "userId",
-            "==",
-            currentUser.uid
-          )
-          .where(
-            "taskId",
-            "==",
-            selectedTask.id
-          )
-          .get();
-
-
-      let hasPending =
-        false;
-
-      let hasApproved =
-        false;
-
-
-      existingSnap.forEach(
-        doc => {
-
-          const data =
-            doc.data() || {};
-
-          if (
-            data.status === "pending"
-          ) {
-
-            hasPending =
-              true;
-
-          }
-
-          if (
-            data.status === "approved"
-          ) {
-
-            hasApproved =
-              true;
-
-          }
-
-        }
-      );
-
-
-      if (hasPending) {
-
-        throw new Error(
-          "You already have a pending submission for this task."
-        );
-
-      }
-
-
-      if (hasApproved) {
-
-        throw new Error(
-          "You have already completed this task."
-        );
-
-      }
-
-
-      /*
-       * Create a new submission.
-       *
-       * Revision/resubmit creates a fresh document,
-       * so the existing Firestore security rules
-       * remain compatible.
-       */
-
-      const submissionRef =
-        firebaseDb
-          .collection("submissions")
-          .doc();
-
-
-      await submissionRef.set({
-
-        taskId:
-          selectedTask.id,
-
-        taskTitle:
-          selectedTask.title ||
-          "",
-
-        userId:
-          currentUser.uid,
-
-        userEmail:
-          currentUser.email ||
-          "",
-
-        proof:
-          proof,
-
-        proofImage:
-          proofImage,
-
-        proofType:
-          proofType,
-
-        reward:
-          Number(
-            selectedTask.reward ||
-            0
-          ),
-
-        status:
-          "pending",
-
-        reason:
-          "",
-
-        createdAt:
-          firebase.firestore.FieldValue.serverTimestamp()
-
-      });
-
-
-      showSuccess(
-        "Task submitted successfully. Please wait for admin review."
-      );
-
-
-      resetProofFields();
-
-
-      $("proofSection")
-        .classList
-        .remove("active");
-
-
-      taskStarted =
-        false;
-
-
-      $("startTaskBtn").disabled =
-        false;
-
-      $("startTaskBtn").textContent =
-        "Start Task";
-
-
-      $("startedMessage").textContent =
-        "";
-
-
-      await loadMySubmissions();
-
-    }
-    catch (error) {
-
-      console.error(
-        "Task submission error:",
-        error
-      );
-
-
-      showError(
-        error.message ||
-        "Unable to submit task. Please try again."
-      );
-
-    }
-    finally {
-
-      button.disabled =
-        false;
-
-      button.textContent =
-        "Submit Task";
-
-    }
+    return;
 
   }
 
 
-  /*
-   * My submissions
-   *
-   * IMPORTANT:
-   * User reads only own documents.
-   */
-
-  async function loadMySubmissions() {
-
-    const container =
-      $("mySubmissions");
+  const startBtn =
+    document.getElementById(
+      "watchStartBtn"
+    );
 
 
-    container.innerHTML =
-      '<div class="loading-box">Loading your submissions...</div>';
+  const timer =
+    document.getElementById(
+      "watchTimer"
+    );
 
 
-    if (!currentUser) {
-
-      container.innerHTML =
-        '<div class="empty-box">Please login to see your submissions.</div>';
-
-      return;
-
-    }
+  startBtn.style.display =
+    "none";
 
 
-    try {
-
-      const snapshot =
-        await firebaseDb
-          .collection("submissions")
-          .where(
-            "userId",
-            "==",
-            currentUser.uid
-          )
-          .get();
+  startBtn.disabled =
+    true;
 
 
-      const submissions =
-        [];
+  timer.style.display =
+    "block";
 
 
-      snapshot.forEach(
-        doc => {
-
-          submissions.push({
-            id: doc.id,
-            ...doc.data()
-          });
-
-        }
-      );
+  let countdown =
+    10;
 
 
-      submissions.sort(
-        (a, b) => {
+  timer.textContent =
+    "View completed ✓ Reward in " +
+    countdown +
+    "s";
 
-          const aTime =
-            a.createdAt &&
-            a.createdAt.toMillis
-              ? a.createdAt.toMillis()
-              : 0;
 
-          const bTime =
-            b.createdAt &&
-            b.createdAt.toMillis
-              ? b.createdAt.toMillis()
-              : 0;
+  const rewardTimer =
+    setInterval(
+      async function() {
 
-          return bTime - aTime;
+        countdown--;
+
+
+        if (
+          countdown > 0
+        ) {
+
+          timer.textContent =
+            "View completed ✓ Reward in " +
+            countdown +
+            "s";
+
+
+          return;
 
         }
-      );
 
 
-      if (!submissions.length) {
-
-        container.innerHTML =
-          '<div class="empty-box">No task submissions yet.</div>';
-
-        return;
-
-      }
+        clearInterval(
+          rewardTimer
+        );
 
 
-      container.innerHTML =
-        "";
+        const user =
+          getTaskFirebaseUser();
 
 
-      submissions.forEach(
-        submission => {
+        if (!user) {
 
-          const card =
-            document.createElement(
-              "div"
-            );
+          watchBusy =
+            false;
 
 
-          card.className =
-            "submission-card";
+          window.location.href =
+            "login.html";
 
 
-          const status =
-            String(
-              submission.status ||
-              "pending"
-            ).toLowerCase();
-
-
-          let statusClass =
-            "status-pending";
-
-
-          let statusText =
-            "Pending review";
-
-
-          if (
-            status === "approved"
-          ) {
-
-            statusClass =
-              "status-approved";
-
-            statusText =
-              "Approved";
-
-          }
-          else if (
-            status === "revision"
-          ) {
-
-            statusClass =
-              "status-revision";
-
-            statusText =
-              "Sent for revision";
-
-          }
-          else if (
-            status === "rejected"
-          ) {
-
-            statusClass =
-              "status-rejected";
-
-            statusText =
-              "Rejected";
-
-          }
-
-
-          let html = `
-
-            <div class="submission-top">
-
-              <div class="submission-task-title">
-                ${escapeHtml(
-                  submission.taskTitle ||
-                  "Task"
-                )}
-              </div>
-
-              <div class="status-badge ${statusClass}">
-                ${statusText}
-              </div>
-
-            </div>
-
-            <div class="submission-info">
-              Proof type:
-              ${escapeHtml(
-                submission.proofType ||
-                "none"
-              )}
-              <br>
-              Submitted:
-              ${escapeHtml(
-                formatDate(
-                  submission.createdAt
-                )
-              )}
-            </div>
-
-          `;
-
-
-          if (
-            status === "revision"
-          ) {
-
-            html += `
-
-              <div class="reason-box">
-                <strong>Admin reason:</strong><br>
-                ${escapeHtml(
-                  submission.reason ||
-                  "Please review the task and submit again."
-                )}
-              </div>
-
-              <button
-                class="secondary-btn"
-                type="button"
-                onclick='resubmitRevision(${JSON.stringify(
-                  submission.taskId
-                )})'>
-                Resubmit Task
-              </button>
-
-            `;
-
-          }
-          else if (
-            status === "rejected"
-          ) {
-
-            html += `
-
-              <div class="reason-box">
-                <strong>Admin reason:</strong><br>
-                ${escapeHtml(
-                  submission.reason ||
-                  "Your submission was rejected."
-                )}
-              </div>
-
-            `;
-
-          }
-
-
-          card.innerHTML =
-            html;
-
-
-          container.appendChild(
-            card
-          );
+          return;
 
         }
-      );
 
-    }
-    catch (error) {
-
-      console.error(
-        "Submission load error:",
-        error
-      );
-
-
-      container.innerHTML =
-        '<div class="empty-box">Unable to load your submissions.</div>';
-
-    }
-
-  }
-
-
-  /*
-   * Revision resubmit
-   */
-
-  async function resubmitRevision(taskId) {
-
-    clearMessages();
-
-
-    if (!taskId) {
-
-      showError(
-        "Task information is missing."
-      );
-
-      return;
-
-    }
-
-
-    try {
-
-      const taskSnap =
-        await firebaseDb
-          .collection("tasks")
-          .doc(taskId)
-          .get();
-
-
-      if (!taskSnap.exists) {
-
-        throw new Error(
-          "This task is no longer available."
-        );
-
-      }
-
-
-      const task =
-        {
-          id: taskSnap.id,
-          ...taskSnap.data()
-        };
-
-
-      selectedTask =
-        task;
-
-
-      openTaskDetails(
-        task
-      );
-
-
-      showSuccess(
-        "Please complete the task again and submit new proof."
-      );
-
-
-      const revisionNote =
-        document.createElement(
-          "div"
-        );
-
-
-      revisionNote.className =
-        "revision-note";
-
-
-      revisionNote.textContent =
-        "This task was sent for revision by admin. Please complete it again and submit a new proof.";
-
-
-      $("proofSection")
-        .appendChild(
-          revisionNote
-        );
-
-
-    }
-    catch (error) {
-
-      console.error(
-        error
-      );
-
-      showError(
-        error.message ||
-        "Unable to reopen task."
-      );
-
-    }
-
-  }
-
-
-  /*
-   * Visit Web & Earn
-   *
-   * Uses backend reward endpoint.
-   */
-
-  async function startVisitWebTask() {
-
-    clearMessages();
-
-
-    if (!currentUser) {
-
-      window.location.href =
-        "login.html";
-
-      return;
-
-    }
-
-
-    const button =
-      $("visitWebBtn");
-
-    const status =
-      $("visitWebStatus");
-
-
-    button.disabled =
-      true;
-
-
-    status.textContent =
-      "Opening website...";
-
-
-    const claimId =
-      "visit_web_" +
-      currentUser.uid +
-      "_" +
-      Date.now();
-
-
-    try {
-
-      /*
-       * Open the target site.
-       *
-       * This does not make an ad click a reward
-       * requirement.
-       */
-
-      window.open(
-        "https://lsr-video-downloaders.vercel.app/",
-        "_blank",
-        "noopener,noreferrer"
-      );
-
-
-      status.textContent =
-        "Complete the required website activity, then wait for the reward process.";
-
-
-      /*
-       * 30 second task timer
-       */
-
-      await countdown(
-        30,
-        status
-      );
-
-
-      const token =
-        await currentUser.getIdToken(
-          true
-        );
-
-
-      const response =
-        await fetch(
-          "/api/reward",
-          {
-            method: "POST",
-
-            headers: {
-              "Content-Type":
-                "application/json",
-
-              "Authorization":
-                "Bearer " +
-                token
-            },
-
-            body:
-              JSON.stringify({
-                rewardType:
-                  "visit_web",
-
-                claimId:
-                  claimId
-              })
-          }
-        );
-
-
-      const data =
-        await response.json();
-
-
-      if (!response.ok) {
-
-        throw new Error(
-          data.error ||
-          "Reward could not be claimed."
-        );
-
-      }
-
-
-      status.textContent =
-        `Reward credited: ৳${money(data.reward)}. Today: ${data.count}/${data.dailyLimit}.`;
-
-
-      await loadTaskFirebaseBalance();
-
-    }
-    catch (error) {
-
-      console.error(
-        "Visit Web reward error:",
-        error
-      );
-
-
-      status.textContent =
-        error.message ||
-        "Unable to complete reward.";
-
-    }
-    finally {
-
-      button.disabled =
-        false;
-
-    }
-
-  }
-
-
-  /*
-   * Watch & Earn
-   */
-
-  async function startWatchEarnTask() {
-
-    clearMessages();
-
-
-    if (!currentUser) {
-
-      window.location.href =
-        "login.html";
-
-      return;
-
-    }
-
-
-    const button =
-      $("watchEarnBtn");
-
-    const status =
-      $("watchEarnStatus");
-
-
-    button.disabled =
-      true;
-
-
-    status.textContent =
-      "Loading ad...";
-
-
-    try {
-
-      /*
-       * Monetag rewarded interstitial
-       */
-
-      if (
-        typeof window.show_11761461 ===
-        "function"
-      ) {
 
         try {
 
-          await window.show_11761461();
+          const newBalance =
+            await addFirebaseReward(
+              WATCH_REWARD,
+              "watch_earn",
+              makeRewardClaimId(
+                user,
+                "watch_earn"
+              )
+            );
 
-        }
-        catch (adError) {
 
-          console.warn(
-            "Monetag ad error:",
-            adError
+          const newCount =
+            data.count + 1;
+
+
+          saveWatchDailyCount(
+            newCount
+          );
+
+
+          watchBusy =
+            false;
+
+
+          if (
+            newCount >=
+            WATCH_DAILY_LIMIT
+          ) {
+
+            startBtn.style.display =
+              "none";
+
+
+            startBtn.disabled =
+              true;
+
+
+            timer.style.display =
+              "block";
+
+
+            timer.textContent =
+              "Today completed ✓ 30/30 ads";
+
+
+            showTaskMessage(
+              "Watch & Earn completed for today. 30 ads watched and ৳45 earned.",
+              "success"
+            );
+
+          }
+          else {
+
+            startBtn.style.display =
+              "block";
+
+
+            startBtn.disabled =
+              false;
+
+
+            timer.style.display =
+              "block";
+
+
+            timer.textContent =
+              "Today: " +
+              newCount +
+              "/" +
+              WATCH_DAILY_LIMIT +
+              " ads";
+
+
+            showTaskMessage(
+              "Completed. ৳1.50 added to your balance. " +
+              newCount +
+              "/" +
+              WATCH_DAILY_LIMIT +
+              " completed today.",
+              "success"
+            );
+
+          }
+
+
+          updateTaskBalance(
+            newBalance
           );
 
         }
+        catch (error) {
 
-      }
-
-
-      status.textContent =
-        "Please wait 15 seconds...";
-
-
-      await countdown(
-        15,
-        status
-      );
+          console.error(
+            "Watch reward error:",
+            error
+          );
 
 
-      const claimId =
-        "watch_earn_" +
-        currentUser.uid +
-        "_" +
-        Date.now();
+          watchBusy =
+            false;
 
 
-      const token =
-        await currentUser.getIdToken(
-          true
-        );
+          startBtn.style.display =
+            "block";
 
 
-      const response =
-        await fetch(
-          "/api/reward",
-          {
-            method: "POST",
+          startBtn.disabled =
+            false;
 
-            headers: {
-              "Content-Type":
-                "application/json",
 
-              "Authorization":
-                "Bearer " +
-                token
-            },
+          const current =
+            getWatchDailyData();
 
-            body:
-              JSON.stringify({
-                rewardType:
-                  "watch_earn",
 
-                claimId:
-                  claimId
-              })
+          timer.textContent =
+            "Today: " +
+            current.count +
+            "/" +
+            WATCH_DAILY_LIMIT +
+            " ads";
+
+
+          if (
+            error.message ===
+            "LOGIN_REQUIRED"
+          ) {
+
+            window.location.href =
+              "login.html";
+
           }
-        );
+          else if (
+            error.message ===
+            "DAILY_LIMIT_REACHED"
+          ) {
+
+            showTaskMessage(
+              "Today's reward limit has been reached.",
+              "error"
+            );
+
+          }
+          else if (
+            error.message ===
+            "REWARD_ALREADY_CLAIMED"
+          ) {
+
+            showTaskMessage(
+              "This reward has already been claimed.",
+              "error"
+            );
+
+          }
+          else {
+
+            showTaskMessage(
+              "Reward could not be added. Please try again.",
+              "error"
+            );
+
+          }
+
+        }
+
+      },
+      1000
+    );
+
+}
 
 
-      const data =
-        await response.json();
+/* =========================================================
+   ADMIN MANAGED FIREBASE TASKS + PROOF SUBMISSIONS
+========================================================= */
 
+let firebaseTasks = [];
+let firebaseTaskSubmissions = [];
 
-      if (!response.ok) {
+function escapeFirebaseTaskHtml(value) {
+  return String(value == null ? "" : value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
-        throw new Error(
-          data.error ||
-          "Reward could not be claimed."
-        );
+function getFirebaseTaskField(task, snake, camel, fallback) {
+  if (task && task[snake] != null) return task[snake];
+  if (task && task[camel] != null) return task[camel];
+  return fallback;
+}
 
-      }
+function idSafeForJs(value) {
+  return String(value == null ? "" : value)
+    .replace(/\\/g, "\\\\")
+    .replace(/'/g, "\\'");
+}
 
+async function loadFirebaseTasks() {
 
-      status.textContent =
-        `Reward credited: ৳${money(data.reward)}. Today: ${data.count}/${data.dailyLimit}.`;
+  const section = document.getElementById("firebaseTasksSection");
+  const list = document.getElementById("firebaseTasksList");
 
+  if (!section || !list) return;
 
-      await loadTaskFirebaseBalance();
-
-    }
-    catch (error) {
-
-      console.error(
-        "Watch reward error:",
-        error
-      );
-
-
-      status.textContent =
-        error.message ||
-        "Unable to complete reward.";
-
-    }
-    finally {
-
-      button.disabled =
-        false;
-
-    }
-
+  if (!firebaseAuthReady || !firebaseTaskUser) {
+    section.style.display = "none";
+    return;
   }
 
+  section.style.display = "block";
+  list.innerHTML = '<div class="firebase-task-empty">Loading tasks...</div>';
 
-  /*
-   * Countdown helper
-   */
+  try {
+    const snapshot = await firebaseDb.collection("tasks").get();
 
-  function countdown(
-    seconds,
-    element
-  ) {
+    firebaseTasks = snapshot.docs.map(function(doc) {
+      return { id: doc.id, ...(doc.data() || {}) };
+    }).filter(function(task) {
+      return String(task.status || "active").toLowerCase() === "active";
+    }).filter(function(task) {
+      const max = Number(getFirebaseTaskField(task, "max_completions", "maxCompletions", 0) || 0);
+      const current = Number(getFirebaseTaskField(task, "current_completions", "currentCompletions", 0) || 0);
+      return max <= 0 || current < max;
+    });
 
-    return new Promise(
-      resolve => {
+    firebaseTasks.sort(function(a, b) {
+      const aTs = a.createdAt || a.updatedAt || null;
+      const bTs = b.createdAt || b.updatedAt || null;
+      const aTime = aTs && typeof aTs.toMillis === "function" ? aTs.toMillis() : 0;
+      const bTime = bTs && typeof bTs.toMillis === "function" ? bTs.toMillis() : 0;
+      return bTime - aTime;
+    });
 
-        let remaining =
-          Number(seconds);
+    if (!firebaseTasks.length) {
+      list.innerHTML = '<div class="firebase-task-empty">No tasks are available right now.</div>';
+      await loadMyTaskSubmissions();
+      return;
+    }
+
+    list.innerHTML = firebaseTasks.map(function(task) {
+      const id = escapeFirebaseTaskHtml(task.id);
+      const title = escapeFirebaseTaskHtml(task.title || "Untitled Task");
+      const safeId = id.replace(/[^a-zA-Z0-9_-]/g, "_");
+      return `
+        <button class="firebase-task-title-btn" type="button" onclick="showFirebaseTaskDetails('${id}')">
+          <span>📋 ${title}</span>
+          <span class="firebase-task-title-arrow">›</span>
+        </button>
+        <article id="firebase-detail-${safeId}" class="firebase-task-detail"></article>
+      `;
+    }).join("");
+
+    await loadMyTaskSubmissions();
+
+  } catch (error) {
+    console.error("Firebase task load error:", error);
+    list.innerHTML = '<div class="firebase-task-empty">Unable to load tasks. Please refresh.</div>';
+  }
+}
+
+async function loadMyTaskSubmissions() {
+
+  const box = document.getElementById("myTaskSubmissions");
+  if (!box) return;
+
+  const user = getTaskFirebaseUser();
+  if (!user) {
+    box.style.display = "none";
+    return;
+  }
+
+  box.style.display = "block";
+  box.innerHTML = '<div class="firebase-task-empty">Loading your task submissions...</div>';
+
+  try {
+    const snapshot = await firebaseDb
+      .collection("submissions")
+      .where("userId", "==", user.uid)
+      .get();
+    const items = snapshot.docs.map(function(doc) {
+      return { id: doc.id, ...(doc.data() || {}) };
+    });
+
+    items.sort(function(a, b) {
+      const aTs = a.createdAt || a.submittedAt || null;
+      const bTs = b.createdAt || b.submittedAt || null;
+      const aTime = aTs && typeof aTs.toMillis === "function" ? aTs.toMillis() : 0;
+      const bTime = bTs && typeof bTs.toMillis === "function" ? bTs.toMillis() : 0;
+      return bTime - aTime;
+    });
+
+    firebaseTaskSubmissions = items;
+
+    if (!items.length) {
+      box.innerHTML = '<div class="firebase-task-empty">No task submissions yet.</div>';
+      return;
+    }
+
+    box.innerHTML = items.map(function(item) {
+      const task = firebaseTasks.find(function(t) { return t.id === item.taskId; });
+      const title = escapeFirebaseTaskHtml(item.taskTitle || (task && task.title) || "Task");
+      const status = String(item.status || "pending").toLowerCase();
+      const reason = escapeFirebaseTaskHtml(item.reason || "");
+      const resubmittedSuccessful = item.resubmittedSuccessful === true;
+      let statusLabel = "Pending review";
+      if (status === "approved") statusLabel = "Approved";
+      if (status === "revision") statusLabel = "Sent for revision";
+      if (status === "rejected") statusLabel = "Rejected";
+      const safeId = escapeFirebaseTaskHtml(item.id).replace(/[^a-zA-Z0-9_-]/g, "_");
+      return `
+        <div class="my-submission-card">
+          <div class="my-submission-title">📋 ${title}</div>
+          <div class="my-submission-status ${escapeFirebaseTaskHtml(status)}">${escapeFirebaseTaskHtml(statusLabel)}</div>
+          ${resubmittedSuccessful ? `<div class="my-submission-reason"><strong>Resubmitted successful</strong></div>` : (reason ? `<div class="my-submission-reason"><strong>Admin reason:</strong><br>${reason}</div>` : "")}
+          ${status === "revision" ? `
+            <button class="firebase-task-start-btn" type="button" onclick="resubmitFirebaseTask('${idSafeForJs(item.taskId)}')">Resubmit Task</button>
+          ` : ""}
+        </div>
+      `;
+    }).join("");
+
+  } catch (error) {
+    console.error("My submissions load error:", error);
+    box.innerHTML = '<div class="firebase-task-empty">Unable to load your submissions.</div>';
+  }
+}
+
+function showFirebaseTaskDetails(taskId) {
+
+  const task = firebaseTasks.find(function(item) { return item.id === taskId; });
+  if (!task) return;
+
+  const safeId = escapeFirebaseTaskHtml(taskId).replace(/[^a-zA-Z0-9_-]/g, "_");
+  const detail = document.getElementById("firebase-detail-" + safeId);
+  if (!detail) return;
+
+  const title = escapeFirebaseTaskHtml(task.title || "Untitled Task");
+  const description = escapeFirebaseTaskHtml(task.description || "");
+  const instructions = escapeFirebaseTaskHtml(task.instructions || "");
+  const proofType = String(getFirebaseTaskField(task, "proof_type", "proofType", "none") || "none").toLowerCase();
+  const reward = Number(task.reward || 0);
+  const max = Number(getFirebaseTaskField(task, "max_completions", "maxCompletions", 0) || 0);
+  const current = Number(getFirebaseTaskField(task, "current_completions", "currentCompletions", 0) || 0);
+
+  detail.innerHTML = `
+    <h3>📋 ${title}</h3>
+    ${description ? `<div class="firebase-task-detail-text"><strong>Task Details</strong><br>${description}</div>` : ""}
+    ${instructions ? `<div class="firebase-task-detail-text"><strong>Instructions</strong><br>${instructions}</div>` : ""}
+    <div class="firebase-task-meta">
+      <span class="firebase-task-badge">Reward: ৳${reward.toFixed(2)}</span>
+      <span class="firebase-task-badge">${max > 0 ? "Slots: " + current + " / " + max : "Unlimited"}</span>
+      ${proofType !== "none" ? `<span class="firebase-task-badge">Proof: ${escapeFirebaseTaskHtml(proofType)}</span>` : ""}
+    </div>
+    <button id="start-firebase-task-${safeId}" class="firebase-task-start-btn" type="button" onclick="startFirebaseManagedTask('${idSafeForJs(taskId)}')">Start Task</button>
+    <div id="started-note-${safeId}" class="firebase-task-started-note">Task opened. Complete the task, then submit your proof below.</div>
+    <div id="firebase-proof-after-${safeId}" class="firebase-task-proof-after-start" style="display:none;">
+      <span class="firebase-task-proof-label">Proof of completion</span>
+      ${proofType === "image" ? `
+        <input id="firebase-proof-input-${safeId}" type="file" accept="image/*">
+        <div class="proof-upload-note">Attach a screenshot from your phone. The image will be compressed before upload.</div>
+        <div id="firebase-proof-preview-${safeId}" class="firebase-proof-preview"></div>
+      ` : proofType === "url" ? `
+        <input id="firebase-proof-input-${safeId}" type="url" placeholder="Enter proof URL">
+      ` : proofType === "text" ? `
+        <textarea id="firebase-proof-input-${safeId}" placeholder="Enter your proof"></textarea>
+      ` : `
+        <div class="proof-upload-note">No attachment is required. Submit after completing the task.</div>
+      `}
+      <button class="firebase-task-submit-after-start" type="button" onclick="submitFirebaseTaskProof('${idSafeForJs(taskId)}','${safeId}')">Submit Task</button>
+    </div>
+  `;
+
+  const fileInput = document.getElementById("firebase-proof-input-" + safeId);
+  if (fileInput && proofType === "image") {
+    fileInput.addEventListener("change", function() {
+      const file = fileInput.files && fileInput.files[0];
+      const preview = document.getElementById("firebase-proof-preview-" + safeId);
+      if (!preview) return;
+      if (!file) { preview.innerHTML = ""; return; }
+      if (!file.type || file.type.indexOf("image/") !== 0) {
+        fileInput.value = "";
+        preview.innerHTML = "";
+        showTaskMessage("Please attach an image screenshot.", "error");
+        return;
+      }
+      preview.innerHTML = `<div class="proof-upload-note">Selected: ${escapeFirebaseTaskHtml(file.name)}</div>`;
+    });
+  }
+
+  detail.style.display = "block";
+  detail.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+async function resubmitFirebaseTask(taskId) {
+  const user = getTaskFirebaseUser();
+  if (!user) { window.location.href = "login.html"; return; }
+
+  const latest = firebaseTaskSubmissions.find(function(item) {
+    return item.taskId === taskId && String(item.userId) === String(user.uid) && String(item.status || "").toLowerCase() === "revision";
+  });
+
+  if (!latest) {
+    showTaskMessage("This task is not waiting for revision.", "error");
+    return;
+  }
+
+  const task = firebaseTasks.find(function(item) { return item.id === taskId; });
+  if (!task) {
+    showTaskMessage("This task is no longer available.", "error");
+    return;
+  }
+
+  showFirebaseTaskDetails(taskId);
+
+  // Revision flow: after opening the task details, immediately open the
+  // original external task link again and reveal the proof attachment area.
+  // This gives the user the same flow as the first submission.
+  setTimeout(function() {
+    startFirebaseManagedTask(taskId);
+  }, 150);
+}
+
+async function startFirebaseManagedTask(taskId) {
+
+  const user = getTaskFirebaseUser();
+  if (!user) { window.location.href = "login.html"; return; }
+
+  const task = firebaseTasks.find(function(item) { return item.id === taskId; });
+  if (!task) { showTaskMessage("Task not found.", "error"); return; }
+
+  const url = getFirebaseTaskField(task, "task_url", "taskUrl", "");
+  if (!url) { showTaskMessage("This task has no task link.", "error"); return; }
+
+  try {
+    const parsed = new URL(url, window.location.href);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") throw new Error("invalid");
+
+    window.open(parsed.href, "_blank", "noopener,noreferrer");
+
+    const safeId = escapeFirebaseTaskHtml(taskId).replace(/[^a-zA-Z0-9_-]/g, "_");
+    const proofBox = document.getElementById("firebase-proof-after-" + safeId);
+    const note = document.getElementById("started-note-" + safeId);
+    const startBtn = document.getElementById("start-firebase-task-" + safeId);
+
+    if (proofBox) proofBox.style.display = "block";
+    if (note) note.style.display = "block";
+    if (startBtn) startBtn.disabled = true;
+
+    showTaskMessage("Task opened. Complete it, then submit your proof.", "success");
+
+  } catch (error) {
+    console.error("Task link error:", error);
+    showTaskMessage("This task link is not valid.", "error");
+  }
+}
+
+function readAndCompressProofImage(file) {
+  return new Promise(function(resolve, reject) {
+    if (!file || !file.type || file.type.indexOf("image/") !== 0) {
+      reject(new Error("IMAGE_REQUIRED"));
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onerror = function() { reject(new Error("IMAGE_READ_ERROR")); };
+    reader.onload = function(event) {
+      const image = new Image();
+      image.onerror = function() { reject(new Error("IMAGE_READ_ERROR")); };
+      image.onload = function() {
+        const maxSide = 1200;
+        const scale = Math.min(1, maxSide / Math.max(image.width, image.height));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(image.width * scale));
+        canvas.height = Math.max(1, Math.round(image.height * scale));
+        const ctx = canvas.getContext("2d", { alpha: false });
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+        let quality = 0.78;
+        let data = canvas.toDataURL("image/jpeg", quality);
+        while (data.length > 900000 && quality > 0.42) {
+          quality -= 0.07;
+          data = canvas.toDataURL("image/jpeg", quality);
+        }
+
+        if (data.length > 950000) {
+          reject(new Error("IMAGE_TOO_LARGE"));
+          return;
+        }
+        resolve(data);
+      };
+      image.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function submitFirebaseTaskProof(taskId, safeId) {
+
+  const user = getTaskFirebaseUser();
+  if (!user) { window.location.href = "login.html"; return; }
+
+  const task = firebaseTasks.find(function(item) { return item.id === taskId; });
+  if (!task) { showTaskMessage("Task not found.", "error"); return; }
+
+  const proofType = String(getFirebaseTaskField(task, "proof_type", "proofType", "none") || "none").toLowerCase();
+
+  try {
+    const all = await firebaseDb
+      .collection("submissions")
+      .where("userId", "==", user.uid)
+      .get();
+    const previous = all.docs.map(function(doc) {
+      return { id: doc.id, ...(doc.data() || {}) };
+    }).filter(function(item) {
+      return String(item.taskId || "") === String(taskId);
+    });
+
+    previous.sort(function(a, b) {
+      const aTs = a.createdAt || a.submittedAt || null;
+      const bTs = b.createdAt || b.submittedAt || null;
+      const aTime = aTs && typeof aTs.toMillis === "function" ? aTs.toMillis() : 0;
+      const bTime = bTs && typeof bTs.toMillis === "function" ? bTs.toMillis() : 0;
+      return bTime - aTime;
+    });
+
+    const latest = previous[0];
+    if (latest) {
+      const latestStatus = String(latest.status || "").toLowerCase();
+      if (latestStatus === "pending") {
+        showTaskMessage("This task is already pending admin review.", "error");
+        return;
+      }
+      if (latestStatus === "approved") {
+        showTaskMessage("This task has already been approved.", "error");
+        return;
+      }
+      if (latestStatus === "rejected") {
+        showTaskMessage("This task was rejected. Please contact the administrator if needed.", "error");
+        return;
+      }
+      if (latestStatus !== "revision") {
+        showTaskMessage("This task cannot be submitted again right now.", "error");
+        return;
+      }
+    }
+
+    let proof = "";
+    let proofImage = "";
+
+    if (proofType === "image") {
+      const input = document.getElementById("firebase-proof-input-" + safeId);
+      const file = input && input.files ? input.files[0] : null;
+      if (!file) {
+        showTaskMessage("Please attach the screenshot before submitting.", "error");
+        return;
+      }
+      proofImage = await readAndCompressProofImage(file);
+      proof = "Screenshot attached";
+    } else if (proofType === "url" || proofType === "text") {
+      const input = document.getElementById("firebase-proof-input-" + safeId);
+      proof = input ? input.value.trim() : "";
+      if (!proof) {
+        showTaskMessage("Please enter your proof.", "error");
+        return;
+      }
+    } else {
+      proof = "Task completed without proof attachment";
+    }
+
+    const newSubmissionRef = firebaseDb.collection("submissions").doc();
+
+    await newSubmissionRef.set({
+      taskId: taskId,
+      taskTitle: String(task.title || "Untitled Task"),
+      userId: user.uid,
+      userEmail: user.email || "",
+      proof: proof,
+      proofImage: proofImage,
+      proofType: proofType,
+      reward: Number(task.reward || 0),
+      status: "pending",
+      reason: "",
+      resubmittedSuccessful: true,
+      resubmittedFrom: latest ? latest.id : "",
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    // The previous revision submission is no longer needed.
+    // Remove it from the user's history after the new submission is saved.
+    if (latest && String(latest.status || "").toLowerCase() === "revision") {
+      try {
+        await firebaseDb.collection("submissions").doc(latest.id).delete();
+      } catch (deleteError) {
+        console.error("Old revision deletion error:", deleteError);
+        showTaskMessage("Task resubmitted, but the previous revision record could not be removed.", "error");
+        await loadMyTaskSubmissions();
+        return;
+      }
+    }
+
+    showTaskMessage("Resubmitted successfully. It is pending admin review.", "success");
+
+    const detail = document.getElementById("firebase-detail-" + safeId);
+    if (detail) {
+      const submitBtn = detail.querySelector(".firebase-task-submit-after-start");
+      if (submitBtn) submitBtn.disabled = true;
+    }
+
+    await loadMyTaskSubmissions();
+
+  } catch (error) {
+    console.error("Task proof submit error:", error);
+    let message = "Unable to submit task. Please try again.";
+    if (error.message === "IMAGE_TOO_LARGE") message = "Screenshot is too large. Please choose a smaller image.";
+    if (error.message === "IMAGE_READ_ERROR") message = "The screenshot could not be read. Please try another image.";
+    showTaskMessage(message, "error");
+  }
+}
+
+/* =========================================================
+   FIREBASE AUTH STATE
+========================================================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function() {
+
+    if (
+      typeof firebaseAuth ===
+      "undefined"
+    ) {
+
+      console.error(
+        "Firebase Auth is not available."
+      );
 
 
-        element.textContent =
-          `Please wait ${remaining} seconds...`;
+      showTaskMessage(
+        "Firebase connection is not ready. Please refresh the page.",
+        "error"
+      );
 
 
-        const timer =
-          setInterval(
-            () => {
+      return;
 
-              remaining--;
+    }
 
 
-              if (
-                remaining <= 0
-              ) {
+    firebaseAuth.onAuthStateChanged(
+      async function(user) {
 
-                clearInterval(
-                  timer
-                );
-
-                resolve();
-
-                return;
-
-              }
+        firebaseTaskUser =
+          user || null;
 
 
-              element.textContent =
-                `Please wait ${remaining} seconds...`;
+        firebaseAuthReady =
+          true;
 
-            },
-            1000
+
+        if (!user) {
+
+          updateTaskUsername(
+            "Guest User"
           );
+
+
+          updateTaskBalance(
+            0
+          );
+
+
+          updateWatchStatus();
+
+          const tasksSection = document.getElementById("firebaseTasksSection");
+          if (tasksSection) {
+            tasksSection.style.display = "none";
+          }
+
+          return;
+
+        }
+
+
+        /*
+          Username comes from Firestore.
+        */
+
+        let username =
+          user.displayName ||
+          "User";
+
+
+        try {
+
+          const profileSnap =
+            await firebaseDb
+              .collection("profiles")
+              .doc(user.uid)
+              .get();
+
+
+          if (
+            profileSnap.exists
+          ) {
+
+            const data =
+              profileSnap.data() || {};
+
+
+            if (
+              data.username
+            ) {
+
+              username =
+                data.username;
+
+            }
+
+          }
+
+        }
+        catch (error) {
+
+          console.warn(
+            "Task profile load error:",
+            error
+          );
+
+        }
+
+
+        updateTaskUsername(
+          username
+        );
+
+
+        /*
+          Balance comes only from Firebase.
+        */
+
+        await loadTaskFirebaseBalance();
+
+
+        updateWatchStatus();
+
+        await loadFirebaseTasks();
 
       }
     );
 
   }
-
-
-  /*
-   * Firebase auth
-   */
-
-  firebaseAuth.onAuthStateChanged(
-    async user => {
-
-      currentUser =
-        user;
-
-
-      if (!user) {
-
-        window.location.href =
-          "login.html";
-
-        return;
-
-      }
-
-
-      /*
-       * Username comes from Firestore.
-       */
-
-      let username =
-        user.displayName ||
-        "User";
-
-
-      try {
-
-        const profileSnap =
-          await firebaseDb
-            .collection("profiles")
-            .doc(user.uid)
-            .get();
-
-
-        if (
-          profileSnap.exists
-        ) {
-
-          const data =
-            profileSnap.data() || {};
-
-
-          if (
-            data.username
-          ) {
-
-            username =
-              data.username;
-
-          }
-
-        }
-
-      }
-      catch (error) {
-
-        console.warn(
-          "Task profile load error:",
-          error
-        );
-
-      }
-
-
-      updateTaskUsername(
-        username
-      );
-
-
-      /*
-       * Balance comes only from Firebase.
-       */
-
-      await loadTaskFirebaseBalance();
-
-
-      await loadFirebaseTasks();
-
-
-      await loadMySubmissions();
-
-    }
-  );
+);
 
 </script>
 

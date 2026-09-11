@@ -1,3228 +1,3018 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
-
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
   >
 
-  <meta
-    name="theme-color"
-    content="#1769e0"
-  >
+  <title>Task - Infinix Worker</title>
 
-  <title>Admin Panel - Infinix Worker</title>
+  <link rel="stylesheet" href="style.css">
 
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
+  <!-- MONETAG REWARDED INTERSTITIAL -->
+  <script
+    src="//libtl.com/sdk.js"
+    data-zone="11761461"
+    data-sdk="show_11761461">
+  </script>
 
   <style>
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      background: #f4f7fb;
-      color: #20283a;
-      font-family: Arial, sans-serif;
-    }
-
-    .admin-page {
+    .task-page {
       min-height: 100vh;
-      padding-bottom: 40px;
+      padding-bottom: 145px;
     }
 
-    /* HEADER */
-
-    .admin-header {
-      background:
-        linear-gradient(
-          135deg,
-          #1769e0,
-          #0755c9
-        );
-
+    .task-header {
+      background: linear-gradient(
+        135deg,
+        #1769e0,
+        #0755c9
+      );
       color: #fff;
-
-      padding: 20px 16px;
-
-      border-radius:
-        0 0 24px 24px;
-
+      padding: 18px 16px 20px;
+      border-radius: 0 0 24px 24px;
       box-shadow:
-        0 5px 18px
-        rgba(23,105,224,.20);
+        0 5px 18px rgba(23,105,224,.20);
     }
 
-    .admin-header-row {
+    .header-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       gap: 12px;
     }
 
-    .admin-title {
+    .back-button {
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 12px;
+      background: rgba(255,255,255,.18);
+      color: #fff;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .header-title {
       margin: 0;
-      font-size: 21px;
+      font-size: 20px;
       font-weight: 800;
     }
 
-    .admin-subtitle {
-      margin: 5px 0 0;
-      font-size: 11px;
+    .header-subtitle {
+      margin: 5px 0 0 52px;
+      font-size: 12px;
       opacity: .88;
     }
 
-    .logout-btn {
-      border: 0;
-      background:
-        rgba(255,255,255,.16);
-      color: #fff;
-      border-radius: 11px;
-      padding: 10px 13px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    /* CONTENT */
-
-    .admin-content {
+    .task-content {
       padding: 16px;
     }
 
-    /* ACCESS */
-
-    #accessMessage {
+    .balance-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       background: #fff;
       border-radius: 18px;
-      padding: 22px;
-      text-align: center;
-
-      box-shadow:
-        0 6px 20px
-        rgba(25,35,60,.08);
-
-      margin-bottom: 16px;
-    }
-
-    .access-icon {
-      font-size: 38px;
-      margin-bottom: 8px;
-    }
-
-    .access-title {
-      font-size: 17px;
-      font-weight: 800;
-      margin-bottom: 6px;
-    }
-
-    .access-text {
-      color: #70798b;
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    /* ERROR */
-
-    .error-box {
-      background: #fff0f0;
-      color: #b33b3b;
-      border-radius: 12px;
-      padding: 12px;
-      font-size: 11px;
-      line-height: 1.5;
+      padding: 15px 17px;
       margin-bottom: 14px;
-      display: none;
-    }
-
-    /* ADMIN INFO */
-
-    .admin-info {
-      background: #fff;
-      border-radius: 18px;
-      padding: 15px;
-      margin-bottom: 16px;
-
       box-shadow:
-        0 6px 20px
-        rgba(25,35,60,.07);
+        0 6px 20px rgba(25,35,60,.08);
     }
 
-    .admin-info-title {
-      color: #1769e0;
-      font-size: 11px;
-      font-weight: 800;
-      margin-bottom: 6px;
-    }
-
-    .admin-info-email {
+    .balance-box .username {
       color: #20283a;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 700;
-      word-break: break-word;
     }
 
-    .admin-role {
-      display: inline-block;
-      margin-top: 7px;
-      padding: 5px 8px;
-      background: #eaf2ff;
+    .balance-box .balance {
       color: #1769e0;
-      border-radius: 8px;
-      font-size: 10px;
-      font-weight: 800;
-    }
-
-    /* DASHBOARD */
-
-    .stats-grid {
-      display: grid;
-
-      grid-template-columns:
-        repeat(2, minmax(0, 1fr));
-
-      gap: 12px;
-      margin-bottom: 17px;
-    }
-
-    .stat-card {
-      background: #fff;
-      border-radius: 17px;
-      padding: 15px;
-
-      box-shadow:
-        0 6px 20px
-        rgba(25,35,60,.07);
-    }
-
-    .stat-icon {
-      width: 39px;
-      height: 39px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      background: #eaf2ff;
-      color: #1769e0;
-
-      border-radius: 12px;
-
-      font-size: 19px;
-
-      margin-bottom: 10px;
-    }
-
-    .stat-label {
-      color: #7a8495;
-      font-size: 11px;
-    }
-
-    .stat-value {
-      margin-top: 4px;
-      color: #20283a;
-      font-size: 22px;
-      font-weight: 800;
-    }
-
-    /* SECTION */
-
-    .section {
-      background: #fff;
-      border-radius: 19px;
-      padding: 16px;
-      margin-bottom: 16px;
-
-      box-shadow:
-        0 6px 20px
-        rgba(25,35,60,.07);
-    }
-
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 13px;
-    }
-
-    .section-title {
-      margin: 0;
       font-size: 17px;
       font-weight: 800;
     }
 
-    .refresh-btn {
-      border: 0;
+    .notice {
       background: #eef5ff;
-      color: #1769e0;
-      border-radius: 10px;
-      padding: 8px 11px;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
+      color: #596579;
+      border-radius: 15px;
+      padding: 13px;
+      font-size: 12px;
+      line-height: 1.5;
+      margin-bottom: 15px;
     }
 
-    /* DATA */
-
-    .data-list {
-      display: flex;
-      flex-direction: column;
-      gap: 9px;
+    .task-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 17px;
+      margin-bottom: 15px;
+      box-shadow:
+        0 6px 20px rgba(25,35,60,.08);
     }
 
-    .data-row {
-      background: #f8faff;
-      border: 1px solid #edf1f7;
-      border-radius: 13px;
-      padding: 12px;
-    }
-
-    .data-main {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .data-name {
+    .task-card h3 {
+      margin: 0 0 8px;
       color: #20283a;
-      font-size: 13px;
-      font-weight: 800;
-      word-break: break-word;
+      font-size: 17px;
     }
 
-    .data-secondary {
-      margin-top: 4px;
-      color: #7a8495;
-      font-size: 10px;
+    .task-card p {
+      margin: 6px 0;
+      color: #697386;
+      font-size: 12px;
       line-height: 1.6;
-      word-break: break-word;
     }
 
-    .data-amount {
-      color: #1769e0;
-      font-size: 13px;
-      font-weight: 800;
-      white-space: nowrap;
+    .task-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 13px;
     }
 
-    /* WITHDRAWAL DETAILS */
-
-    .withdraw-details {
-      margin-top: 7px;
-      color: #697487;
-      font-size: 11px;
-      line-height: 1.8;
-      word-break: break-word;
-    }
-
-    .withdraw-details strong {
-      color: #20283a;
-      font-weight: 800;
-    }
-
-    .withdraw-account {
-      color: #1769e0;
-      font-weight: 800;
-      letter-spacing: .2px;
-    }
-
-    .status {
-      display: inline-block;
-      margin-top: 8px;
-      padding: 5px 8px;
-      border-radius: 8px;
+    .task-meta span {
       background: #eef5ff;
       color: #1769e0;
-      font-size: 10px;
+      border-radius: 10px;
+      padding: 7px 10px;
+      font-size: 11px;
       font-weight: 700;
     }
 
-    .status.approved {
-      background: #eaf8f1;
-      color: #14754b;
-    }
-
-    .status.rejected {
-      background: #fff0f0;
-      color: #b33b3b;
-    }
-
-    /* ACTIONS */
-
-    .action-row {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .action-btn {
-      flex: 1;
-      min-height: 38px;
+    .primary-btn {
+      width: 100%;
       border: 0;
-      border-radius: 10px;
-      font-size: 11px;
+      border-radius: 15px;
+      background: #1769e0;
+      color: #fff;
+      padding: 14px;
+      font-size: 14px;
       font-weight: 800;
       cursor: pointer;
+      margin-top: 14px;
     }
 
-    .approve-btn {
-      background: #eaf8f1;
-      color: #14754b;
-    }
-
-    .reject-btn {
-      background: #fff0f0;
-      color: #b33b3b;
-    }
-
-    .action-btn:disabled {
+    .primary-btn:disabled {
       opacity: .55;
       cursor: not-allowed;
     }
 
-    /* EMPTY */
-
-    .empty {
-      text-align: center;
-      padding: 17px 8px;
-      color: #7a8495;
-      font-size: 12px;
-    }
-
-    .empty-icon {
-      font-size: 27px;
-      margin-bottom: 6px;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 18px;
-      color: #7a8495;
-      font-size: 12px;
-    }
-
-    @media (min-width: 700px) {
-
-      .admin-content {
-        max-width: 720px;
-        margin: 0 auto;
-      }
-
-      .stats-grid {
-        grid-template-columns:
-          repeat(4, minmax(0, 1fr));
-      }
-
-    }
-
-
-
-    /* TASK MANAGEMENT */
-
-    .task-manager {
-      background: #f8faff;
-      border: 1px solid #e3eaf5;
+    .secondary-btn {
+      width: 100%;
+      border: 0;
       border-radius: 15px;
+      background: #eef5ff;
+      color: #1769e0;
       padding: 13px;
-      margin-bottom: 15px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 10px;
     }
 
-    .task-form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+    .task-title-list {
+      display: flex;
+      flex-direction: column;
       gap: 10px;
     }
 
-    .task-field {
-      margin-bottom: 10px;
+    .task-title-btn {
+      width: 100%;
+      border: 0;
+      background: #f7f9fd;
+      color: #1769e0;
+      text-align: left;
+      padding: 15px;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow:
+        inset 0 0 0 1px #edf0f6;
     }
 
-    .task-field.full {
-      grid-column: 1 / -1;
+    .task-title-btn:active {
+      transform: scale(.99);
     }
 
-    .task-field label {
+    .details-box {
+      display: none;
+    }
+
+    .details-box.active {
       display: block;
+    }
+
+    .details-title {
+      color: #1769e0;
+      font-size: 20px;
+      font-weight: 800;
+      margin: 0 0 10px;
+    }
+
+    .details-label {
+      color: #20283a;
+      font-size: 13px;
+      font-weight: 800;
+      margin-top: 14px;
       margin-bottom: 5px;
-      color: #4d586b;
-      font-size: 11px;
+    }
+
+    .details-text {
+      color: #687386;
+      font-size: 12px;
+      line-height: 1.65;
+      white-space: pre-wrap;
+    }
+
+    .proof-section {
+      display: none;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #e8ebf1;
+    }
+
+    .proof-section.active {
+      display: block;
+    }
+
+    .proof-title {
+      margin: 0 0 12px;
+      color: #20283a;
+      font-size: 15px;
       font-weight: 800;
     }
 
-    .task-field input,
-    .task-field textarea,
-    .task-field select {
-      width: 100%;
-      box-sizing: border-box;
-      border: 1px solid #dce4ef;
-      border-radius: 10px;
-      background: #fff;
-      color: #20283a;
-      padding: 10px;
+    .proof-help {
+      color: #7b8494;
       font-size: 12px;
+      line-height: 1.55;
+      margin: 8px 0 12px;
+    }
+
+    .proof-input {
+      width: 100%;
+      border: 1px solid #dfe4ed;
+      border-radius: 13px;
+      background: #fafbfe;
+      padding: 12px;
+      font-size: 13px;
+      color: #20283a;
       outline: none;
     }
 
-    .task-field textarea {
-      min-height: 72px;
+    textarea.proof-input {
+      min-height: 100px;
       resize: vertical;
     }
 
-    .task-field input:focus,
-    .task-field textarea:focus,
-    .task-field select:focus {
-      border-color: #1769e0;
-      box-shadow: 0 0 0 3px rgba(23,105,224,.08);
-    }
-
-    .task-form-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 2px;
-    }
-
-    .task-save-btn,
-    .task-cancel-btn,
-    .task-action-btn {
-      border: 0;
-      border-radius: 10px;
-      padding: 9px 12px;
-      font-size: 11px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .task-save-btn {
-      background: #1769e0;
-      color: #fff;
-    }
-
-    .task-cancel-btn {
-      background: #eaf2ff;
-      color: #1769e0;
-      display: none;
-    }
-
-    .task-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-      margin-top: 11px;
-    }
-
-    .task-action-btn {
-      background: #eaf2ff;
-      color: #1769e0;
-    }
-
-    .task-action-btn.danger {
-      background: #fff0f0;
-      color: #b33b3b;
-    }
-
-    .task-action-btn.success {
-      background: #eaf8f1;
-      color: #14754b;
-    }
-
-    .task-manager-title {
-      margin: 0 0 4px;
-      color: #20283a;
-      font-size: 14px;
-      font-weight: 800;
-    }
-
-    .task-manager-note {
-      margin: 0 0 12px;
-      color: #7a8495;
-      font-size: 10px;
-      line-height: 1.45;
-    }
-
-    .task-editing {
-      color: #1769e0;
-      font-size: 10px;
-      font-weight: 800;
-      margin-bottom: 8px;
-      display: none;
-    }
-
-
-    .submission-proof-image {
-      display: block;
+    .file-box {
       width: 100%;
-      max-height: 300px;
-      object-fit: contain;
-      background: #f4f7fb;
-      border-radius: 12px;
-      margin-top: 8px;
-      cursor: pointer;
+      border: 1px solid #dfe4ed;
+      border-radius: 14px;
+      background: #fafbfe;
+      padding: 12px;
     }
 
-    .submission-proof-text {
+    .file-box input {
+      width: 100%;
+      font-size: 13px;
+    }
+
+    .selected-file {
       margin-top: 8px;
-      padding: 10px;
-      background: #f7f9fc;
-      border-radius: 10px;
-      color: #596579;
+      color: #1769e0;
       font-size: 12px;
-      line-height: 1.5;
+      font-weight: 700;
       word-break: break-word;
     }
 
-    .submission-reason {
-      width: 100%;
-      min-height: 70px;
-      margin-top: 9px;
-      padding: 10px;
-      border: 1px solid #dfe5ee;
-      border-radius: 10px;
-      resize: vertical;
-      font: inherit;
-      font-size: 12px;
-      box-sizing: border-box;
+    .submission-card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 15px;
+      margin-bottom: 11px;
+      box-shadow:
+        0 6px 20px rgba(25,35,60,.07);
     }
 
-    .submission-action-row {
+    .submission-top {
       display: flex;
-      gap: 7px;
-      flex-wrap: wrap;
-      margin-top: 8px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
     }
 
-    .submission-action-btn {
-      border: 0;
-      border-radius: 10px;
-      padding: 9px 11px;
-      font-size: 11px;
+    .submission-task-title {
+      color: #20283a;
+      font-size: 13px;
       font-weight: 800;
-      cursor: pointer;
     }
 
-    .submission-action-btn.approve { background:#eaf8f1; color:#14754b; }
-    .submission-action-btn.revision { background:#fff7e6; color:#9a6500; }
-    .submission-action-btn.reject { background:#fff0f0; color:#b33b3b; }
-    .submission-action-btn:disabled { opacity:.55; cursor:not-allowed; }
-
-    @media (max-width: 430px) {
-      .task-form-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .task-field.full {
-        grid-column: auto;
-      }
+    .status-badge {
+      border-radius: 9px;
+      padding: 5px 8px;
+      font-size: 10px;
+      font-weight: 800;
+      white-space: nowrap;
     }
 
+    .status-pending {
+      background: #fff5df;
+      color: #b47700;
+    }
+
+    .status-approved {
+      background: #eaf9ef;
+      color: #188545;
+    }
+
+    .status-revision {
+      background: #fff1df;
+      color: #b86a00;
+    }
+
+    .status-rejected {
+      background: #ffecec;
+      color: #b43b3b;
+    }
+
+    .submission-info {
+      margin-top: 8px;
+      color: #747e8f;
+      font-size: 11px;
+      line-height: 1.55;
+    }
+
+    .reason-box {
+      margin-top: 9px;
+      background: #fff5f5;
+      color: #a43e3e;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .empty-box {
+      background: #fff;
+      border-radius: 18px;
+      padding: 20px;
+      text-align: center;
+      color: #7c8595;
+      font-size: 12px;
+      box-shadow:
+        0 6px 20px rgba(25,35,60,.07);
+    }
+
+    .error-box {
+      display: none;
+      background: #fff0f0;
+      color: #b23c3c;
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 14px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .success-box {
+      display: none;
+      background: #edf9f1;
+      color: #23804b;
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 14px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .loading-box {
+      background: #fff;
+      border-radius: 18px;
+      padding: 20px;
+      text-align: center;
+      color: #7b8493;
+      font-size: 12px;
+      box-shadow:
+        0 6px 20px rgba(25,35,60,.07);
+    }
+
+    .ad-top {
+      display: flex;
+      justify-content: center;
+      margin: 0 0 14px;
+      min-height: 50px;
+    }
+
+    .native-ad {
+      display: flex;
+      justify-content: center;
+      margin-top: 16px;
+      margin-bottom: 10px;
+      min-height: 100px;
+    }
+
+    .bottom-ad {
+      display: flex;
+      justify-content: center;
+      margin-top: 8px;
+      margin-bottom: 15px;
+      min-height: 50px;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 100;
+    }
+
+    .proof-image-preview {
+      display: none;
+      max-width: 100%;
+      max-height: 240px;
+      border-radius: 12px;
+      margin-top: 10px;
+      object-fit: contain;
+      background: #f4f6fa;
+    }
+
+    .proof-image-preview.active {
+      display: block;
+    }
+
+    .revision-note {
+      background: #fff8ea;
+      color: #9a6900;
+      border-radius: 12px;
+      padding: 11px;
+      margin-top: 10px;
+      font-size: 11px;
+      line-height: 1.5;
+    }
   </style>
-
 </head>
-
 
 <body>
 
-<div class="admin-page">
+<div class="task-page">
 
-  <!-- HEADER -->
+  <header class="task-header">
 
-  <header class="admin-header">
-
-    <div class="admin-header-row">
-
-      <div>
-
-        <h1 class="admin-title">
-          Infinix Worker Admin
-        </h1>
-
-        <p class="admin-subtitle">
-          Dashboard & management panel
-        </p>
-
-      </div>
+    <div class="header-row">
 
       <button
-        id="logoutButton"
-        class="logout-btn"
+        class="back-button"
         type="button"
-        onclick="adminLogout()"
-      >
-        Logout
+        onclick="goBack()">
+        ‹
       </button>
 
+      <div>
+        <h1 class="header-title">
+          Task
+        </h1>
+      </div>
+
+    </div>
+
+    <div class="header-subtitle">
+      Complete tasks and earn rewards
     </div>
 
   </header>
 
 
-  <main class="admin-content">
+  <main class="task-content">
+
+    <!-- TOP 320x50 -->
+    <div class="ad-top">
+
+      <script>
+        atOptions = {
+          'key' : 'b529261b98306ae1169a6bf5b991c3d4',
+          'format' : 'iframe',
+          'height' : 50,
+          'width' : 320,
+          'params' : {}
+        };
+      </script>
+
+      <script
+        src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js">
+      </script>
+
+    </div>
 
 
-    <!-- ACCESS -->
+    <div class="balance-box">
 
-    <div id="accessMessage">
-
-      <div class="access-icon">
-        🔐
+      <div class="username" id="taskUsername">
+        Loading...
       </div>
 
-      <div class="access-title">
-        Checking admin access...
-      </div>
-
-      <div class="access-text">
-        Please wait.
+      <div class="balance">
+        ৳<span id="taskBalance">0.00</span>
       </div>
 
     </div>
 
 
-    <!-- ERROR -->
-
     <div
-      id="errorBox"
       class="error-box"
-    ></div>
+      id="taskError">
+    </div>
 
-
-    <!-- ADMIN INFO -->
 
     <div
-      id="adminInfo"
-      class="admin-info"
-      style="display:none;"
-    >
+      class="success-box"
+      id="taskSuccess">
+    </div>
 
-      <div class="admin-info-title">
-        ADMIN ACCOUNT
+
+    <div class="notice">
+
+      Complete the task according to the instructions.
+      After completing it, submit the required proof.
+      Your submission will be reviewed by admin.
+
+    </div>
+
+
+    <!-- SPECIAL EARNING TASKS -->
+
+    <section class="task-card">
+
+      <h3>
+        Visit Web &amp; Earn
+      </h3>
+
+      <p>
+        Visit the website and complete the required activity.
+      </p>
+
+      <div class="task-meta">
+
+        <span>
+          Reward: ৳3.00
+        </span>
+
+        <span>
+          Daily limit: 10
+        </span>
+
+      </div>
+
+      <button
+        class="primary-btn"
+        type="button"
+        id="visitWebBtn"
+        onclick="startVisitWebTask()">
+        Visit Web &amp; Earn
+      </button>
+
+      <div
+        id="visitWebStatus"
+        class="proof-help">
+      </div>
+
+    </section>
+
+
+    <section class="task-card">
+
+      <h3>
+        Watch &amp; Earn
+      </h3>
+
+      <p>
+        Watch the required video/ad completely and complete the required activity.
+      </p>
+
+      <div class="task-meta">
+
+        <span>
+          Reward: ৳1.50
+        </span>
+
+        <span>
+          Daily limit: 30
+        </span>
+
+      </div>
+
+      <button
+        class="primary-btn"
+        type="button"
+        id="watchEarnBtn"
+        onclick="startWatchEarnTask()">
+        Watch &amp; Earn
+      </button>
+
+      <div
+        id="watchEarnStatus"
+        class="proof-help">
+      </div>
+
+    </section>
+
+
+    <!-- ADMIN TASK LIST -->
+
+    <section class="task-card">
+
+      <h3>
+        Available Tasks
+      </h3>
+
+      <p>
+        Tap a task title to view its details.
+      </p>
+
+      <div
+        id="taskList"
+        class="task-title-list">
+
+        <div class="loading-box">
+          Loading tasks...
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- TASK DETAILS -->
+
+    <section
+      class="task-card details-box"
+      id="taskDetails">
+
+      <h2
+        class="details-title"
+        id="detailsTitle">
+      </h2>
+
+
+      <div class="details-label">
+        Task Details
       </div>
 
       <div
-        id="adminEmail"
-        class="admin-info-email"
-      ></div>
-
-      <span class="admin-role">
-        Administrator
-      </span>
-
-    </div>
+        class="details-text"
+        id="detailsDescription">
+      </div>
 
 
-    <!-- DASHBOARD -->
+      <div class="details-label">
+        Instructions
+      </div>
 
-    <div
-      id="dashboard"
-      style="display:none;"
-    >
-
-
-      <!-- STATS -->
-
-      <div class="stats-grid">
+      <div
+        class="details-text"
+        id="detailsInstructions">
+      </div>
 
 
-        <div class="stat-card">
+      <div class="task-meta">
 
-          <div class="stat-icon">
-            👥
-          </div>
+        <span>
+          Reward:
+          ৳<span id="detailsReward">0.00</span>
+        </span>
 
-          <div class="stat-label">
-            Users
-          </div>
+        <span>
+          Slots:
+          <span id="detailsSlots">0 / 0</span>
+        </span>
 
-          <div
-            id="usersCount"
-            class="stat-value"
-          >
-            0
-          </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-          <div class="stat-icon">
-            💰
-          </div>
-
-          <div class="stat-label">
-            Total Balance
-          </div>
-
-          <div
-            id="balanceCount"
-            class="stat-value"
-          >
-            0
-          </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-          <div class="stat-icon">
-            💳
-          </div>
-
-          <div class="stat-label">
-            Withdrawals
-          </div>
-
-          <div
-            id="withdrawCount"
-            class="stat-value"
-          >
-            0
-          </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-          <div class="stat-icon">
-            📋
-          </div>
-
-          <div class="stat-label">
-            Tasks
-          </div>
-
-          <div
-            id="tasksCount"
-            class="stat-value"
-          >
-            0
-          </div>
-
-        </div>
-
+        <span>
+          Proof:
+          <span id="detailsProofType">none</span>
+        </span>
 
       </div>
 
 
-      <!-- USERS -->
-
-      <section class="section">
-
-        <div class="section-header">
-
-          <h2 class="section-title">
-            👥 Users
-          </h2>
-
-          <button
-            class="refresh-btn"
-            type="button"
-            onclick="loadUsers()"
-          >
-            Refresh
-          </button>
-
-        </div>
-
-        <div
-          id="usersList"
-          class="data-list"
-        >
-
-          <div class="loading">
-            Loading users...
-          </div>
-
-        </div>
-
-      </section>
+      <button
+        class="primary-btn"
+        type="button"
+        id="startTaskBtn"
+        onclick="startSelectedTask()">
+        Start Task
+      </button>
 
 
-      <!-- WITHDRAWALS -->
+      <div
+        id="startedMessage"
+        class="proof-help">
+      </div>
 
-      <section class="section">
 
-        <div class="section-header">
+      <!-- PROOF -->
 
-          <h2 class="section-title">
-            💳 Withdrawal Requests
-          </h2>
+      <div
+        class="proof-section"
+        id="proofSection">
 
-          <button
-            class="refresh-btn"
-            type="button"
-            onclick="loadWithdrawals()"
-          >
-            Refresh
-          </button>
-
-        </div>
+        <h3 class="proof-title">
+          Proof of completion
+        </h3>
 
 
         <div
-          id="withdrawalsList"
-          class="data-list"
-        >
-
-          <div class="loading">
-            Loading withdrawals...
-          </div>
-
+          id="proofInstruction"
+          class="proof-help">
         </div>
 
-      </section>
 
-
-      <!-- TASK MANAGEMENT -->
-
-      <section class="section">
-
-        <div class="section-header">
-
-          <h2 class="section-title">
-            📋 Task Management
-          </h2>
-
-          <button
-            class="refresh-btn"
-            type="button"
-            onclick="loadTasks()"
-          >
-            Refresh
-          </button>
-
-        </div>
-
-        <div class="task-manager">
-
-          <h3 class="task-manager-title">
-            Create / Edit Task
-          </h3>
-
-          <p class="task-manager-note">
-            Create tasks for the Firebase task collection. Existing earning systems are not changed by this manager.
-          </p>
-
-          <div id="taskEditing" class="task-editing">
-            Editing existing task...
-          </div>
-
-          <form id="taskForm">
-
-            <div class="task-form-grid">
-
-              <div class="task-field full">
-                <label for="taskTitle">Task title *</label>
-                <input id="taskTitle" type="text" maxlength="120" required placeholder="e.g. Visit Website & Earn">
-              </div>
-
-              <div class="task-field full">
-                <label for="taskDescription">Description</label>
-                <textarea id="taskDescription" maxlength="500" placeholder="Short description shown to users"></textarea>
-              </div>
-
-              <div class="task-field full">
-                <label for="taskInstructions">Instructions</label>
-                <textarea id="taskInstructions" maxlength="2000" placeholder="Step-by-step task instructions"></textarea>
-              </div>
-
-              <div class="task-field full">
-                <label for="taskUrl">Task URL</label>
-                <input id="taskUrl" type="url" placeholder="https://example.com">
-              </div>
-
-              <div class="task-field">
-                <label for="taskReward">Reward</label>
-                <input id="taskReward" type="number" min="0" step="0.01" value="0" inputmode="decimal">
-              </div>
-
-              <div class="task-field">
-                <label for="taskMax">Max completions (0 = unlimited)</label>
-                <input id="taskMax" type="number" min="0" step="1" value="0" inputmode="numeric">
-              </div>
-
-              <div class="task-field">
-                <label for="taskProofType">Proof type</label>
-                <select id="taskProofType">
-                  <option value="none">None</option>
-                  <option value="text">Text</option>
-                  <option value="url">URL</option>
-                  <option value="image">Image</option>
-                </select>
-              </div>
-
-              <div class="task-field">
-                <label for="taskStatus">Status</label>
-                <select id="taskStatus">
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                </select>
-              </div>
-
-            </div>
-
-            <div class="task-form-actions">
-              <button class="task-save-btn" type="submit" id="taskSaveBtn">
-                Add Task
-              </button>
-              <button class="task-cancel-btn" type="button" id="taskCancelBtn" onclick="cancelTaskEdit()">
-                Cancel
-              </button>
-            </div>
-
-          </form>
-
-        </div>
+        <!-- TEXT PROOF -->
 
         <div
-          id="tasksList"
-          class="data-list"
-        >
+          id="textProofWrap"
+          style="display:none;">
 
-          <div class="loading">
-            Loading tasks...
+          <textarea
+            id="textProof"
+            class="proof-input"
+            placeholder="Enter your proof">
+          </textarea>
+
+        </div>
+
+
+        <!-- URL PROOF -->
+
+        <div
+          id="urlProofWrap"
+          style="display:none;">
+
+          <input
+            id="urlProof"
+            class="proof-input"
+            type="url"
+            placeholder="https://example.com/your-proof"
+          >
+
+        </div>
+
+
+        <!-- IMAGE PROOF -->
+
+        <div
+          id="imageProofWrap"
+          style="display:none;">
+
+          <div class="file-box">
+
+            <input
+              id="imageProof"
+              type="file"
+              accept="image/*"
+            >
+
           </div>
 
+          <div class="proof-help">
+            Attach a screenshot from your phone.
+            The image will be compressed before upload.
+          </div>
+
+          <div
+            id="selectedFileName"
+            class="selected-file">
+          </div>
+
+          <img
+            id="proofPreview"
+            class="proof-image-preview"
+            alt="Proof preview"
+          >
+
         </div>
 
-      </section>
+
+        <button
+          class="primary-btn"
+          type="button"
+          id="submitTaskBtn"
+          onclick="submitSelectedTask()">
+          Submit Task
+        </button>
+
+      </div>
+
+    </section>
 
 
-      <!-- TASK SUBMISSIONS -->
-      <section class="section">
+    <!-- MY SUBMISSIONS -->
 
-        <div class="section-header">
-          <h2 class="section-title">📝 Task Submissions</h2>
-          <button class="refresh-btn" type="button" onclick="loadTaskSubmissions()">Refresh</button>
+    <section class="task-card">
+
+      <h3>
+        My Task Submissions
+      </h3>
+
+      <div
+        id="mySubmissions">
+
+        <div class="loading-box">
+          Loading your submissions...
         </div>
 
-        <div id="taskSubmissionsList" class="data-list">
-          <div class="loading">Loading task submissions...</div>
-        </div>
+      </div>
 
-      </section>
+    </section>
 
+
+    <!-- NATIVE AD - BOTTOM -->
+
+    <div class="native-ad">
+
+      <script
+        async="async"
+        data-cfasync="false"
+        src="https://pl28546803.profitableratecpmnetwork.com/80507bc8e3d998279cd413247931169e/invoke.js">
+      </script>
+
+      <div
+        id="container-80507bc8e3d998279cd413247931169e">
+      </div>
+
+    </div>
+
+
+    <!-- BOTTOM 320x50 -->
+
+    <div class="bottom-ad">
+
+      <script>
+        atOptions = {
+          'key' : 'b529261b98306ae1169a6bf5b991c3d4',
+          'format' : 'iframe',
+          'height' : 50,
+          'width' : 320,
+          'params' : {}
+        };
+      </script>
+
+      <script
+        src="https://www.highrevenueformat.com/b529261b98306ae1169a6bf5b991c3d4/invoke.js">
+      </script>
 
     </div>
 
   </main>
+
+
+  <!-- BOTTOM NAV -->
+
+  <nav class="bottom-nav">
+
+    <div class="nav-inner">
+
+      <a
+        href="index.html"
+        class="nav-item">
+
+        <span class="nav-icon">
+          ⌂
+        </span>
+
+        <span>
+          Home
+        </span>
+
+      </a>
+
+
+      <a
+        href="https://lsr-video-downloaders.vercel.app/"
+        class="nav-item">
+
+        <span class="nav-icon">
+          ◉
+        </span>
+
+        <span>
+          Website
+        </span>
+
+      </a>
+
+
+      <a
+        href="https://t.me/bitbytee_bot"
+        class="nav-item"
+        target="_blank"
+        rel="noopener">
+
+        <span class="nav-icon">
+          ✈
+        </span>
+
+        <span>
+          Telegram
+        </span>
+
+      </a>
+
+
+      <a
+        href="profile.html"
+        class="nav-item">
+
+        <span class="nav-icon">
+          ●
+        </span>
+
+        <span>
+          Profile
+        </span>
+
+      </a>
+
+
+      <a
+        href="more.html"
+        class="nav-item">
+
+        <span class="nav-icon">
+          ☰
+        </span>
+
+        <span>
+          More
+        </span>
+
+      </a>
+
+    </div>
+
+  </nav>
 
 </div>
 
 
 <!-- FIREBASE -->
 
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 <script src="firebase-config.js"></script>
 
 
 <script>
 
-/* =========================================================
-   STATE
-========================================================= */
+  /*
+   * Firebase
+   */
 
-let adminUser = null;
-
-let adminReady = false;
-
-
-/* =========================================================
-   ELEMENT
-========================================================= */
-
-function getElement(id) {
-
-  return document.getElementById(id);
-
-}
-
-
-/* =========================================================
-   ERROR
-========================================================= */
-
-function showError(message) {
-
-  const box =
-    getElement("errorBox");
-
-  if (!box) {
-    return;
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
   }
 
-  box.style.display =
-    "block";
+  const firebaseAuth =
+    firebase.auth();
 
-  box.textContent =
-    message;
-
-}
+  const firebaseDb =
+    firebase.firestore();
 
 
-function clearError() {
+  /*
+   * State
+   */
 
-  const box =
-    getElement("errorBox");
+  let currentUser = null;
 
-  if (!box) {
-    return;
-  }
+  let selectedTask = null;
 
-  box.style.display =
-    "none";
+  let selectedProofImage = "";
 
-  box.textContent =
-    "";
-
-}
+  let taskStarted = false;
 
 
-/* =========================================================
-   HTML ESCAPE
-========================================================= */
+  /*
+   * Helpers
+   */
 
-function escapeHtml(value) {
+  function $(id) {
 
-  return String(value || "")
-
-    .replace(/&/g, "&amp;")
-
-    .replace(/</g, "&lt;")
-
-    .replace(/>/g, "&gt;")
-
-    .replace(/"/g, "&quot;")
-
-    .replace(/'/g, "&#039;");
-
-}
-
-
-/* =========================================================
-   DATE
-========================================================= */
-
-function formatDate(timestamp) {
-
-  try {
-
-    if (!timestamp) {
-
-      return "Date unavailable";
-
-    }
-
-
-    let date;
-
-
-    if (
-      typeof timestamp.toDate ===
-      "function"
-    ) {
-
-      date =
-        timestamp.toDate();
-
-    } else {
-
-      date =
-        new Date(timestamp);
-
-    }
-
-
-    if (
-      isNaN(
-        date.getTime()
-      )
-    ) {
-
-      return "Date unavailable";
-
-    }
-
-
-    return date.toLocaleString();
-
-  } catch (error) {
-
-    return "Date unavailable";
-
-  }
-
-}
-
-
-/* =========================================================
-   ADMIN ACCESS
-========================================================= */
-
-async function checkAdminAccess(user) {
-
-  const access =
-    getElement("accessMessage");
-
-
-  if (!user) {
-
-    access.innerHTML = `
-
-      <div class="access-icon">
-        🔐
-      </div>
-
-      <div class="access-title">
-        Login required
-      </div>
-
-      <div class="access-text">
-        Please login with an administrator account.
-      </div>
-
-    `;
-
-
-    setTimeout(
-      function() {
-
-        window.location.href =
-          "login.html";
-
-      },
-      1200
-    );
-
-
-    return false;
+    return document.getElementById(id);
 
   }
 
 
-  try {
+  function showError(message) {
 
-    const profileSnap =
-      await firebaseDb
+    const box =
+      $("taskError");
 
-        .collection("profiles")
+    box.textContent =
+      message || "Something went wrong.";
 
-        .doc(user.uid)
+    box.style.display =
+      "block";
 
-        .get();
-
-
-    if (!profileSnap.exists) {
-
-      access.innerHTML = `
-
-        <div class="access-icon">
-          ⛔
-        </div>
-
-        <div class="access-title">
-          Access denied
-        </div>
-
-        <div class="access-text">
-          Administrator profile was not found.
-        </div>
-
-      `;
-
-      return false;
-
-    }
-
-
-    const profile =
-      profileSnap.data() || {};
-
-
-    if (
-      profile.role !==
-      "admin"
-    ) {
-
-      access.innerHTML = `
-
-        <div class="access-icon">
-          ⛔
-        </div>
-
-        <div class="access-title">
-          Access denied
-        </div>
-
-        <div class="access-text">
-          This account does not have administrator permission.
-        </div>
-
-      `;
-
-      return false;
-
-    }
-
-
-    adminUser =
-      user;
-
-    adminReady =
-      true;
-
-
-    access.style.display =
+    $("taskSuccess").style.display =
       "none";
 
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
 
-    getElement("adminInfo")
-      .style.display =
+  }
+
+
+  function showSuccess(message) {
+
+    const box =
+      $("taskSuccess");
+
+    box.textContent =
+      message || "Success.";
+
+    box.style.display =
       "block";
 
-
-    getElement("dashboard")
-      .style.display =
-      "block";
-
-
-    getElement("adminEmail")
-      .textContent =
-      user.email || "";
-
-
-    clearError();
-
-
-    await loadDashboard();
-
-
-    return true;
-
-
-  } catch (error) {
-
-    console.error(
-      "Admin access error:",
-      error
-    );
-
-
-    access.innerHTML = `
-
-      <div class="access-icon">
-        ⚠️
-      </div>
-
-      <div class="access-title">
-        Error
-      </div>
-
-      <div class="access-text">
-        Unable to verify administrator access.
-      </div>
-
-    `;
-
-
-    showError(
-      "Firebase error: " +
-      (
-        error.message ||
-        "Unknown error"
-      )
-    );
-
-
-    return false;
+    $("taskError").style.display =
+      "none";
 
   }
 
-}
 
+  function clearMessages() {
 
-/* =========================================================
-   DASHBOARD
-========================================================= */
+    $("taskError").style.display =
+      "none";
 
-async function loadDashboard() {
+    $("taskSuccess").style.display =
+      "none";
 
-  if (!adminReady) {
-    return;
   }
 
 
-  await Promise.all([
+  function money(value) {
 
-    loadUsers(),
+    const n =
+      Number(value || 0);
 
-    loadWithdrawals(),
+    return n.toFixed(2);
 
-    loadTasks()
-
-  ]);
-
-}
-
-
-/* =========================================================
-   USERS
-========================================================= */
-
-async function loadUsers() {
-
-  if (!adminReady) {
-    return;
   }
 
 
-  const list =
-    getElement("usersList");
+  function escapeHtml(value) {
+
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
 
 
-  list.innerHTML = `
+  function formatDate(timestamp) {
 
-    <div class="loading">
-      Loading users...
-    </div>
+    if (!timestamp) {
+      return "Just now";
+    }
 
-  `;
+    try {
+
+      const date =
+        timestamp.toDate
+          ? timestamp.toDate()
+          : new Date(timestamp);
+
+      return date.toLocaleString();
+
+    }
+    catch (error) {
+
+      return "Just now";
+
+    }
+
+  }
 
 
-  try {
+  function normalizeProofType(type) {
 
-    const snapshot =
-      await firebaseDb
+    const value =
+      String(type || "none")
+        .toLowerCase()
+        .trim();
 
-        .collection("profiles")
+    if (
+      value === "image" ||
+      value === "screenshot"
+    ) {
+      return "image";
+    }
 
-        .get();
+    if (value === "url") {
+      return "url";
+    }
+
+    if (value === "text") {
+      return "text";
+    }
+
+    return "none";
+
+  }
 
 
-    const users =
-      snapshot.docs.map(
-        function(doc) {
+  /*
+   * Back
+   */
 
-          return {
+  function goBack() {
 
-            id: doc.id,
+    window.location.href =
+      "index.html";
 
-            ...(doc.data() || {})
+  }
 
-          };
 
+  /*
+   * Username
+   */
+
+  function updateTaskUsername(username) {
+
+    $("taskUsername").textContent =
+      username || "User";
+
+  }
+
+
+  /*
+   * Firebase balance
+   */
+
+  async function loadTaskFirebaseBalance() {
+
+    if (!currentUser) {
+      return;
+    }
+
+    try {
+
+      const walletSnap =
+        await firebaseDb
+          .collection("wallets")
+          .doc(currentUser.uid)
+          .get();
+
+      let balance = 0;
+
+      if (walletSnap.exists) {
+
+        const data =
+          walletSnap.data() || {};
+
+        balance =
+          Number(
+            data.balance ||
+            data.total_earned ||
+            0
+          );
+
+      }
+
+      $("taskBalance").textContent =
+        money(balance);
+
+    }
+    catch (error) {
+
+      console.warn(
+        "Balance load error:",
+        error
+      );
+
+    }
+
+  }
+
+
+  /*
+   * Firebase tasks
+   */
+
+  async function loadFirebaseTasks() {
+
+    const list =
+      $("taskList");
+
+    list.innerHTML =
+      '<div class="loading-box">Loading tasks...</div>';
+
+    try {
+
+      const snapshot =
+        await firebaseDb
+          .collection("tasks")
+          .where("status", "==", "active")
+          .get();
+
+      const tasks = [];
+
+      snapshot.forEach(doc => {
+
+        const data =
+          doc.data() || {};
+
+        const max =
+          Number(
+            data.max_completions ||
+            0
+          );
+
+        const current =
+          Number(
+            data.current_completions ||
+            0
+          );
+
+        if (
+          max > 0 &&
+          current >= max
+        ) {
+          return;
         }
+
+        tasks.push({
+          id: doc.id,
+          ...data
+        });
+
+      });
+
+
+      tasks.sort((a, b) => {
+
+        const aTime =
+          a.createdAt &&
+          a.createdAt.toMillis
+            ? a.createdAt.toMillis()
+            : 0;
+
+        const bTime =
+          b.createdAt &&
+          b.createdAt.toMillis
+            ? b.createdAt.toMillis()
+            : 0;
+
+        return bTime - aTime;
+
+      });
+
+
+      if (!tasks.length) {
+
+        list.innerHTML =
+          '<div class="empty-box">No available tasks right now.</div>';
+
+        return;
+
+      }
+
+
+      list.innerHTML =
+        "";
+
+
+      tasks.forEach(task => {
+
+        const button =
+          document.createElement("button");
+
+        button.type =
+          "button";
+
+        button.className =
+          "task-title-btn";
+
+        button.textContent =
+          task.title ||
+          "Untitled Task";
+
+        button.onclick =
+          () => openTaskDetails(task);
+
+        list.appendChild(button);
+
+      });
+
+    }
+    catch (error) {
+
+      console.error(
+        "Task loading error:",
+        error
+      );
+
+      list.innerHTML =
+        '<div class="empty-box">Unable to load available tasks.</div>';
+
+    }
+
+  }
+
+
+  /*
+   * Open task details
+   */
+
+  function openTaskDetails(task) {
+
+    clearMessages();
+
+    selectedTask =
+      task;
+
+    taskStarted =
+      false;
+
+    selectedProofImage =
+      "";
+
+    $("taskDetails")
+      .classList
+      .add("active");
+
+
+    $("detailsTitle").textContent =
+      task.title ||
+      "Task";
+
+
+    $("detailsDescription").textContent =
+      task.description ||
+      "No task details provided.";
+
+
+    $("detailsInstructions").textContent =
+      task.instructions ||
+      "Follow the task instructions and submit the required proof.";
+
+
+    $("detailsReward").textContent =
+      money(task.reward);
+
+
+    const max =
+      Number(
+        task.max_completions ||
+        0
+      );
+
+    const current =
+      Number(
+        task.current_completions ||
+        0
       );
 
 
-    let totalBalance =
-      0;
+    $("detailsSlots").textContent =
+      `${current} / ${max || "∞"}`;
 
 
-    await Promise.all(
-
-      users.map(
-        async function(user) {
-
-          try {
-
-            const wallet =
-              await firebaseDb
-
-                .collection("wallets")
-
-                .doc(user.id)
-
-                .get();
+    const proofType =
+      normalizeProofType(
+        task.proof_type
+      );
 
 
-            if (wallet.exists) {
-
-              const data =
-                wallet.data() || {};
+    $("detailsProofType").textContent =
+      proofType;
 
 
-              user.balance =
-                Number(
-                  data.balance || 0
-                );
+    $("startTaskBtn").disabled =
+      false;
 
-            } else {
-
-              user.balance =
-                Number(
-                  user.balance || 0
-                );
-
-            }
-
-          } catch (error) {
-
-            user.balance =
-              Number(
-                user.balance || 0
-              );
-
-          }
+    $("startTaskBtn").textContent =
+      "Start Task";
 
 
-          totalBalance +=
-            Number(
-              user.balance || 0
-            );
-
-        }
-      )
-
-    );
+    $("startedMessage").textContent =
+      "";
 
 
-    getElement("usersCount")
-      .textContent =
-      users.length;
+    $("proofSection")
+      .classList
+      .remove("active");
 
 
-    getElement("balanceCount")
-      .textContent =
-      totalBalance.toFixed(2);
+    resetProofFields();
 
 
-    if (!users.length) {
+    $("taskDetails").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
 
-      list.innerHTML = `
+  }
 
-        <div class="empty">
 
-          <div class="empty-icon">
-            👥
-          </div>
+  /*
+   * Reset proof
+   */
 
-          No users found.
+  function resetProofFields() {
 
-        </div>
+    $("textProofWrap").style.display =
+      "none";
 
-      `;
+    $("urlProofWrap").style.display =
+      "none";
+
+    $("imageProofWrap").style.display =
+      "none";
+
+
+    $("textProof").value =
+      "";
+
+    $("urlProof").value =
+      "";
+
+    $("imageProof").value =
+      "";
+
+    $("selectedFileName").textContent =
+      "";
+
+    $("proofPreview").src =
+      "";
+
+    $("proofPreview")
+      .classList
+      .remove("active");
+
+    selectedProofImage =
+      "";
+
+  }
+
+
+  /*
+   * Start selected admin task
+   */
+
+  function startSelectedTask() {
+
+    clearMessages();
+
+    if (!selectedTask) {
+
+      showError(
+        "Please select a task first."
+      );
 
       return;
 
     }
 
 
-    users.sort(
-      function(a, b) {
+    if (!currentUser) {
 
-        const aTime =
-          a.createdAt &&
-          typeof a.createdAt.toMillis ===
-          "function"
+      window.location.href =
+        "login.html";
 
-            ? a.createdAt.toMillis()
+      return;
 
-            : 0;
+    }
 
 
-        const bTime =
-          b.createdAt &&
-          typeof b.createdAt.toMillis ===
-          "function"
-
-            ? b.createdAt.toMillis()
-
-            : 0;
+    taskStarted =
+      true;
 
 
-        return bTime - aTime;
+    const taskUrl =
+      String(
+        selectedTask.task_url ||
+        ""
+      ).trim();
+
+
+    $("startTaskBtn").disabled =
+      true;
+
+    $("startTaskBtn").textContent =
+      "Task Started";
+
+
+    $("startedMessage").textContent =
+      "Task opened. Complete the task, then submit your proof below.";
+
+
+    showProofFields(
+      normalizeProofType(
+        selectedTask.proof_type
+      )
+    );
+
+
+    /*
+     * External task link
+     */
+
+    if (taskUrl) {
+
+      try {
+
+        window.open(
+          taskUrl,
+          "_blank",
+          "noopener,noreferrer"
+        );
+
+      }
+      catch (error) {
+
+        window.location.href =
+          taskUrl;
+
+      }
+
+    }
+
+  }
+
+
+  /*
+   * Show proof
+   */
+
+  function showProofFields(proofType) {
+
+    $("proofSection")
+      .classList
+      .add("active");
+
+
+    $("proofInstruction").textContent =
+      proofType === "image"
+        ? "Attach a screenshot proving that you completed the task."
+        : proofType === "url"
+          ? "Submit the URL requested by the task."
+          : proofType === "text"
+            ? "Enter the proof requested by the task."
+            : "Submit the task after completing it.";
+
+
+    if (proofType === "image") {
+
+      $("imageProofWrap").style.display =
+        "block";
+
+    }
+    else if (proofType === "url") {
+
+      $("urlProofWrap").style.display =
+        "block";
+
+    }
+    else if (proofType === "text") {
+
+      $("textProofWrap").style.display =
+        "block";
+
+    }
+
+  }
+
+
+  /*
+   * Image compression
+   */
+
+  function compressImage(file) {
+
+    return new Promise(
+      (resolve, reject) => {
+
+        if (!file) {
+
+          reject(
+            new Error("No image selected.")
+          );
+
+          return;
+
+        }
+
+
+        if (
+          !file.type ||
+          !file.type.startsWith("image/")
+        ) {
+
+          reject(
+            new Error("Please select an image file.")
+          );
+
+          return;
+
+        }
+
+
+        const reader =
+          new FileReader();
+
+
+        reader.onload =
+          event => {
+
+            const image =
+              new Image();
+
+
+            image.onload =
+              () => {
+
+                const maxSide =
+                  1200;
+
+                let width =
+                  image.width;
+
+                let height =
+                  image.height;
+
+
+                if (
+                  width > maxSide ||
+                  height > maxSide
+                ) {
+
+                  const ratio =
+                    Math.min(
+                      maxSide / width,
+                      maxSide / height
+                    );
+
+                  width =
+                    Math.round(
+                      width * ratio
+                    );
+
+                  height =
+                    Math.round(
+                      height * ratio
+                    );
+
+                }
+
+
+                const canvas =
+                  document.createElement(
+                    "canvas"
+                  );
+
+
+                canvas.width =
+                  width;
+
+                canvas.height =
+                  height;
+
+
+                const ctx =
+                  canvas.getContext(
+                    "2d"
+                  );
+
+
+                ctx.drawImage(
+                  image,
+                  0,
+                  0,
+                  width,
+                  height
+                );
+
+
+                let quality =
+                  0.78;
+
+                let dataUrl =
+                  canvas.toDataURL(
+                    "image/jpeg",
+                    quality
+                  );
+
+
+                /*
+                 * Keep image safely below Firestore
+                 * document limit.
+                 */
+
+                while (
+                  dataUrl.length > 850000 &&
+                  quality > 0.35
+                ) {
+
+                  quality -=
+                    0.08;
+
+                  dataUrl =
+                    canvas.toDataURL(
+                      "image/jpeg",
+                      quality
+                    );
+
+                }
+
+
+                if (
+                  dataUrl.length > 950000
+                ) {
+
+                  reject(
+                    new Error(
+                      "Image is too large. Please select a smaller screenshot."
+                    )
+                  );
+
+                  return;
+
+                }
+
+
+                resolve(
+                  dataUrl
+                );
+
+              };
+
+
+            image.onerror =
+              () => {
+
+                reject(
+                  new Error(
+                    "Unable to read the image."
+                  )
+                );
+
+              };
+
+
+            image.src =
+              event.target.result;
+
+          };
+
+
+        reader.onerror =
+          () => {
+
+            reject(
+              new Error(
+                "Unable to read selected file."
+              )
+            );
+
+          };
+
+
+        reader.readAsDataURL(
+          file
+        );
 
       }
     );
 
-
-    list.innerHTML =
-
-      users
-
-        .map(
-          function(user) {
-
-            const username =
-              escapeHtml(
-                user.username ||
-                "User"
-              );
+  }
 
 
-            const email =
-              escapeHtml(
-                user.email ||
-                ""
-              );
+  /*
+   * Image selection
+   */
+
+  $("imageProof").addEventListener(
+    "change",
+    async function () {
+
+      clearMessages();
+
+      const file =
+        this.files &&
+        this.files[0];
 
 
-            const role =
-              escapeHtml(
-                user.role ||
-                "user"
-              );
+      if (!file) {
+
+        return;
+
+      }
 
 
-            const uid =
-              escapeHtml(
-                user.id
-              );
+      $("selectedFileName").textContent =
+        `Selected: ${file.name}`;
 
 
-            const balance =
-              Number(
-                user.balance || 0
-              );
+      try {
+
+        selectedProofImage =
+          await compressImage(
+            file
+          );
 
 
-            return `
-
-              <div class="data-row">
-
-                <div class="data-main">
-
-                  <div>
-
-                    <div class="data-name">
-                      ${username}
-                    </div>
-
-                    <div class="data-secondary">
-
-                      ${email}
-
-                      <br>
-
-                      UID: ${uid}
-
-                    </div>
-
-                  </div>
-
-                  <div class="data-amount">
-                    ${balance.toFixed(2)}
-                  </div>
-
-                </div>
+        $("proofPreview").src =
+          selectedProofImage;
 
 
-                <span class="status">
-                  ${role}
-                </span>
+        $("proofPreview")
+          .classList
+          .add("active");
 
+      }
+      catch (error) {
+
+        selectedProofImage =
+          "";
+
+        $("proofPreview").src =
+          "";
+
+        $("proofPreview")
+          .classList
+          .remove("active");
+
+
+        showError(
+          error.message ||
+          "Unable to process image."
+        );
+
+      }
+
+    }
+  );
+
+
+  /*
+   * Submit selected task
+   */
+
+  async function submitSelectedTask() {
+
+    clearMessages();
+
+    if (!currentUser) {
+
+      window.location.href =
+        "login.html";
+
+      return;
+
+    }
+
+
+    if (!selectedTask) {
+
+      showError(
+        "Please select a task."
+      );
+
+      return;
+
+    }
+
+
+    if (!taskStarted) {
+
+      showError(
+        "Please click Start Task first."
+      );
+
+      return;
+
+    }
+
+
+    const proofType =
+      normalizeProofType(
+        selectedTask.proof_type
+      );
+
+
+    let proof =
+      "";
+
+    let proofImage =
+      "";
+
+
+    if (proofType === "text") {
+
+      proof =
+        $("textProof")
+          .value
+          .trim();
+
+
+      if (!proof) {
+
+        showError(
+          "Please enter your proof."
+        );
+
+        return;
+
+      }
+
+    }
+
+
+    if (proofType === "url") {
+
+      proof =
+        $("urlProof")
+          .value
+          .trim();
+
+
+      if (!proof) {
+
+        showError(
+          "Please enter the proof URL."
+        );
+
+        return;
+
+      }
+
+
+      try {
+
+        new URL(proof);
+
+      }
+      catch (error) {
+
+        showError(
+          "Please enter a valid URL."
+        );
+
+        return;
+
+      }
+
+    }
+
+
+    if (proofType === "image") {
+
+      proofImage =
+        selectedProofImage;
+
+
+      if (!proofImage) {
+
+        showError(
+          "Please attach a screenshot."
+        );
+
+        return;
+
+      }
+
+    }
+
+
+    const button =
+      $("submitTaskBtn");
+
+
+    button.disabled =
+      true;
+
+    button.textContent =
+      "Submitting...";
+
+
+    try {
+
+      /*
+       * Check own existing submissions only.
+       *
+       * This is important because Firebase rules
+       * do not allow a normal user to read every
+       * submission in the collection.
+       */
+
+      const existingSnap =
+        await firebaseDb
+          .collection("submissions")
+          .where(
+            "userId",
+            "==",
+            currentUser.uid
+          )
+          .where(
+            "taskId",
+            "==",
+            selectedTask.id
+          )
+          .get();
+
+
+      let hasPending =
+        false;
+
+      let hasApproved =
+        false;
+
+
+      existingSnap.forEach(
+        doc => {
+
+          const data =
+            doc.data() || {};
+
+          if (
+            data.status === "pending"
+          ) {
+
+            hasPending =
+              true;
+
+          }
+
+          if (
+            data.status === "approved"
+          ) {
+
+            hasApproved =
+              true;
+
+          }
+
+        }
+      );
+
+
+      if (hasPending) {
+
+        throw new Error(
+          "You already have a pending submission for this task."
+        );
+
+      }
+
+
+      if (hasApproved) {
+
+        throw new Error(
+          "You have already completed this task."
+        );
+
+      }
+
+
+      /*
+       * Create a new submission.
+       *
+       * Revision/resubmit creates a fresh document,
+       * so the existing Firestore security rules
+       * remain compatible.
+       */
+
+      const submissionRef =
+        firebaseDb
+          .collection("submissions")
+          .doc();
+
+
+      await submissionRef.set({
+
+        taskId:
+          selectedTask.id,
+
+        taskTitle:
+          selectedTask.title ||
+          "",
+
+        userId:
+          currentUser.uid,
+
+        userEmail:
+          currentUser.email ||
+          "",
+
+        proof:
+          proof,
+
+        proofImage:
+          proofImage,
+
+        proofType:
+          proofType,
+
+        reward:
+          Number(
+            selectedTask.reward ||
+            0
+          ),
+
+        status:
+          "pending",
+
+        reason:
+          "",
+
+        createdAt:
+          firebase.firestore.FieldValue.serverTimestamp()
+
+      });
+
+
+      showSuccess(
+        "Task submitted successfully. Please wait for admin review."
+      );
+
+
+      resetProofFields();
+
+
+      $("proofSection")
+        .classList
+        .remove("active");
+
+
+      taskStarted =
+        false;
+
+
+      $("startTaskBtn").disabled =
+        false;
+
+      $("startTaskBtn").textContent =
+        "Start Task";
+
+
+      $("startedMessage").textContent =
+        "";
+
+
+      await loadMySubmissions();
+
+    }
+    catch (error) {
+
+      console.error(
+        "Task submission error:",
+        error
+      );
+
+
+      showError(
+        error.message ||
+        "Unable to submit task. Please try again."
+      );
+
+    }
+    finally {
+
+      button.disabled =
+        false;
+
+      button.textContent =
+        "Submit Task";
+
+    }
+
+  }
+
+
+  /*
+   * My submissions
+   *
+   * IMPORTANT:
+   * User reads only own documents.
+   */
+
+  async function loadMySubmissions() {
+
+    const container =
+      $("mySubmissions");
+
+
+    container.innerHTML =
+      '<div class="loading-box">Loading your submissions...</div>';
+
+
+    if (!currentUser) {
+
+      container.innerHTML =
+        '<div class="empty-box">Please login to see your submissions.</div>';
+
+      return;
+
+    }
+
+
+    try {
+
+      const snapshot =
+        await firebaseDb
+          .collection("submissions")
+          .where(
+            "userId",
+            "==",
+            currentUser.uid
+          )
+          .get();
+
+
+      const submissions =
+        [];
+
+
+      snapshot.forEach(
+        doc => {
+
+          submissions.push({
+            id: doc.id,
+            ...doc.data()
+          });
+
+        }
+      );
+
+
+      submissions.sort(
+        (a, b) => {
+
+          const aTime =
+            a.createdAt &&
+            a.createdAt.toMillis
+              ? a.createdAt.toMillis()
+              : 0;
+
+          const bTime =
+            b.createdAt &&
+            b.createdAt.toMillis
+              ? b.createdAt.toMillis()
+              : 0;
+
+          return bTime - aTime;
+
+        }
+      );
+
+
+      if (!submissions.length) {
+
+        container.innerHTML =
+          '<div class="empty-box">No task submissions yet.</div>';
+
+        return;
+
+      }
+
+
+      container.innerHTML =
+        "";
+
+
+      submissions.forEach(
+        submission => {
+
+          const card =
+            document.createElement(
+              "div"
+            );
+
+
+          card.className =
+            "submission-card";
+
+
+          const status =
+            String(
+              submission.status ||
+              "pending"
+            ).toLowerCase();
+
+
+          let statusClass =
+            "status-pending";
+
+
+          let statusText =
+            "Pending review";
+
+
+          if (
+            status === "approved"
+          ) {
+
+            statusClass =
+              "status-approved";
+
+            statusText =
+              "Approved";
+
+          }
+          else if (
+            status === "revision"
+          ) {
+
+            statusClass =
+              "status-revision";
+
+            statusText =
+              "Sent for revision";
+
+          }
+          else if (
+            status === "rejected"
+          ) {
+
+            statusClass =
+              "status-rejected";
+
+            statusText =
+              "Rejected";
+
+          }
+
+
+          let html = `
+
+            <div class="submission-top">
+
+              <div class="submission-task-title">
+                ${escapeHtml(
+                  submission.taskTitle ||
+                  "Task"
+                )}
+              </div>
+
+              <div class="status-badge ${statusClass}">
+                ${statusText}
+              </div>
+
+            </div>
+
+            <div class="submission-info">
+              Proof type:
+              ${escapeHtml(
+                submission.proofType ||
+                "none"
+              )}
+              <br>
+              Submitted:
+              ${escapeHtml(
+                formatDate(
+                  submission.createdAt
+                )
+              )}
+            </div>
+
+          `;
+
+
+          if (
+            status === "revision"
+          ) {
+
+            html += `
+
+              <div class="reason-box">
+                <strong>Admin reason:</strong><br>
+                ${escapeHtml(
+                  submission.reason ||
+                  "Please review the task and submit again."
+                )}
+              </div>
+
+              <button
+                class="secondary-btn"
+                type="button"
+                onclick='resubmitRevision(${JSON.stringify(
+                  submission.taskId
+                )})'>
+                Resubmit Task
+              </button>
+
+            `;
+
+          }
+          else if (
+            status === "rejected"
+          ) {
+
+            html += `
+
+              <div class="reason-box">
+                <strong>Admin reason:</strong><br>
+                ${escapeHtml(
+                  submission.reason ||
+                  "Your submission was rejected."
+                )}
               </div>
 
             `;
 
           }
-        )
-
-        .join("");
 
 
-  } catch (error) {
-
-    console.error(
-      "Users load error:",
-      error
-    );
+          card.innerHTML =
+            html;
 
 
-    list.innerHTML = `
+          container.appendChild(
+            card
+          );
 
-      <div class="empty">
-        Unable to load users.
-      </div>
+        }
+      );
 
-    `;
+    }
+    catch (error) {
 
-
-    showError(
-      "Users: " +
-      (
-        error.message ||
-        "Unable to load users."
-      )
-    );
-
-  }
-
-}
+      console.error(
+        "Submission load error:",
+        error
+      );
 
 
-/* =========================================================
-   WITHDRAWALS
-========================================================= */
+      container.innerHTML =
+        '<div class="empty-box">Unable to load your submissions.</div>';
 
-async function loadWithdrawals() {
-
-  if (!adminReady) {
-    return;
-  }
-
-  const list =
-    getElement("withdrawalsList");
-
-  list.innerHTML = `
-    <div class="loading">
-      Loading withdrawals...
-    </div>
-  `;
-
-  try {
-
-    const snapshot =
-      await firebaseDb
-        .collection("withdrawals")
-        .get();
-
-    const withdrawals =
-      snapshot.docs.map(function(doc) {
-        return {
-          id: doc.id,
-          ...(doc.data() || {})
-        };
-      });
-
-    withdrawals.sort(function(a, b) {
-      const aTimestamp = a.requestedAt || a.createdAt || null;
-      const bTimestamp = b.requestedAt || b.createdAt || null;
-
-      const aTime =
-        aTimestamp &&
-        typeof aTimestamp.toMillis === "function"
-          ? aTimestamp.toMillis()
-          : 0;
-
-      const bTime =
-        bTimestamp &&
-        typeof bTimestamp.toMillis === "function"
-          ? bTimestamp.toMillis()
-          : 0;
-
-      return bTime - aTime;
-    });
-
-    getElement("withdrawCount").textContent = withdrawals.length;
-
-    if (!withdrawals.length) {
-      list.innerHTML = `
-        <div class="empty">
-          <div class="empty-icon">💳</div>
-          No withdrawal requests.
-        </div>
-      `;
-      return;
     }
 
-    const profileCache = {};
+  }
 
-    await Promise.all(
-      withdrawals.map(async function(item) {
-        const userId = String(item.userId || "");
-        if (!userId) return;
+
+  /*
+   * Revision resubmit
+   */
+
+  async function resubmitRevision(taskId) {
+
+    clearMessages();
+
+
+    if (!taskId) {
+
+      showError(
+        "Task information is missing."
+      );
+
+      return;
+
+    }
+
+
+    try {
+
+      const taskSnap =
+        await firebaseDb
+          .collection("tasks")
+          .doc(taskId)
+          .get();
+
+
+      if (!taskSnap.exists) {
+
+        throw new Error(
+          "This task is no longer available."
+        );
+
+      }
+
+
+      const task =
+        {
+          id: taskSnap.id,
+          ...taskSnap.data()
+        };
+
+
+      selectedTask =
+        task;
+
+
+      openTaskDetails(
+        task
+      );
+
+
+      showSuccess(
+        "Please complete the task again and submit new proof."
+      );
+
+
+      const revisionNote =
+        document.createElement(
+          "div"
+        );
+
+
+      revisionNote.className =
+        "revision-note";
+
+
+      revisionNote.textContent =
+        "This task was sent for revision by admin. Please complete it again and submit a new proof.";
+
+
+      $("proofSection")
+        .appendChild(
+          revisionNote
+        );
+
+
+    }
+    catch (error) {
+
+      console.error(
+        error
+      );
+
+      showError(
+        error.message ||
+        "Unable to reopen task."
+      );
+
+    }
+
+  }
+
+
+  /*
+   * Visit Web & Earn
+   *
+   * Uses backend reward endpoint.
+   */
+
+  async function startVisitWebTask() {
+
+    clearMessages();
+
+
+    if (!currentUser) {
+
+      window.location.href =
+        "login.html";
+
+      return;
+
+    }
+
+
+    const button =
+      $("visitWebBtn");
+
+    const status =
+      $("visitWebStatus");
+
+
+    button.disabled =
+      true;
+
+
+    status.textContent =
+      "Opening website...";
+
+
+    const claimId =
+      "visit_web_" +
+      currentUser.uid +
+      "_" +
+      Date.now();
+
+
+    try {
+
+      /*
+       * Open the target site.
+       *
+       * This does not make an ad click a reward
+       * requirement.
+       */
+
+      window.open(
+        "https://lsr-video-downloaders.vercel.app/",
+        "_blank",
+        "noopener,noreferrer"
+      );
+
+
+      status.textContent =
+        "Complete the required website activity, then wait for the reward process.";
+
+
+      /*
+       * 30 second task timer
+       */
+
+      await countdown(
+        30,
+        status
+      );
+
+
+      const token =
+        await currentUser.getIdToken(
+          true
+        );
+
+
+      const response =
+        await fetch(
+          "/api/reward",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+
+              "Authorization":
+                "Bearer " +
+                token
+            },
+
+            body:
+              JSON.stringify({
+                rewardType:
+                  "visit_web",
+
+                claimId:
+                  claimId
+              })
+          }
+        );
+
+
+      const data =
+        await response.json();
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          data.error ||
+          "Reward could not be claimed."
+        );
+
+      }
+
+
+      status.textContent =
+        `Reward credited: ৳${money(data.reward)}. Today: ${data.count}/${data.dailyLimit}.`;
+
+
+      await loadTaskFirebaseBalance();
+
+    }
+    catch (error) {
+
+      console.error(
+        "Visit Web reward error:",
+        error
+      );
+
+
+      status.textContent =
+        error.message ||
+        "Unable to complete reward.";
+
+    }
+    finally {
+
+      button.disabled =
+        false;
+
+    }
+
+  }
+
+
+  /*
+   * Watch & Earn
+   */
+
+  async function startWatchEarnTask() {
+
+    clearMessages();
+
+
+    if (!currentUser) {
+
+      window.location.href =
+        "login.html";
+
+      return;
+
+    }
+
+
+    const button =
+      $("watchEarnBtn");
+
+    const status =
+      $("watchEarnStatus");
+
+
+    button.disabled =
+      true;
+
+
+    status.textContent =
+      "Loading ad...";
+
+
+    try {
+
+      /*
+       * Monetag rewarded interstitial
+       */
+
+      if (
+        typeof window.show_11761461 ===
+        "function"
+      ) {
 
         try {
-          const profileSnap =
-            await firebaseDb
-              .collection("profiles")
-              .doc(userId)
-              .get();
 
-          if (profileSnap.exists) {
-            profileCache[userId] = profileSnap.data() || {};
-          }
-        } catch (error) {
-          console.error("Profile load error:", error);
+          await window.show_11761461();
+
         }
-      })
-    );
+        catch (adError) {
 
-    list.innerHTML = withdrawals.map(function(item) {
+          console.warn(
+            "Monetag ad error:",
+            adError
+          );
 
-      const status = String(item.status || "Pending");
-      const lowerStatus = status.toLowerCase();
-      let statusClass = "";
+        }
 
-      if (lowerStatus === "approved") {
-        statusClass = "approved";
       }
 
-      if (lowerStatus === "rejected") {
-        statusClass = "rejected";
-      }
 
-      const userId = String(item.userId || "");
-      const profile = profileCache[userId] || {};
+      status.textContent =
+        "Please wait 15 seconds...";
 
-      const username = escapeHtml(
-        item.username || profile.username || "User"
+
+      await countdown(
+        15,
+        status
       );
 
-      const email = escapeHtml(
-        item.email || profile.email || ""
-      );
 
-      const uid = escapeHtml(userId);
+      const claimId =
+        "watch_earn_" +
+        currentUser.uid +
+        "_" +
+        Date.now();
 
-      const amount = Number(item.amount || 0);
 
-      const method = escapeHtml(
-        item.method ||
-        item.paymentMethod ||
-        "Payment"
-      );
+      const token =
+        await currentUser.getIdToken(
+          true
+        );
 
-      const account = escapeHtml(
-        item.accountDetails ||
-        item.account ||
-        item.payment ||
-        item.paymentMasked ||
-        "Not available"
-      );
 
-      const requestedTimestamp =
-        item.requestedAt || item.createdAt || null;
-
-      const date = escapeHtml(
-        formatDate(requestedTimestamp)
-      );
-
-      const id = escapeHtml(item.id);
-      const canAct = lowerStatus === "pending";
-
-      return `
-        <div class="data-row">
-
-          <div class="data-main">
-            <div>
-
-              <div class="data-name">
-                👤 Username: ${username}
-              </div>
-
-              <div class="withdraw-details">
-
-                📧 Email:
-                <strong>${email || "Not available"}</strong>
-                <br>
-
-                🆔 UID:
-                <strong>${uid || "Not available"}</strong>
-                <br>
-
-                💰 Amount:
-                <strong>৳${amount.toFixed(2)}</strong>
-                <br>
-
-                💳 Method:
-                <strong>${method}</strong>
-                <br>
-
-                🏦 Account:
-                <strong class="withdraw-account">${account}</strong>
-                <br>
-
-                📅 Requested:
-                <strong>${date}</strong>
-
-              </div>
-
-            </div>
-          </div>
-
-          <span class="status ${statusClass}">
-            ${escapeHtml(status)}
-          </span>
-
-          ${
-            canAct
-              ? `
-                <div class="action-row">
-
-                  <button
-                    class="action-btn approve-btn"
-                    type="button"
-                    onclick="approveWithdrawal('${id}')"
-                  >
-                    Approve
-                  </button>
-
-                  <button
-                    class="action-btn reject-btn"
-                    type="button"
-                    onclick="rejectWithdrawal('${id}')"
-                  >
-                    Reject
-                  </button>
-
-                </div>
-              `
-              : ""
-          }
-
-        </div>
-      `;
-
-    }).join("");
-
-  } catch (error) {
-
-    console.error("Withdrawal load error:", error);
-
-    list.innerHTML = `
-      <div class="empty">
-        Unable to load withdrawal requests.
-      </div>
-    `;
-
-    showError(
-      "Withdrawals: " +
-      (error.message || "Unable to load withdrawals.")
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   APPROVE WITHDRAWAL
-
-   IMPORTANT:
-   Balance was already deducted
-   when withdrawal was submitted.
-========================================================= */
-
-async function approveWithdrawal(
-  withdrawalId
-) {
-
-  if (!adminReady) {
-    return;
-  }
-
-
-  if (
-    !confirm(
-      "Approve this withdrawal request?"
-    )
-  ) {
-
-    return;
-
-  }
-
-
-  try {
-
-    const withdrawalRef =
-      firebaseDb
-
-        .collection("withdrawals")
-
-        .doc(withdrawalId);
-
-
-    await firebaseDb.runTransaction(
-      async function(transaction) {
-
-
-        const withdrawalSnap =
-          await transaction.get(
-            withdrawalRef
-          );
-
-
-        if (
-          !withdrawalSnap.exists
-        ) {
-
-          throw new Error(
-            "Withdrawal request not found."
-          );
-
-        }
-
-
-        const withdrawal =
-          withdrawalSnap.data() || {};
-
-
-        const currentStatus =
-          String(
-            withdrawal.status ||
-            "Pending"
-          ).toLowerCase();
-
-
-        if (
-          currentStatus !==
-          "pending"
-        ) {
-
-          throw new Error(
-            "This withdrawal has already been processed."
-          );
-
-        }
-
-
-        transaction.update(
-          withdrawalRef,
+      const response =
+        await fetch(
+          "/api/reward",
           {
+            method: "POST",
 
-            status:
-              "Approved",
+            headers: {
+              "Content-Type":
+                "application/json",
 
-            approvedAt:
-              firebase.firestore
-                .FieldValue
-                .serverTimestamp(),
+              "Authorization":
+                "Bearer " +
+                token
+            },
 
-            approvedBy:
-              adminUser.uid,
+            body:
+              JSON.stringify({
+                rewardType:
+                  "watch_earn",
 
-            processedAt:
-              firebase.firestore
-                .FieldValue
-                .serverTimestamp()
-
+                claimId:
+                  claimId
+              })
           }
         );
 
 
+      const data =
+        await response.json();
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          data.error ||
+          "Reward could not be claimed."
+        );
+
+      }
+
+
+      status.textContent =
+        `Reward credited: ৳${money(data.reward)}. Today: ${data.count}/${data.dailyLimit}.`;
+
+
+      await loadTaskFirebaseBalance();
+
+    }
+    catch (error) {
+
+      console.error(
+        "Watch reward error:",
+        error
+      );
+
+
+      status.textContent =
+        error.message ||
+        "Unable to complete reward.";
+
+    }
+    finally {
+
+      button.disabled =
+        false;
+
+    }
+
+  }
+
+
+  /*
+   * Countdown helper
+   */
+
+  function countdown(
+    seconds,
+    element
+  ) {
+
+    return new Promise(
+      resolve => {
+
+        let remaining =
+          Number(seconds);
+
+
+        element.textContent =
+          `Please wait ${remaining} seconds...`;
+
+
+        const timer =
+          setInterval(
+            () => {
+
+              remaining--;
+
+
+              if (
+                remaining <= 0
+              ) {
+
+                clearInterval(
+                  timer
+                );
+
+                resolve();
+
+                return;
+
+              }
+
+
+              element.textContent =
+                `Please wait ${remaining} seconds...`;
+
+            },
+            1000
+          );
+
       }
     );
 
-
-    alert(
-      "Withdrawal approved."
-    );
-
-
-    clearError();
-
-
-    await loadWithdrawals();
-
-
-  } catch (error) {
-
-    console.error(
-      "Approve withdrawal error:",
-      error
-    );
-
-
-    showError(
-      "Unable to approve withdrawal: " +
-      (
-        error.message ||
-        "Unknown error"
-      )
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   REJECT WITHDRAWAL
-
-   IMPORTANT:
-   Amount was already deducted.
-
-   Reject:
-   Refund amount
-   + mark Rejected
-
-   Everything in ONE transaction.
-========================================================= */
-
-async function rejectWithdrawal(
-  withdrawalId
-) {
-
-  if (!adminReady) {
-    return;
   }
 
 
-  if (
-    !confirm(
-      "Reject this withdrawal request and refund the amount to the user?"
-    )
-  ) {
+  /*
+   * Firebase auth
+   */
 
-    return;
+  firebaseAuth.onAuthStateChanged(
+    async user => {
 
-  }
-
-
-  try {
-
-    const withdrawalRef =
-      firebaseDb
-
-        .collection("withdrawals")
-
-        .doc(withdrawalId);
+      currentUser =
+        user;
 
 
-    await firebaseDb.runTransaction(
-      async function(transaction) {
+      if (!user) {
+
+        window.location.href =
+          "login.html";
+
+        return;
+
+      }
 
 
-        /* READ WITHDRAWAL */
+      /*
+       * Username comes from Firestore.
+       */
 
-        const withdrawalSnap =
-          await transaction.get(
-            withdrawalRef
-          );
-
-
-        if (
-          !withdrawalSnap.exists
-        ) {
-
-          throw new Error(
-            "Withdrawal request not found."
-          );
-
-        }
+      let username =
+        user.displayName ||
+        "User";
 
 
-        const withdrawal =
-          withdrawalSnap.data() || {};
-
-
-        const currentStatus =
-          String(
-            withdrawal.status ||
-            "Pending"
-          ).toLowerCase();
-
-
-        if (
-          currentStatus !==
-          "pending"
-        ) {
-
-          throw new Error(
-            "This withdrawal has already been processed."
-          );
-
-        }
-
-
-        const userId =
-          String(
-            withdrawal.userId ||
-            ""
-          );
-
-
-        if (!userId) {
-
-          throw new Error(
-            "Withdrawal user ID is missing."
-          );
-
-        }
-
-
-        const amount =
-          Number(
-            withdrawal.amount || 0
-          );
-
-
-        if (
-          !Number.isFinite(amount) ||
-          amount <= 0
-        ) {
-
-          throw new Error(
-            "Invalid withdrawal amount."
-          );
-
-        }
-
-
-        /* REFERENCES */
-
-        const walletRef =
-          firebaseDb
-
-            .collection("wallets")
-
-            .doc(userId);
-
-
-        const profileRef =
-          firebaseDb
-
-            .collection("profiles")
-
-            .doc(userId);
-
-
-        /* READ WALLET */
-
-        const walletSnap =
-          await transaction.get(
-            walletRef
-          );
-
-
-        /* READ PROFILE */
+      try {
 
         const profileSnap =
-          await transaction.get(
-            profileRef
-          );
+          await firebaseDb
+            .collection("profiles")
+            .doc(user.uid)
+            .get();
 
-
-        const walletData =
-          walletSnap.exists
-
-            ? (
-                walletSnap.data() ||
-                {}
-              )
-
-            : {};
-
-
-        const profileData =
-          profileSnap.exists
-
-            ? (
-                profileSnap.data() ||
-                {}
-              )
-
-            : {};
-
-
-        const walletBalance =
-          Number(
-            walletData.balance || 0
-          );
-
-
-        const profileBalance =
-          Number(
-            profileData.balance || 0
-          );
-
-
-        const currentBalance =
-          walletSnap.exists
-
-            ? walletBalance
-
-            : profileBalance;
-
-
-        const newBalance =
-          currentBalance +
-          amount;
-
-
-        /* REFUND WALLET */
-
-        if (
-          walletSnap.exists
-        ) {
-
-          transaction.update(
-            walletRef,
-            {
-
-              balance:
-                newBalance,
-
-              updatedAt:
-                firebase.firestore
-                  .FieldValue
-                  .serverTimestamp()
-
-            }
-          );
-
-
-        } else {
-
-          transaction.set(
-            walletRef,
-            {
-
-              balance:
-                newBalance,
-
-              pending_balance:
-                Number(
-                  walletData.pending_balance ||
-                  0
-                ),
-
-              total_earned:
-                Number(
-                  walletData.total_earned ||
-                  0
-                ),
-
-              total_withdrawn:
-                Number(
-                  walletData.total_withdrawn ||
-                  0
-                ),
-
-              userId:
-                userId,
-
-              updatedAt:
-                firebase.firestore
-                  .FieldValue
-                  .serverTimestamp(),
-
-              createdAt:
-                firebase.firestore
-                  .FieldValue
-                  .serverTimestamp()
-
-            }
-          );
-
-        }
-
-
-        /* SYNC PROFILE */
 
         if (
           profileSnap.exists
         ) {
 
-          transaction.update(
-            profileRef,
-            {
-
-              balance:
-                newBalance
-
-            }
-          );
-
-        }
+          const data =
+            profileSnap.data() || {};
 
 
-        /* MARK REJECTED */
+          if (
+            data.username
+          ) {
 
-        transaction.update(
-          withdrawalRef,
-          {
-
-            status:
-              "Rejected",
-
-            rejectedAt:
-              firebase.firestore
-                .FieldValue
-                .serverTimestamp(),
-
-            rejectedBy:
-              adminUser.uid,
-
-            refundProcessed:
-              true,
-
-            refundAmount:
-              amount,
-
-            processedAt:
-              firebase.firestore
-                .FieldValue
-                .serverTimestamp()
+            username =
+              data.username;
 
           }
-        );
 
+        }
 
       }
-    );
-
-
-    alert(
-      "Withdrawal rejected and balance refunded."
-    );
-
-
-    clearError();
-
-
-    await loadUsers();
-
-    await loadWithdrawals();
-
-
-  } catch (error) {
-
-    console.error(
-      "Reject withdrawal error:",
-      error
-    );
-
-
-    showError(
-      "Unable to reject withdrawal: " +
-      (
-        error.message ||
-        "Unknown error"
-      )
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   TASK MANAGEMENT
-========================================================= */
-
-let editingTaskId = null;
-
-function resetTaskForm() {
-
-  editingTaskId = null;
-
-  getElement("taskForm").reset();
-
-  getElement("taskReward").value = "0";
-  getElement("taskMax").value = "0";
-  getElement("taskProofType").value = "none";
-  getElement("taskStatus").value = "active";
-
-  getElement("taskSaveBtn").textContent =
-    "Add Task";
-
-  getElement("taskCancelBtn").style.display =
-    "none";
-
-  getElement("taskEditing").style.display =
-    "none";
-
-}
-
-
-/* =========================================================
-   TASK SUBMISSION REVIEW
-========================================================= */
-
-async function loadTaskSubmissions() {
-
-  if (!adminReady) return;
-
-  const list = getElement("taskSubmissionsList");
-  if (!list) return;
-
-  list.innerHTML = '<div class="loading">Loading task submissions...</div>';
-
-  try {
-    const [submissionSnap, taskSnap, profileSnap] = await Promise.all([
-      firebaseDb.collection("submissions").get(),
-      firebaseDb.collection("tasks").get(),
-      firebaseDb.collection("profiles").get()
-    ]);
-
-    const tasks = {};
-    taskSnap.docs.forEach(function(doc) { tasks[doc.id] = doc.data() || {}; });
-
-    const profiles = {};
-    profileSnap.docs.forEach(function(doc) { profiles[doc.id] = doc.data() || {}; });
-
-    const submissions = submissionSnap.docs.map(function(doc) {
-      return { id: doc.id, ...(doc.data() || {}) };
-    });
-
-    submissions.sort(function(a, b) {
-      const aTs = a.createdAt || a.submittedAt || null;
-      const bTs = b.createdAt || b.submittedAt || null;
-      const aTime = aTs && typeof aTs.toMillis === "function" ? aTs.toMillis() : 0;
-      const bTime = bTs && typeof bTs.toMillis === "function" ? bTs.toMillis() : 0;
-      return bTime - aTime;
-    });
-
-    if (!submissions.length) {
-      list.innerHTML = '<div class="empty"><div class="empty-icon">📝</div>No task submissions yet.</div>';
-      return;
-    }
-
-    list.innerHTML = submissions.map(function(item) {
-      const task = tasks[item.taskId] || {};
-      const profile = profiles[item.userId] || {};
-      const title = escapeHtml(item.taskTitle || task.title || "Task");
-      const username = escapeHtml(item.username || profile.username || "User");
-      const email = escapeHtml(item.userEmail || profile.email || "");
-      const uid = escapeHtml(item.userId || "");
-      const status = String(item.status || "pending");
-      const lower = status.toLowerCase();
-      const reason = escapeHtml(item.reason || "");
-      const proof = escapeHtml(item.proof || "");
-      const date = escapeHtml(formatDate(item.createdAt || item.submittedAt));
-      const id = escapeHtml(item.id);
-      const image = item.proofImage ? `<img class="submission-proof-image" src="${item.proofImage}" alt="Task proof screenshot" onclick="window.open(this.src,'_blank')">` : "";
-
-      return `
-        <div class="data-row">
-          <div class="data-main">
-            <div>
-              <div class="data-name">📋 ${title}</div>
-              <div class="withdraw-details">
-                👤 Username: <strong>${username}</strong><br>
-                📧 Email: <strong>${email || "Not available"}</strong><br>
-                🆔 UID: <strong>${uid || "Not available"}</strong><br>
-                📅 Submitted: <strong>${date}</strong><br>
-                🔎 Proof type: <strong>${escapeHtml(item.proofType || "none")}</strong>
-              </div>
-              ${proof ? `<div class="submission-proof-text"><strong>Proof:</strong><br>${proof}</div>` : ""}
-              ${image}
-              ${reason ? `<div class="submission-proof-text"><strong>Previous admin reason:</strong><br>${reason}</div>` : ""}
-            </div>
-          </div>
-          <span class="status ${lower === "approved" ? "approved" : lower === "rejected" ? "rejected" : lower === "revision" ? "" : ""}">${escapeHtml(status)}</span>
-          ${lower === "pending" ? `
-            <textarea id="submission-reason-${id}" class="submission-reason" placeholder="Reason for revision or rejection"></textarea>
-            <div class="submission-action-row">
-              <button class="submission-action-btn approve" type="button" onclick="approveTaskSubmission('${id}')">Approve</button>
-              <button class="submission-action-btn revision" type="button" onclick="sendTaskSubmissionRevision('${id}')">Sent for revision</button>
-              <button class="submission-action-btn reject" type="button" onclick="rejectTaskSubmission('${id}')">Reject</button>
-            </div>
-          ` : ""}
-        </div>
-      `;
-    }).join("");
-
-  } catch (error) {
-    console.error("Task submissions load error:", error);
-    list.innerHTML = '<div class="empty">Unable to load task submissions.</div>';
-    showError("Task submissions: " + (error.message || "Unable to load submissions."));
-  }
-}
-
-async function approveTaskSubmission(submissionId) {
-  if (!adminReady || !adminUser) return;
-
-  try {
-    await firebaseDb.runTransaction(async function(transaction) {
-      const submissionRef = firebaseDb.collection("submissions").doc(submissionId);
-      const submissionSnap = await transaction.get(submissionRef);
-      if (!submissionSnap.exists) throw new Error("SUBMISSION_NOT_FOUND");
-
-      const submission = submissionSnap.data() || {};
-      if (String(submission.status || "pending").toLowerCase() !== "pending") throw new Error("SUBMISSION_ALREADY_REVIEWED");
-
-      const taskRef = firebaseDb.collection("tasks").doc(String(submission.taskId || ""));
-      const taskSnap = await transaction.get(taskRef);
-      if (!taskSnap.exists) throw new Error("TASK_NOT_FOUND");
-      const task = taskSnap.data() || {};
-
-      const reward = Number(task.reward || submission.reward || 0);
-      const userId = String(submission.userId || "");
-      if (!userId) throw new Error("USER_NOT_FOUND");
-
-      const walletRef = firebaseDb.collection("wallets").doc(userId);
-      const profileRef = firebaseDb.collection("profiles").doc(userId);
-      const walletSnap = await transaction.get(walletRef);
-      const profileSnap = await transaction.get(profileRef);
-
-      const wallet = walletSnap.exists ? (walletSnap.data() || {}) : {};
-      const currentBalance = Number(wallet.balance || 0);
-      const newBalance = Number((currentBalance + reward).toFixed(2));
-      const currentCompletions = Number(task.current_completions || 0);
-
-      if (walletSnap.exists) {
-        transaction.update(walletRef, { balance: newBalance });
-      } else {
-        transaction.set(walletRef, {
-          userId: userId,
-          balance: newBalance,
-          pending_balance: Number(wallet.pending_balance || 0),
-          total_earned: Number(wallet.total_earned || 0) + reward,
-          total_withdrawn: Number(wallet.total_withdrawn || 0)
-        });
-      }
-
-      if (profileSnap.exists) {
-        transaction.update(profileRef, { balance: newBalance });
-      }
-
-      transaction.update(taskRef, {
-        current_completions: currentCompletions + 1,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-
-      transaction.update(submissionRef, {
-        status: "approved",
-        approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
-        approvedBy: adminUser.uid,
-        reason: "",
-        proofImage: firebase.firestore.FieldValue.delete()
-      });
-    });
-
-    alert("Task approved and reward added.");
-    await loadTaskSubmissions();
-    await loadUsers();
-    await loadTasks();
-
-  } catch (error) {
-    console.error("Approve task submission error:", error);
-    showError("Unable to approve task: " + (error.message || "Unknown error"));
-  }
-}
-
-async function sendTaskSubmissionRevision(submissionId) {
-  if (!adminReady) return;
-  const box = getElement("submission-reason-" + submissionId);
-  const reason = box ? box.value.trim() : "";
-  if (!reason) {
-    showError("Please write a reason before sending the task for revision.");
-    return;
-  }
-
-  try {
-    await firebaseDb.collection("submissions").doc(submissionId).update({
-      status: "revision",
-      reason: reason,
-      reviewedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      reviewedBy: adminUser.uid,
-      proofImage: firebase.firestore.FieldValue.delete()
-    });
-
-    alert("Task sent for revision.");
-    await loadTaskSubmissions();
-
-  } catch (error) {
-    console.error("Revision error:", error);
-    showError("Unable to send for revision: " + (error.message || "Unknown error"));
-  }
-}
-
-async function rejectTaskSubmission(submissionId) {
-  if (!adminReady) return;
-  const box = getElement("submission-reason-" + submissionId);
-  const reason = box ? box.value.trim() : "";
-  if (!reason) {
-    showError("Please write a reason before rejecting the task.");
-    return;
-  }
-
-  try {
-    await firebaseDb.collection("submissions").doc(submissionId).update({
-      status: "rejected",
-      reason: reason,
-      rejectedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      rejectedBy: adminUser.uid,
-      proofImage: firebase.firestore.FieldValue.delete()
-    });
-
-    alert("Task rejected.");
-    await loadTaskSubmissions();
-
-  } catch (error) {
-    console.error("Reject task submission error:", error);
-    showError("Unable to reject task: " + (error.message || "Unknown error"));
-  }
-}
-
-function cancelTaskEdit() {
-  resetTaskForm();
-}
-
-function startTaskEdit(task) {
-
-  editingTaskId = task.id;
-
-  getElement("taskTitle").value =
-    task.title || "";
-
-  getElement("taskDescription").value =
-    task.description || "";
-
-  getElement("taskInstructions").value =
-    task.instructions || "";
-
-  getElement("taskUrl").value =
-    task.task_url || task.taskUrl || "";
-
-  getElement("taskReward").value =
-    Number(task.reward || 0);
-
-  getElement("taskMax").value =
-    Number(task.max_completions || 0);
-
-  getElement("taskProofType").value =
-    task.proof_type || task.proofType || "none";
-
-  getElement("taskStatus").value =
-    task.status || "active";
-
-  getElement("taskSaveBtn").textContent =
-    "Update Task";
-
-  getElement("taskCancelBtn").style.display =
-    "inline-block";
-
-  getElement("taskEditing").textContent =
-    "Editing: " + (task.title || "Untitled task");
-
-  getElement("taskEditing").style.display =
-    "block";
-
-  window.scrollTo({
-    top: document.body.scrollHeight,
-    behavior: "smooth"
-  });
-
-}
-
-async function saveTask(event) {
-
-  event.preventDefault();
-
-  if (!adminReady || !adminUser) {
-    showError("Administrator access is required.");
-    return;
-  }
-
-  const title =
-    getElement("taskTitle").value.trim();
-
-  const description =
-    getElement("taskDescription").value.trim();
-
-  const instructions =
-    getElement("taskInstructions").value.trim();
-
-  const taskUrl =
-    getElement("taskUrl").value.trim();
-
-  const reward =
-    Number(getElement("taskReward").value || 0);
-
-  const maxCompletions =
-    Number(getElement("taskMax").value || 0);
-
-  const proofType =
-    getElement("taskProofType").value;
-
-  const status =
-    getElement("taskStatus").value;
-
-  if (!title) {
-    showError("Task title is required.");
-    return;
-  }
-
-  if (!Number.isFinite(reward) || reward < 0) {
-    showError("Reward must be 0 or greater.");
-    return;
-  }
-
-  if (!Number.isInteger(maxCompletions) || maxCompletions < 0) {
-    showError("Max completions must be a whole number of 0 or greater.");
-    return;
-  }
-
-  const saveBtn =
-    getElement("taskSaveBtn");
-
-  saveBtn.disabled = true;
-  saveBtn.textContent =
-    editingTaskId ? "Updating..." : "Saving...";
-
-  try {
-
-    const taskData = {
-      title: title,
-      description: description,
-      instructions: instructions,
-      reward: Number(reward.toFixed(2)),
-      task_url: taskUrl,
-      proof_type: proofType,
-      max_completions: maxCompletions,
-      status: status,
-      updatedAt:
-        firebase.firestore.FieldValue.serverTimestamp()
-    };
-
-    if (editingTaskId) {
-
-      await firebaseDb
-        .collection("tasks")
-        .doc(editingTaskId)
-        .update(taskData);
-
-      showError("Task updated successfully.");
-
-    } else {
-
-      taskData.current_completions = 0;
-      taskData.createdAt =
-        firebase.firestore.FieldValue.serverTimestamp();
-
-      await firebaseDb
-        .collection("tasks")
-        .add(taskData);
-
-      showError("Task created successfully.");
-
-    }
-
-    resetTaskForm();
-    await loadTasks();
-
-    await loadTaskSubmissions();
-
-  } catch (error) {
-
-    console.error("Task save error:", error);
-
-    showError(
-      "Unable to save task: " +
-      (error.message || "Unknown error")
-    );
-
-  } finally {
-
-    saveBtn.disabled = false;
-
-    if (editingTaskId) {
-      saveBtn.textContent = "Update Task";
-    } else {
-      saveBtn.textContent = "Add Task";
-    }
-
-  }
-
-}
-
-async function toggleTaskStatus(taskId, currentStatus) {
-
-  if (!adminReady) return;
-
-  const nextStatus =
-    String(currentStatus || "active").toLowerCase() === "active"
-      ? "inactive"
-      : "active";
-
-  try {
-
-    await firebaseDb
-      .collection("tasks")
-      .doc(taskId)
-      .update({
-        status: nextStatus,
-        updatedAt:
-          firebase.firestore.FieldValue.serverTimestamp()
-      });
-
-    await loadTasks();
-
-  } catch (error) {
-
-    console.error("Task status error:", error);
-
-    showError(
-      "Unable to change task status: " +
-      (error.message || "Unknown error")
-    );
-
-  }
-
-}
-
-async function deleteTask(taskId) {
-
-  if (!adminReady) return;
-
-  const confirmed =
-    window.confirm(
-      "Delete this task permanently? This cannot be undone."
-    );
-
-  if (!confirmed) return;
-
-  try {
-
-    await firebaseDb
-      .collection("tasks")
-      .doc(taskId)
-      .delete();
-
-    if (editingTaskId === taskId) {
-      resetTaskForm();
-    }
-
-    await loadTasks();
-
-  } catch (error) {
-
-    console.error("Task delete error:", error);
-
-    showError(
-      "Unable to delete task: " +
-      (error.message || "Unknown error")
-    );
-
-  }
-
-}
-
-async function loadTasks() {
-
-  if (!adminReady) {
-    return;
-  }
-
-  const list =
-    getElement("tasksList");
-
-  list.innerHTML = `
-    <div class="loading">
-      Loading tasks...
-    </div>
-  `;
-
-  try {
-
-    const snapshot =
-      await firebaseDb
-        .collection("tasks")
-        .get();
-
-    const tasks =
-      snapshot.docs.map(function(doc) {
-        return {
-          id: doc.id,
-          ...(doc.data() || {})
-        };
-      });
-
-    tasks.sort(function(a, b) {
-
-      const aTimestamp =
-        a.createdAt || a.updatedAt || null;
-
-      const bTimestamp =
-        b.createdAt || b.updatedAt || null;
-
-      const aTime =
-        aTimestamp &&
-        typeof aTimestamp.toMillis === "function"
-          ? aTimestamp.toMillis()
-          : 0;
-
-      const bTime =
-        bTimestamp &&
-        typeof bTimestamp.toMillis === "function"
-          ? bTimestamp.toMillis()
-          : 0;
-
-      return bTime - aTime;
-
-    });
-
-    getElement("tasksCount").textContent =
-      tasks.length;
-
-    if (!tasks.length) {
-
-      list.innerHTML = `
-        <div class="empty">
-          <div class="empty-icon">📋</div>
-          No Firebase tasks found yet.
-        </div>
-      `;
-
-      return;
-    }
-
-    list.innerHTML = tasks.map(function(task) {
-
-      const title = escapeHtml(
-        task.title || "Untitled task"
-      );
-
-      const description = escapeHtml(
-        task.description || ""
-      );
-
-      const instructions = escapeHtml(
-        task.instructions || ""
-      );
-
-      const taskUrl = escapeHtml(
-        task.task_url || task.taskUrl || ""
-      );
-
-      const reward = Number(
-        task.reward || 0
-      );
-
-      const status = String(
-        task.status || "active"
-      );
-
-      const lowerStatus =
-        status.toLowerCase();
-
-      const completed = Number(
-        task.current_completions || 0
-      );
-
-      const max = Number(
-        task.max_completions || 0
-      );
-
-      const proofType = escapeHtml(
-        task.proof_type || task.proofType || "none"
-      );
-
-      const id = escapeHtml(task.id);
-
-      return `
-        <div class="data-row">
-
-          <div class="data-main">
-
-            <div>
-
-              <div class="data-name">
-                📋 ${title}
-              </div>
-
-              <div class="data-secondary">
-                ${description || "No description"}
-              </div>
-
-              ${
-                instructions
-                  ? `<div class="data-secondary">📝 ${instructions}</div>`
-                  : ""
-              }
-
-              ${
-                taskUrl
-                  ? `<div class="data-secondary">🔗 ${taskUrl}</div>`
-                  : ""
-              }
-
-              <div class="data-secondary">
-                Proof: ${proofType}
-                · Completions: ${completed}${max > 0 ? " / " + max : " / Unlimited"}
-              </div>
-
-            </div>
-
-            <div class="data-amount">
-              ৳${reward.toFixed(2)}
-            </div>
-
-          </div>
-
-          <span class="status ${lowerStatus === "active" ? "approved" : "rejected"}">
-            ${escapeHtml(status)}
-          </span>
-
-          <div class="task-actions">
-
-            <button
-              class="task-action-btn"
-              type="button"
-              onclick='startTaskEdit(${JSON.stringify(task).replace(/'/g, "&#039;")})'
-            >
-              Edit
-            </button>
-
-            <button
-              class="task-action-btn ${lowerStatus === "active" ? "" : "success"}"
-              type="button"
-              onclick="toggleTaskStatus('${id}', '${escapeHtml(status).replace(/'/g, "&#039;")}')"
-            >
-              ${lowerStatus === "active" ? "Disable" : "Activate"}
-            </button>
-
-            <button
-              class="task-action-btn danger"
-              type="button"
-              onclick="deleteTask('${id}')"
-            >
-              Delete
-            </button>
-
-          </div>
-
-        </div>
-      `;
-
-    }).join("");
-
-  } catch (error) {
-
-    console.error(
-      "Tasks load error:",
-      error
-    );
-
-    list.innerHTML = `
-      <div class="empty">
-        Unable to load Firebase tasks.
-      </div>
-    `;
-
-    showError(
-      "Tasks: " +
-      (error.message || "Unable to load tasks.")
-    );
-
-  }
-
-}
-
-getElement("taskForm")
-  .addEventListener("submit", saveTask);
-
-
-/* =========================================================
-   LOGOUT
-========================================================= */
-
-async function adminLogout() {
-
-  try {
-
-    await firebaseAuth.signOut();
-
-
-    localStorage.removeItem(
-      "worker_logged_in"
-    );
-
-
-    localStorage.removeItem(
-      "worker_username"
-    );
-
-
-    localStorage.removeItem(
-      "worker_email"
-    );
-
-
-    window.location.href =
-      "login.html";
-
-
-  } catch (error) {
-
-    console.error(
-      "Admin logout error:",
-      error
-    );
-
-
-    alert(
-      "Logout failed. Please try again."
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   AUTH STATE
-========================================================= */
-
-document.addEventListener(
-  "DOMContentLoaded",
-  function() {
-
-
-    if (
-      typeof firebaseAuth ===
-      "undefined"
-    ) {
-
-      const access =
-        getElement(
-          "accessMessage"
-        );
-
-
-      access.innerHTML = `
-
-        <div class="access-icon">
-          ⚠️
-        </div>
-
-        <div class="access-title">
-          Firebase unavailable
-        </div>
-
-        <div class="access-text">
-          Firebase configuration could not be loaded.
-        </div>
-
-      `;
-
-
-      return;
-
-    }
-
-
-    firebaseAuth.onAuthStateChanged(
-      async function(user) {
-
-        await checkAdminAccess(
-          user
+      catch (error) {
+
+        console.warn(
+          "Task profile load error:",
+          error
         );
 
       }
-    );
 
 
-  }
-);
+      updateTaskUsername(
+        username
+      );
+
+
+      /*
+       * Balance comes only from Firebase.
+       */
+
+      await loadTaskFirebaseBalance();
+
+
+      await loadFirebaseTasks();
+
+
+      await loadMySubmissions();
+
+    }
+  );
 
 </script>
 
-
 </body>
-
 </html>

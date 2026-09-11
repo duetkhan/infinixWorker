@@ -954,6 +954,14 @@
               </div>
 
               <div class="task-field">
+                <label for="taskExecutionMode">User execution</label>
+                <select id="taskExecutionMode">
+                  <option value="one_user_one_execution">One user one execution</option>
+                  <option value="multiple_times">Multiple times</option>
+                </select>
+              </div>
+
+              <div class="task-field">
                 <label for="taskProofType">Proof type</label>
                 <select id="taskProofType">
                   <option value="none">None</option>
@@ -2422,6 +2430,7 @@ function resetTaskForm() {
 
   getElement("taskReward").value = "0";
   getElement("taskMax").value = "0";
+  getElement("taskExecutionMode").value = "one_user_one_execution";
   getElement("taskProofType").value = "none";
   getElement("taskStatus").value = "active";
 
@@ -2691,6 +2700,9 @@ function startTaskEdit(task) {
   getElement("taskMax").value =
     Number(task.max_completions || 0);
 
+  getElement("taskExecutionMode").value =
+    task.execution_mode || task.executionMode || "one_user_one_execution";
+
   getElement("taskProofType").value =
     task.proof_type || task.proofType || "none";
 
@@ -2743,6 +2755,9 @@ async function saveTask(event) {
   const maxCompletions =
     Number(getElement("taskMax").value || 0);
 
+  const executionMode =
+    getElement("taskExecutionMode").value || "one_user_one_execution";
+
   const proofType =
     getElement("taskProofType").value;
 
@@ -2764,6 +2779,11 @@ async function saveTask(event) {
     return;
   }
 
+  if (executionMode !== "one_user_one_execution" && executionMode !== "multiple_times") {
+    showError("Please select a valid user execution mode.");
+    return;
+  }
+
   const saveBtn =
     getElement("taskSaveBtn");
 
@@ -2781,6 +2801,7 @@ async function saveTask(event) {
       task_url: taskUrl,
       proof_type: proofType,
       max_completions: maxCompletions,
+      execution_mode: executionMode,
       status: status,
       updatedAt:
         firebase.firestore.FieldValue.serverTimestamp()
@@ -3019,6 +3040,14 @@ async function loadTasks() {
         task.proof_type || task.proofType || "none"
       );
 
+      const executionMode =
+        String(task.execution_mode || task.executionMode || "one_user_one_execution").toLowerCase();
+
+      const executionLabel =
+        executionMode === "multiple_times"
+          ? "Multiple times"
+          : "One user one execution";
+
       const id = escapeHtml(task.id);
 
       return `
@@ -3050,6 +3079,7 @@ async function loadTasks() {
 
               <div class="data-secondary">
                 Proof: ${proofType}
+                · Execution: ${escapeHtml(executionLabel)}
                 · Completions: ${completed}${max > 0 ? " / " + max : " / Unlimited"}
               </div>
 

@@ -2964,9 +2964,22 @@ async function loadFirebaseTasks() {
   list.innerHTML = '<div class="firebase-task-empty">Loading tasks...</div>';
 
   try {
-    const snapshot = await firebaseDb.collection("tasks").get();
+    const user = firebaseTaskUser;
 
-    firebaseTasks = snapshot.docs.map(function(doc) {
+    const [taskSnapshot, submissionSnapshot] = await Promise.all([
+      firebaseDb.collection("tasks").get(),
+      firebaseDb.collection("submissions")
+        .where("userId", "==", user.uid)
+        .get()
+    ]);
+
+    const allSubmissions = submissionSnapshot.docs.map(function(doc) {
+      return { id: doc.id, ...(doc.data() || {}) };
+    });
+
+    firebaseTaskSubmissions = allSubmissions.slice();
+
+    firebaseTasks = taskSnapshot.docs.map(function(doc) {
       return { id: doc.id, ...(doc.data() || {}) };
     }).filter(function(task) {
       return String(task.status || "active").toLowerCase() === "active";
@@ -2974,6 +2987,46 @@ async function loadFirebaseTasks() {
       const max = Number(getFirebaseTaskField(task, "max_completions", "maxCompletions", 0) || 0);
       const current = Number(getFirebaseTaskField(task, "current_completions", "currentCompletions", 0) || 0);
       return max <= 0 || current < max;
+    }).filter(function(task) {
+      const taskId = String(task.id);
+      const executionMode = String(
+        getFirebaseTaskField(task, "execution_mode", "executionMode", "one_user_one_execution")
+        || "one_user_one_execution"
+      ).toLowerCase();
+
+      const userTaskSubmissions = allSubmissions.filter(function(item) {
+        return String(item.taskId || "") === taskId;
+      });
+
+      /*
+        One user one execution:
+        - pending => temporarily unavailable
+        - revision => unavailable until the revision is resubmitted
+        - approved => permanently unavailable for this user
+        - rejected => available again
+
+        Multiple times:
+        - pending/revision => temporarily unavailable
+        - approved => available again
+        - rejected => available again
+      */
+      const hasPending = userTaskSubmissions.some(function(item) {
+        return String(item.status || "").toLowerCase() === "pending";
+      });
+
+      const hasRevision = userTaskSubmissions.some(function(item) {
+        return String(item.status || "").toLowerCase() === "revision";
+      });
+
+      const hasApproved = userTaskSubmissions.some(function(item) {
+        return String(item.status || "").toLowerCase() === "approved";
+      });
+
+      if (executionMode === "multiple_times") {
+        return !hasPending && !hasRevision;
+      }
+
+      return !hasPending && !hasRevision && !hasApproved;
     });
 
     firebaseTasks.sort(function(a, b) {
@@ -3126,6 +3179,8 @@ function showFirebaseTaskDetails(taskId) {
   const reward = Number(task.reward || 0);
   const max = Number(getFirebaseTaskField(task, "max_completions", "maxCompletions", 0) || 0);
   const current = Number(getFirebaseTaskField(task, "current_completions", "currentCompletions", 0) || 0);
+  const executionMode = String(getFirebaseTaskField(task, "execution_mode", "executionMode", "one_user_one_execution") || "one_user_one_execution").toLowerCase();
+  const executionLabel = executionMode === "multiple_times" ? "Multiple times" : "One user one execution";
 
   detail.innerHTML = `
     <h3>📋 ${title}</h3>
@@ -3134,6 +3189,7 @@ function showFirebaseTaskDetails(taskId) {
     <div class="firebase-task-meta">
       <span class="firebase-task-badge">Reward: ৳${reward.toFixed(2)}</span>
       <span class="firebase-task-badge">${max > 0 ? "Slots: " + current + " / " + max : "Unlimited"}</span>
+      <span class="firebase-task-badge">Execution: ${escapeFirebaseTaskHtml(executionLabel)}</span>
       ${proofType !== "none" ? `<span class="firebase-task-badge">Proof: ${escapeFirebaseTaskHtml(proofType)}</span>` : ""}
     </div>
     <button id="start-firebase-task-${safeId}" class="firebase-task-start-btn" type="button" onclick="startFirebaseManagedTask('${idSafeForJs(taskId)}')">Start Task</button>
@@ -3318,12 +3374,15 @@ async function submitFirebaseTaskProof(taskId, safeId) {
         return;
       }
       if (latestStatus === "approved") {
-        showTaskMessage("This task has already been approved.", "error");
-        return;
+        const executionMode = String(getFirebaseTaskField(task, "execution_mode", "executionMode", "one_user_one_execution") || "one_user_one_execution").toLowerCase();
+        if (executionMode !== "multiple_times") {
+          showTaskMessage("This task has already been approved and can only be completed once.", "error");
+          return;
+        }
+        // Multiple-times task: an approved previous execution does not block a new submission.
       }
       if (latestStatus === "rejected") {
-        showTaskMessage("This task was rejected. Please contact the administrator if needed.", "error");
-        return;
+        // A rejected task may be attempted again.
       }
       if (latestStatus !== "revision") {
         showTaskMessage("This task cannot be submitted again right now.", "error");
@@ -3364,6 +3423,7 @@ async function submitFirebaseTaskProof(taskId, safeId) {
       proof: proof,
       proofImage: proofImage,
       proofType: proofType,
+      executionMode: String(getFirebaseTaskField(task, "execution_mode", "executionMode", "one_user_one_execution") || "one_user_one_execution").toLowerCase(),
       reward: Number(task.reward || 0),
       status: "pending",
       reason: "",

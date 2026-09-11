@@ -435,29 +435,28 @@
 
 <script>
 
-const USER_KEY =
-  "iw_device_user";
-
-const LOGIN_KEY =
-  "worker_logged_in";
+/* =========================================================
+   FIREBASE-ONLY SIGNUP
+   =========================================================
+   Important:
+   - No old localStorage account is used.
+   - No password is stored in localStorage.
+   - Firebase Authentication is the only authentication source.
+   - New user profile is stored in Firestore.
+   - New wallet is stored in Firestore.
+========================================================= */
 
 
 /* =========================================================
    MESSAGE
 ========================================================= */
 
-function showSignupMessage(
-  text,
-  type
-) {
+function showSignupMessage(text, type) {
 
   const box =
-    document.getElementById(
-      "signupMessage"
-    );
+    document.getElementById("signupMessage");
 
-  box.textContent =
-    text;
+  box.textContent = text;
 
   box.className =
     "signup-message " + type;
@@ -466,43 +465,51 @@ function showSignupMessage(
 
 
 /* =========================================================
-   GET OLD LOCAL USER
+   FIREBASE ERROR MESSAGE
 ========================================================= */
 
-function getOldLocalUser() {
+function getSignupErrorMessage(error) {
 
-  const saved =
-    localStorage.getItem(
-      USER_KEY
-    );
-
-
-  if (!saved) {
-    return null;
+  if (!error) {
+    return "Account creation failed. Please try again.";
   }
 
 
-  try {
-
-    const user =
-      JSON.parse(saved);
+  const code =
+    error.code || "";
 
 
-    if (
-      !user ||
-      typeof user !== "object"
-    ) {
+  switch (code) {
 
-      return null;
+    case "auth/email-already-in-use":
+      return "This email is already registered. Please login instead.";
 
-    }
+    case "auth/invalid-email":
+      return "Please enter a valid email address.";
 
+    case "auth/weak-password":
+      return "Password is too weak. Use at least 6 characters.";
 
-    return user;
+    case "auth/operation-not-allowed":
+      return "Email/Password authentication is not enabled in Firebase.";
 
-  } catch (error) {
+    case "auth/network-request-failed":
+      return "Network error. Please check your internet connection.";
 
-    return null;
+    case "auth/too-many-requests":
+      return "Too many attempts. Please wait and try again.";
+
+    case "auth/unauthorized-domain":
+      return "This website domain is not authorized in Firebase Authentication.";
+
+    case "auth/internal-error":
+      return "Firebase internal error. Please try again.";
+
+    case "permission-denied":
+      return "Firestore permission denied. Please check Firebase rules.";
+
+    default:
+      return "Account creation failed. Please try again.";
 
   }
 
@@ -510,59 +517,88 @@ function getOldLocalUser() {
 
 
 /* =========================================================
-   DEVICE CHECK
-
-   IMPORTANT:
-   Old local-only accounts must NOT block
-   Firebase signup.
-
-   Only a local marker containing a Firebase UID
-   is treated as an existing Firebase account.
+   FIRESTORE PROFILE + WALLET
 ========================================================= */
 
-document.addEventListener(
-  "DOMContentLoaded",
-  function() {
+async function createFirebaseUserData(
+  user,
+  username,
+  email
+) {
 
-    const loggedIn =
-      localStorage.getItem(
-        LOGIN_KEY
-      );
-
-
-    if (loggedIn === "true") {
-
-      /*
-        Verify Firebase session before redirect.
-      */
-
-      firebaseAuth.onAuthStateChanged(
-        function(user) {
-
-          if (user) {
-
-            window.location.href =
-              "index.html";
-
-          } else {
-
-            localStorage.removeItem(
-              LOGIN_KEY
-            );
-
-          }
-
-        }
-      );
-
-    }
-
+  if (!user || !user.uid) {
+    throw new Error("Firebase user is missing.");
   }
-);
+
+
+  const uid =
+    user.uid;
+
+
+  const profileRef =
+    firebaseDb
+      .collection("profiles")
+      .doc(uid);
+
+
+  const walletRef =
+    firebaseDb
+      .collection("wallets")
+      .doc(uid);
+
+
+  const batch =
+    firebaseDb.batch();
+
+
+  batch.set(
+    profileRef,
+    {
+      username: username,
+      email: email,
+      balance: 0,
+      role: "user",
+      createdAt:
+        firebase.firestore.FieldValue.serverTimestamp()
+    },
+    {
+      merge: false
+    }
+  );
+
+
+  batch.set(
+    walletRef,
+    {
+      balance: 0,
+      pending_balance: 0,
+      total_earned: 0,
+      total_withdrawn: 0,
+      userId: uid,
+      createdAt:
+        firebase.firestore.FieldValue.serverTimestamp()
+    },
+    {
+      merge: false
+    }
+  );
+
+
+  await batch.commit();
+
+}
 
 
 /* =========================================================
-   FIREBASE SIGNUP
+   PREVENT DUPLICATE SUBMISSION
+========================================================= */
+
+let signupProcessing =
+  false;
+
+
+/* =========================================================
+   SIGNUP
 ========================================================= */
 
 document
@@ -574,20 +610,21 @@ document
       event.preventDefault();
 
 
+      if (signupProcessing) {
+        return;
+      }
+
+
       const username =
         document
-          .getElementById(
-            "signupUsername"
-          )
+          .getElementById("signupUsername")
           .value
           .trim();
 
 
       const email =
         document
-          .getElementById(
-            "signupEmail"
-          )
+          .getElementById("signupEmail")
           .value
           .trim()
           .toLowerCase();
@@ -595,33 +632,25 @@ document
 
       const password =
         document
-          .getElementById(
-            "signupPassword"
-          )
+          .getElementById("signupPassword")
           .value;
 
 
       const confirmPassword =
         document
-          .getElementById(
-            "confirmPassword"
-          )
+          .getElementById("confirmPassword")
           .value;
 
 
       const signupBtn =
-        document.getElementById(
-          "signupBtn"
-        );
+        document.getElementById("signupBtn");
 
 
       /* =====================================================
          VALIDATION
       ===================================================== */
 
-      if (
-        username.length < 3
-      ) {
+      if (username.length < 3) {
 
         showSignupMessage(
           "Username must be at least 3 characters.",
@@ -633,9 +662,7 @@ document
       }
 
 
-      if (
-        username.length > 30
-      ) {
+      if (username.length > 30) {
 
         showSignupMessage(
           "Username must be 30 characters or less.",
@@ -647,9 +674,27 @@ document
       }
 
 
-      if (
-        password.length < 6
-      ) {
+      /*
+        Keep username simple and safe for Firestore/UI.
+      */
+
+      const usernamePattern =
+        /^[a-zA-Z0-9_.-]+$/;
+
+
+      if (!usernamePattern.test(username)) {
+
+        showSignupMessage(
+          "Username can contain only letters, numbers, dot, underscore and hyphen.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      if (password.length < 6) {
 
         showSignupMessage(
           "Password must be at least 6 characters.",
@@ -661,10 +706,7 @@ document
       }
 
 
-      if (
-        password !==
-        confirmPassword
-      ) {
+      if (password !== confirmPassword) {
 
         showSignupMessage(
           "Passwords do not match.",
@@ -676,19 +718,51 @@ document
       }
 
 
-      signupBtn.disabled = true;
+      if (!firebaseAuth) {
+
+        showSignupMessage(
+          "Firebase Authentication is not available. Please refresh the page.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      if (!firebaseDb) {
+
+        showSignupMessage(
+          "Firebase Firestore is not available. Please refresh the page.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      signupProcessing =
+        true;
+
+
+      signupBtn.disabled =
+        true;
+
 
       signupBtn.textContent =
         "Creating account...";
 
 
-      let firebaseUser = null;
+      let firebaseUser =
+        null;
 
 
       try {
 
         /* ===================================================
-           CREATE FIREBASE AUTH USER
+           STEP 1
+           CREATE FIREBASE AUTH ACCOUNT
         =================================================== */
 
         const result =
@@ -703,121 +777,81 @@ document
           result.user;
 
 
-        /* ===================================================
-           CREATE FIRESTORE PROFILE
-        =================================================== */
+        if (
+          !firebaseUser ||
+          !firebaseUser.uid
+        ) {
 
-        await firebaseDb
-          .collection("profiles")
-          .doc(firebaseUser.uid)
-          .set({
+          throw new Error(
+            "Firebase account was not created correctly."
+          );
 
-            username:
-              username,
-
-            email:
-              email,
-
-            balance:
-              0,
-
-            role:
-              "user",
-
-            createdAt:
-              firebase.firestore
-                .FieldValue
-                .serverTimestamp()
-
-          });
+        }
 
 
         /* ===================================================
-           CREATE WALLET
+           STEP 2
+           CREATE PROFILE + WALLET
         =================================================== */
 
-        await firebaseDb
-          .collection("wallets")
-          .doc(firebaseUser.uid)
-          .set({
+        try {
 
-            balance:
-              0,
-
-            pending_balance:
-              0,
-
-            total_earned:
-              0,
-
-            total_withdrawn:
-              0,
-
-            userId:
-              firebaseUser.uid,
-
-            createdAt:
-              firebase.firestore
-                .FieldValue
-                .serverTimestamp()
-
-          });
-
-
-        /* ===================================================
-           LOCAL COMPATIBILITY SESSION
-
-           Password is NEVER stored.
-        =================================================== */
-
-        const deviceUser = {
-
-          username:
+          await createFirebaseUserData(
+            firebaseUser,
             username,
+            email
+          );
 
-          email:
-            email,
+        } catch (firestoreError) {
 
-          firebaseUid:
-            firebaseUser.uid,
-
-          createdAt:
-            new Date()
-              .toISOString()
-
-        };
+          console.error(
+            "Firestore user data error:",
+            firestoreError
+          );
 
 
-        localStorage.setItem(
-          USER_KEY,
-          JSON.stringify(
-            deviceUser
-          )
-        );
+          /*
+            Auth account already exists.
+            Sign out so user does not enter
+            the app without profile/wallet.
+          */
+
+          try {
+
+            await firebaseAuth.signOut();
+
+          } catch (signOutError) {
+
+            console.error(
+              "Firebase cleanup sign-out error:",
+              signOutError
+            );
+
+          }
 
 
-        localStorage.setItem(
-          "worker_username",
-          username
-        );
+          throw firestoreError;
+
+        }
 
 
-        localStorage.setItem(
-          "worker_email",
-          email
-        );
+        /* ===================================================
+           IMPORTANT
+           NO LOCALSTORAGE AUTH SESSION
+        =================================================== */
 
+        /*
+          Firebase Auth automatically maintains
+          the authenticated session.
 
-        localStorage.setItem(
-          "worker_balance",
-          "0.00"
-        );
-
-
-        localStorage.setItem(
-          LOGIN_KEY,
-          "true"
-        );
+          We intentionally DO NOT save:
+          - password
+          - worker_logged_in
+          - worker_username
+          - worker_email
+          - worker_balance
+          - iw_device_user
+        */
 
 
         showSignupMessage(
@@ -826,6 +860,11 @@ document
         );
 
 
+        /*
+          Give Firebase a moment to finish its
+          authentication state propagation.
+        */
+
         setTimeout(
           function() {
 
@@ -833,7 +872,7 @@ document
               "index.html";
 
           },
-          900
+          700
         );
 
 
@@ -845,106 +884,8 @@ document
         );
 
 
-        /*
-          If Auth user was created but
-          Firestore failed, sign out.
-        */
-
-        if (firebaseUser) {
-
-          try {
-
-            await firebaseAuth
-              .signOut();
-
-          } catch (
-            signOutError
-          ) {
-
-            console.log(
-              "Sign-out cleanup warning:",
-              signOutError
-            );
-
-          }
-
-        }
-
-
-        let message =
-          "Account creation failed. Please try again.";
-
-
-        if (
-          error.code ===
-          "auth/email-already-in-use"
-        ) {
-
-          message =
-            "This email is already registered. Please login instead.";
-
-        }
-
-        else if (
-          error.code ===
-          "auth/invalid-email"
-        ) {
-
-          message =
-            "Please enter a valid email address.";
-
-        }
-
-        else if (
-          error.code ===
-          "auth/weak-password"
-        ) {
-
-          message =
-            "Password is too weak. Use at least 6 characters.";
-
-        }
-
-        else if (
-          error.code ===
-          "auth/operation-not-allowed"
-        ) {
-
-          message =
-            "Email/Password authentication is not enabled in Firebase.";
-
-        }
-
-        else if (
-          error.code ===
-          "auth/network-request-failed"
-        ) {
-
-          message =
-            "Network error. Please check your internet connection.";
-
-        }
-
-        else if (
-          error.code ===
-          "permission-denied"
-        ) {
-
-          message =
-            "Firestore permission denied. Please check Firebase rules.";
-
-        }
-
-        else if (
-          error.message
-        ) {
-
-          console.error(
-            "Firebase signup detail:",
-            error.message
-          );
-
-        }
+        const message =
+          getSignupErrorMessage(error);
 
 
         showSignupMessage(
@@ -953,8 +894,13 @@ document
         );
 
 
+        signupProcessing =
+          false;
+
+
         signupBtn.disabled =
           false;
+
 
         signupBtn.textContent =
           "Create Account";
@@ -966,55 +912,29 @@ document
 
 
 /* =========================================================
-   REMOVE OLD PLAINTEXT PASSWORD
+   IF ALREADY LOGGED IN
+   =========================================================
+   Firebase session only.
 ========================================================= */
 
-(function cleanupOldLocalPassword() {
+firebaseAuth.onAuthStateChanged(
+  function(user) {
 
-  const saved =
-    localStorage.getItem(
-      USER_KEY
-    );
+    if (user) {
 
+      /*
+        If a Firebase user is already logged in,
+        there is no reason to create another account
+        from this page.
+      */
 
-  if (!saved) {
-    return;
-  }
-
-
-  try {
-
-    const user =
-      JSON.parse(saved);
-
-
-    if (
-      user &&
-      Object.prototype.hasOwnProperty.call(
-        user,
-        "password"
-      )
-    ) {
-
-      delete user.password;
-
-
-      localStorage.setItem(
-        USER_KEY,
-        JSON.stringify(user)
-      );
+      window.location.href =
+        "index.html";
 
     }
 
-  } catch (error) {
-
-    console.log(
-      "Old local account cleanup skipped."
-    );
-
   }
-
-})();
+);
 
 </script>
 

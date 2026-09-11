@@ -241,6 +241,141 @@
       overflow: hidden;
     }
 
+
+    .firebase-tasks-section {
+      margin: 15px 0;
+    }
+
+    .firebase-tasks-header {
+      background: #fff;
+      border-radius: 18px;
+      padding: 15px 17px;
+      margin-bottom: 12px;
+      box-shadow: 0 6px 20px rgba(25,35,60,.08);
+    }
+
+    .firebase-tasks-header h2 {
+      margin: 0;
+      color: #20283a;
+      font-size: 18px;
+    }
+
+    .firebase-tasks-header p {
+      margin: 5px 0 0;
+      color: #7a8394;
+      font-size: 12px;
+    }
+
+    .firebase-task-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 17px;
+      margin-bottom: 15px;
+      box-shadow: 0 6px 20px rgba(25,35,60,.08);
+    }
+
+    .firebase-task-card h3 {
+      margin: 0 0 8px;
+      color: #20283a;
+      font-size: 17px;
+    }
+
+    .firebase-task-card p {
+      margin: 0 0 10px;
+      color: #697386;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .firebase-task-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 10px 0 12px;
+    }
+
+    .firebase-task-badge {
+      display: inline-block;
+      background: #eef5ff;
+      color: #1769e0;
+      border-radius: 10px;
+      padding: 6px 9px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .firebase-task-instructions {
+      background: #f8faff;
+      border-radius: 12px;
+      padding: 11px 12px;
+      margin: 10px 0;
+      color: #596579;
+      font-size: 12px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+
+    .firebase-task-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .firebase-task-url-btn,
+    .firebase-task-submit-btn {
+      width: 100%;
+      min-height: 44px;
+      border: 0;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .firebase-task-url-btn {
+      background: linear-gradient(135deg, #1769e0, #0755c9);
+      color: #fff;
+    }
+
+    .firebase-task-submit-btn {
+      background: #eef5ff;
+      color: #1769e0;
+    }
+
+    .firebase-task-proof {
+      display: none;
+      margin-top: 10px;
+    }
+
+    .firebase-task-proof textarea,
+    .firebase-task-proof input {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #dce2eb;
+      border-radius: 12px;
+      padding: 11px 12px;
+      background: #f9fbff;
+      color: #20283a;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .firebase-task-proof textarea {
+      min-height: 82px;
+      resize: vertical;
+    }
+
+    .firebase-task-empty {
+      background: #fff;
+      border-radius: 18px;
+      padding: 18px;
+      text-align: center;
+      color: #7a8394;
+      font-size: 13px;
+      box-shadow: 0 6px 20px rgba(25,35,60,.08);
+    }
+
   </style>
 </head>
 
@@ -377,22 +512,6 @@
     </div>
 
 
-    <!-- NATIVE 2:1 -->
-    <div class="native-ad">
-
-      <script
-        async="async"
-        data-cfasync="false"
-        src="https://pl28546803.profitableratecpmnetwork.com/80507bc8e3d998279cd413247931169e/invoke.js">
-      </script>
-
-      <div
-        id="container-80507bc8e3d998279cd413247931169e">
-      </div>
-
-    </div>
-
-
     <!-- =========================================
          WATCH & EARN
     ========================================== -->
@@ -440,6 +559,31 @@
     </div>
 
 
+    <!-- =========================================
+         ADMIN MANAGED FIREBASE TASKS
+    ========================================== -->
+
+    <section
+      id="firebaseTasksSection"
+      class="firebase-tasks-section"
+      style="display:none;">
+
+      <div class="firebase-tasks-header">
+        <div>
+          <h2>📋 Available Tasks</h2>
+          <p>Complete the tasks added by the administrator.</p>
+        </div>
+      </div>
+
+      <div id="firebaseTasksList">
+        <div class="firebase-task-empty">
+          Loading tasks...
+        </div>
+      </div>
+
+    </section>
+
+
     <!-- MESSAGE -->
     <div
       id="taskMessage"
@@ -447,7 +591,23 @@
     </div>
 
 
-    <!-- BELOW NATIVE 320x50 -->
+    <!-- BOTTOM NATIVE 2:1 -->
+    <div class="native-ad">
+
+      <script
+        async="async"
+        data-cfasync="false"
+        src="https://pl28546803.profitableratecpmnetwork.com/80507bc8e3d998279cd413247931169e/invoke.js">
+      </script>
+
+      <div
+        id="container-80507bc8e3d998279cd413247931169e">
+      </div>
+
+    </div>
+
+
+    <!-- BOTTOM 320x50 -->
     <div class="below-banner">
 
       <script>
@@ -2559,6 +2719,233 @@ function completeWatchAd() {
 
 
 /* =========================================================
+   ADMIN MANAGED FIREBASE TASKS
+========================================================= */
+
+let firebaseTasks = [];
+
+function escapeFirebaseTaskHtml(value) {
+  return String(value == null ? "" : value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function getFirebaseTaskField(task, snake, camel, fallback) {
+  if (task && task[snake] != null) return task[snake];
+  if (task && task[camel] != null) return task[camel];
+  return fallback;
+}
+
+async function loadFirebaseTasks() {
+
+  const section = document.getElementById("firebaseTasksSection");
+  const list = document.getElementById("firebaseTasksList");
+
+  if (!section || !list) return;
+
+  if (!firebaseAuthReady || !firebaseTaskUser) {
+    section.style.display = "none";
+    return;
+  }
+
+  section.style.display = "block";
+  list.innerHTML = '<div class="firebase-task-empty">Loading tasks...</div>';
+
+  try {
+
+    const snapshot = await firebaseDb
+      .collection("tasks")
+      .get();
+
+    firebaseTasks = snapshot.docs
+      .map(function(doc) {
+        return {
+          id: doc.id,
+          ...(doc.data() || {})
+        };
+      })
+      .filter(function(task) {
+        return String(task.status || "active").toLowerCase() === "active";
+      })
+      .filter(function(task) {
+        const max = Number(getFirebaseTaskField(task, "max_completions", "maxCompletions", 0) || 0);
+        const current = Number(getFirebaseTaskField(task, "current_completions", "currentCompletions", 0) || 0);
+        return max <= 0 || current < max;
+      });
+
+    firebaseTasks.sort(function(a, b) {
+      const aTs = a.createdAt || a.updatedAt || null;
+      const bTs = b.createdAt || b.updatedAt || null;
+      const aTime = aTs && typeof aTs.toMillis === "function" ? aTs.toMillis() : 0;
+      const bTime = bTs && typeof bTs.toMillis === "function" ? bTs.toMillis() : 0;
+      return bTime - aTime;
+    });
+
+    if (!firebaseTasks.length) {
+      list.innerHTML = '<div class="firebase-task-empty">No tasks are available right now.</div>';
+      return;
+    }
+
+    list.innerHTML = firebaseTasks.map(function(task) {
+
+      const id = escapeFirebaseTaskHtml(task.id);
+      const title = escapeFirebaseTaskHtml(task.title || "Untitled Task");
+      const description = escapeFirebaseTaskHtml(task.description || "");
+      const instructions = escapeFirebaseTaskHtml(task.instructions || "");
+      const url = escapeFirebaseTaskHtml(getFirebaseTaskField(task, "task_url", "taskUrl", ""));
+      const proofType = String(getFirebaseTaskField(task, "proof_type", "proofType", "none") || "none").toLowerCase();
+      const reward = Number(task.reward || 0);
+      const max = Number(getFirebaseTaskField(task, "max_completions", "maxCompletions", 0) || 0);
+      const current = Number(getFirebaseTaskField(task, "current_completions", "currentCompletions", 0) || 0);
+
+      const safeId = id.replace(/[^a-zA-Z0-9_-]/g, "_");
+
+      return `
+        <article class="firebase-task-card">
+          <h3>📋 ${title}</h3>
+
+          ${description ? `<p>${description}</p>` : ""}
+
+          <div class="firebase-task-meta">
+            <span class="firebase-task-badge">Reward: ৳${reward.toFixed(2)}</span>
+            <span class="firebase-task-badge">${max > 0 ? "Slots: " + current + " / " + max : "Unlimited"}</span>
+          </div>
+
+          ${instructions ? `<div class="firebase-task-instructions">📝 ${instructions}</div>` : ""}
+
+          <div class="firebase-task-actions">
+            ${url ? `<button class="firebase-task-url-btn" type="button" onclick="openFirebaseTask('${id}')">Open Task</button>` : ""}
+            ${proofType !== "none" ? `<button class="firebase-task-submit-btn" type="button" onclick="showFirebaseTaskProof('${safeId}')">Submit Proof</button>` : ""}
+          </div>
+
+          ${proofType !== "none" ? `
+            <div id="proof-${safeId}" class="firebase-task-proof">
+              ${proofType === "url"
+                ? `<input id="proof-input-${safeId}" type="url" placeholder="Enter proof URL">`
+                : `<textarea id="proof-input-${safeId}" placeholder="Enter your proof"></textarea>`}
+              <button
+                class="firebase-task-url-btn"
+                type="button"
+                style="margin-top:8px;"
+                onclick="submitFirebaseTaskProof('${id}','${safeId}')">
+                Send Proof
+              </button>
+            </div>
+          ` : ""}
+        </article>
+      `;
+
+    }).join("");
+
+  } catch (error) {
+
+    console.error("Firebase task load error:", error);
+
+    list.innerHTML = '<div class="firebase-task-empty">Unable to load tasks. Please refresh.</div>';
+
+  }
+}
+
+function openFirebaseTask(taskId) {
+
+  const task = firebaseTasks.find(function(item) {
+    return item.id === taskId;
+  });
+
+  if (!task) return;
+
+  const url = getFirebaseTaskField(task, "task_url", "taskUrl", "");
+
+  if (!url) {
+    showTaskMessage("This task has no URL.", "error");
+    return;
+  }
+
+  try {
+    const parsed = new URL(url, window.location.href);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+      showTaskMessage("This task URL is not valid.", "error");
+      return;
+    }
+
+    window.open(parsed.href, "_blank", "noopener,noreferrer");
+
+  } catch (error) {
+    showTaskMessage("This task URL is not valid.", "error");
+  }
+}
+
+function showFirebaseTaskProof(safeId) {
+  const box = document.getElementById("proof-" + safeId);
+  if (box) box.style.display = box.style.display === "block" ? "none" : "block";
+}
+
+async function submitFirebaseTaskProof(taskId, safeId) {
+
+  const user = getTaskFirebaseUser();
+
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  const input = document.getElementById("proof-input-" + safeId);
+  const proof = input ? input.value.trim() : "";
+
+  if (!proof) {
+    showTaskMessage("Please enter your proof.", "error");
+    return;
+  }
+
+  const task = firebaseTasks.find(function(item) {
+    return item.id === taskId;
+  });
+
+  if (!task) {
+    showTaskMessage("Task not found.", "error");
+    return;
+  }
+
+  try {
+
+    const duplicate = await firebaseDb
+      .collection("submissions")
+      .where("taskId", "==", taskId)
+      .where("userId", "==", user.uid)
+      .limit(1)
+      .get();
+
+    if (!duplicate.empty) {
+      showTaskMessage("You have already submitted this task.", "error");
+      return;
+    }
+
+    await firebaseDb.collection("submissions").add({
+      taskId: taskId,
+      userId: user.uid,
+      proof: proof,
+      status: "pending",
+      reward: Number(task.reward || 0),
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    showTaskMessage("Proof submitted successfully. It is pending review.", "success");
+
+    input.value = "";
+
+  } catch (error) {
+
+    console.error("Task proof submit error:", error);
+    showTaskMessage("Unable to submit proof. Please try again.", "error");
+
+  }
+}
+
+
+/* =========================================================
    FIREBASE AUTH STATE
 ========================================================= */
 
@@ -2612,6 +2999,10 @@ document.addEventListener(
 
           updateWatchStatus();
 
+          const tasksSection = document.getElementById("firebaseTasksSection");
+          if (tasksSection) {
+            tasksSection.style.display = "none";
+          }
 
           return;
 
@@ -2679,6 +3070,8 @@ document.addEventListener(
 
 
         updateWatchStatus();
+
+        await loadFirebaseTasks();
 
       }
     );

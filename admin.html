@@ -625,7 +625,25 @@
       }
     }
 
-  </style>
+  
+    /* Collapsible admin management sections */
+    .section-toggle-btn {
+      border: 0;
+      border-radius: 12px;
+      padding: 10px 14px;
+      background: #eef5ff;
+      color: #1769c2;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .section-toggle-btn:active { transform: scale(.98); }
+    .collapsible-content { display: none; }
+    .collapsible-content.open { display: block; }
+    .section-header.clickable-header { cursor: pointer; }
+
+</style>
 
 </head>
 
@@ -823,7 +841,7 @@
         <div class="section-header">
 
           <h2 class="section-title">
-            👥 Users
+            👤 User Details
           </h2>
 
           <button
@@ -834,7 +852,9 @@
             Refresh
           </button>
 
-        </div>
+          <button class="section-toggle-btn" type="button" onclick="toggleAdminSection('usersSectionContent')">Show</button>
+
+        </div><div id="usersSectionContent" class="collapsible-content">
 
         <div
           id="usersList"
@@ -845,6 +865,7 @@
             Loading users...
           </div>
 
+        </div>
         </div>
 
       </section>
@@ -857,7 +878,7 @@
         <div class="section-header">
 
           <h2 class="section-title">
-            💳 Withdrawal Requests
+            💳 User’s Withdrawal Request
           </h2>
 
           <button
@@ -868,7 +889,9 @@
             Refresh
           </button>
 
-        </div>
+          <button class="section-toggle-btn" type="button" onclick="toggleAdminSection('withdrawalSectionContent')">Show</button>
+
+        </div><div id="withdrawalSectionContent" class="collapsible-content">
 
 
         <div
@@ -881,6 +904,7 @@
           </div>
 
         </div>
+        </div>
 
       </section>
 
@@ -892,7 +916,7 @@
         <div class="section-header">
 
           <h2 class="section-title">
-            📋 Task Management
+            ➕ Create / Campaign Task
           </h2>
 
           <button
@@ -903,12 +927,14 @@
             Refresh
           </button>
 
-        </div>
+          <button class="section-toggle-btn" type="button" onclick="toggleAdminSection('taskManagementSectionContent')">Show</button>
+
+        </div><div id="taskManagementSectionContent" class="collapsible-content">
 
         <div class="task-manager">
 
           <h3 class="task-manager-title">
-            Create / Edit Task
+            Create / Campaign Task
           </h3>
 
           <p class="task-manager-note">
@@ -1004,6 +1030,7 @@
           </div>
 
         </div>
+        </div>
 
       </section>
 
@@ -1012,12 +1039,14 @@
       <section class="section">
 
         <div class="section-header">
-          <h2 class="section-title">📝 Task Submissions</h2>
+          <h2 class="section-title">📝 User’s Task</h2>
           <button class="refresh-btn" type="button" onclick="loadTaskSubmissions()">Refresh</button>
-        </div>
+          <button class="section-toggle-btn" type="button" onclick="toggleAdminSection('taskSubmissionSectionContent')">Show</button>
+        </div><div id="taskSubmissionSectionContent" class="collapsible-content">
 
         <div id="taskSubmissionsList" class="data-list">
           <div class="loading">Loading task submissions...</div>
+        </div>
         </div>
 
       </section>
@@ -1471,6 +1500,9 @@ async function loadUsers() {
                 Number(
                   data.balance || 0
                 );
+              user.pending_balance = Number(data.pending_balance || 0);
+              user.total_earned = Number(data.total_earned || 0);
+              user.total_withdrawn = Number(data.total_withdrawn || 0);
 
             } else {
 
@@ -1616,11 +1648,31 @@ async function loadUsers() {
 
                     <div class="data-secondary">
 
-                      ${email}
+                      📧 ${email || "No email"}
 
                       <br>
 
-                      UID: ${uid}
+                      🆔 UID: ${uid}
+
+                      <br>
+
+                      👤 Role: ${role}
+
+                      <br>
+
+                      💰 Balance: ৳${balance.toFixed(2)}
+
+                      <br>
+
+                      ⏳ Pending: ৳${Number(user.pending_balance || 0).toFixed(2)}
+
+                      <br>
+
+                      📈 Total earned: ৳${Number(user.total_earned || 0).toFixed(2)}
+
+                      <br>
+
+                      💸 Total withdrawn: ৳${Number(user.total_withdrawn || 0).toFixed(2)}
 
                     </div>
 
@@ -2417,6 +2469,19 @@ async function rejectWithdrawal(
 
 
 /* =========================================================
+   ADMIN COLLAPSIBLE SECTIONS
+========================================================= */
+
+function toggleAdminSection(id) {
+  const box = getElement(id);
+  if (!box) return;
+  const isOpen = box.classList.toggle("open");
+  const section = box.closest("section");
+  const btn = section ? section.querySelector(".section-toggle-btn") : null;
+  if (btn) btn.textContent = isOpen ? "Hide" : "Show";
+}
+
+/* =========================================================
    TASK MANAGEMENT
 ========================================================= */
 
@@ -2552,15 +2617,32 @@ async function approveTaskSubmission(submissionId) {
   if (!adminReady || !adminUser) return;
 
   try {
+    // Resolve legacy submissions that were created without taskId.
+    const submissionRef = firebaseDb.collection("submissions").doc(submissionId);
+    const preSnap = await submissionRef.get();
+    if (!preSnap.exists) throw new Error("SUBMISSION_NOT_FOUND");
+    const preData = preSnap.data() || {};
+    if (String(preData.status || "pending").toLowerCase() !== "pending") {
+      throw new Error("SUBMISSION_ALREADY_REVIEWED");
+    }
+
+    let resolvedTaskId = String(preData.taskId || "").trim();
+    if (!resolvedTaskId) {
+      const title = String(preData.taskTitle || "").trim();
+      if (!title) throw new Error("TASK_ID_MISSING");
+      const matches = await firebaseDb.collection("tasks").where("title", "==", title).get();
+      if (matches.size !== 1) throw new Error("TASK_ID_MISSING_OR_AMBIGUOUS");
+      resolvedTaskId = matches.docs[0].id;
+    }
+
     await firebaseDb.runTransaction(async function(transaction) {
-      const submissionRef = firebaseDb.collection("submissions").doc(submissionId);
       const submissionSnap = await transaction.get(submissionRef);
       if (!submissionSnap.exists) throw new Error("SUBMISSION_NOT_FOUND");
 
       const submission = submissionSnap.data() || {};
       if (String(submission.status || "pending").toLowerCase() !== "pending") throw new Error("SUBMISSION_ALREADY_REVIEWED");
 
-      const taskRef = firebaseDb.collection("tasks").doc(String(submission.taskId || ""));
+      const taskRef = firebaseDb.collection("tasks").doc(resolvedTaskId);
       const taskSnap = await transaction.get(taskRef);
       if (!taskSnap.exists) throw new Error("TASK_NOT_FOUND");
       const task = taskSnap.data() || {};
@@ -2616,7 +2698,7 @@ async function approveTaskSubmission(submissionId) {
 
   } catch (error) {
     console.error("Approve task submission error:", error);
-    showError("Unable to approve task: " + (error.message || "Unknown error"));
+    showError("Unable to approve task: " + ({TASK_ID_MISSING:"This submission has no task ID. TASK_ID_MISSING_OR_AMBIGUOUS means the task title could not uniquely identify the task."}[error.message] || error.message || "Unknown error"));
   }
 }
 

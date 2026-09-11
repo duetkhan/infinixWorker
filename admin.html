@@ -2463,8 +2463,15 @@ async function loadTaskSubmissions() {
     const profiles = {};
     profileSnap.docs.forEach(function(doc) { profiles[doc.id] = doc.data() || {}; });
 
+    // Admin Task Submissions is an action queue, not a permanent history.
+    // Only submissions waiting for admin action are shown here. After
+    // Approve / Sent for revision / Reject, the item disappears automatically
+    // on the next reload. Revision data remains in Firestore so the user can
+    // see the reason and resubmit, but it is not shown in this admin queue.
     const submissions = submissionSnap.docs.map(function(doc) {
       return { id: doc.id, ...(doc.data() || {}) };
+    }).filter(function(item) {
+      return String(item.status || "pending").toLowerCase() === "pending";
     });
 
     submissions.sort(function(a, b) {

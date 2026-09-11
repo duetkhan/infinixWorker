@@ -558,6 +558,63 @@
       display: none;
     }
 
+
+    .submission-proof-image {
+      display: block;
+      width: 100%;
+      max-height: 300px;
+      object-fit: contain;
+      background: #f4f7fb;
+      border-radius: 12px;
+      margin-top: 8px;
+      cursor: pointer;
+    }
+
+    .submission-proof-text {
+      margin-top: 8px;
+      padding: 10px;
+      background: #f7f9fc;
+      border-radius: 10px;
+      color: #596579;
+      font-size: 12px;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    .submission-reason {
+      width: 100%;
+      min-height: 70px;
+      margin-top: 9px;
+      padding: 10px;
+      border: 1px solid #dfe5ee;
+      border-radius: 10px;
+      resize: vertical;
+      font: inherit;
+      font-size: 12px;
+      box-sizing: border-box;
+    }
+
+    .submission-action-row {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .submission-action-btn {
+      border: 0;
+      border-radius: 10px;
+      padding: 9px 11px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .submission-action-btn.approve { background:#eaf8f1; color:#14754b; }
+    .submission-action-btn.revision { background:#fff7e6; color:#9a6500; }
+    .submission-action-btn.reject { background:#fff0f0; color:#b33b3b; }
+    .submission-action-btn:disabled { opacity:.55; cursor:not-allowed; }
+
     @media (max-width: 430px) {
       .task-form-grid {
         grid-template-columns: 1fr;
@@ -938,6 +995,21 @@
             Loading tasks...
           </div>
 
+        </div>
+
+      </section>
+
+
+      <!-- TASK SUBMISSIONS -->
+      <section class="section">
+
+        <div class="section-header">
+          <h2 class="section-title">📝 Task Submissions</h2>
+          <button class="refresh-btn" type="button" onclick="loadTaskSubmissions()">Refresh</button>
+        </div>
+
+        <div id="taskSubmissionsList" class="data-list">
+          <div class="loading">Loading task submissions...</div>
         </div>
 
       </section>
@@ -2346,7 +2418,229 @@ function resetTaskForm() {
 
   editingTaskId = null;
 
-  getElement("taskForm").reset();
+  
+/* =========================================================
+   TASK SUBMISSION REVIEW
+========================================================= */
+
+async function loadTaskSubmissions() {
+
+  if (!adminReady) return;
+
+  const list = getElement("taskSubmissionsList");
+  if (!list) return;
+
+  list.innerHTML = '<div class="loading">Loading task submissions...</div>';
+
+  try {
+    const [submissionSnap, taskSnap, profileSnap] = await Promise.all([
+      firebaseDb.collection("submissions").get(),
+      firebaseDb.collection("tasks").get(),
+      firebaseDb.collection("profiles").get()
+    ]);
+
+    const tasks = {};
+    taskSnap.docs.forEach(function(doc) { tasks[doc.id] = doc.data() || {}; });
+
+    const profiles = {};
+    profileSnap.docs.forEach(function(doc) { profiles[doc.id] = doc.data() || {}; });
+
+    const submissions = submissionSnap.docs.map(function(doc) {
+      return { id: doc.id, ...(doc.data() || {}) };
+    });
+
+    submissions.sort(function(a, b) {
+      const aTs = a.createdAt || a.submittedAt || null;
+      const bTs = b.createdAt || b.submittedAt || null;
+      const aTime = aTs && typeof aTs.toMillis === "function" ? aTs.toMillis() : 0;
+      const bTime = bTs && typeof bTs.toMillis === "function" ? bTs.toMillis() : 0;
+      return bTime - aTime;
+    });
+
+    if (!submissions.length) {
+      list.innerHTML = '<div class="empty"><div class="empty-icon">📝</div>No task submissions yet.</div>';
+      return;
+    }
+
+    list.innerHTML = submissions.map(function(item) {
+      const task = tasks[item.taskId] || {};
+      const profile = profiles[item.userId] || {};
+      const title = escapeHtml(item.taskTitle || task.title || "Task");
+      const username = escapeHtml(item.username || profile.username || "User");
+      const email = escapeHtml(item.userEmail || profile.email || "");
+      const uid = escapeHtml(item.userId || "");
+      const status = String(item.status || "pending");
+      const lower = status.toLowerCase();
+      const reason = escapeHtml(item.reason || "");
+      const proof = escapeHtml(item.proof || "");
+      const date = escapeHtml(formatDate(item.createdAt || item.submittedAt));
+      const id = escapeHtml(item.id);
+      const image = item.proofImage ? `<img class="submission-proof-image" src="${item.proofImage}" alt="Task proof screenshot" onclick="window.open(this.src,'_blank')">` : "";
+
+      return `
+        <div class="data-row">
+          <div class="data-main">
+            <div>
+              <div class="data-name">📋 ${title}</div>
+              <div class="withdraw-details">
+                👤 Username: <strong>${username}</strong><br>
+                📧 Email: <strong>${email || "Not available"}</strong><br>
+                🆔 UID: <strong>${uid || "Not available"}</strong><br>
+                📅 Submitted: <strong>${date}</strong><br>
+                🔎 Proof type: <strong>${escapeHtml(item.proofType || "none")}</strong>
+              </div>
+              ${proof ? `<div class="submission-proof-text"><strong>Proof:</strong><br>${proof}</div>` : ""}
+              ${image}
+              ${reason ? `<div class="submission-proof-text"><strong>Previous admin reason:</strong><br>${reason}</div>` : ""}
+            </div>
+          </div>
+          <span class="status ${lower === "approved" ? "approved" : lower === "rejected" ? "rejected" : lower === "revision" ? "" : ""}">${escapeHtml(status)}</span>
+          ${lower === "pending" ? `
+            <textarea id="submission-reason-${id}" class="submission-reason" placeholder="Reason for revision or rejection"></textarea>
+            <div class="submission-action-row">
+              <button class="submission-action-btn approve" type="button" onclick="approveTaskSubmission('${id}')">Approve</button>
+              <button class="submission-action-btn revision" type="button" onclick="sendTaskSubmissionRevision('${id}')">Sent for revision</button>
+              <button class="submission-action-btn reject" type="button" onclick="rejectTaskSubmission('${id}')">Reject</button>
+            </div>
+          ` : ""}
+        </div>
+      `;
+    }).join("");
+
+  } catch (error) {
+    console.error("Task submissions load error:", error);
+    list.innerHTML = '<div class="empty">Unable to load task submissions.</div>';
+    showError("Task submissions: " + (error.message || "Unable to load submissions."));
+  }
+}
+
+async function approveTaskSubmission(submissionId) {
+  if (!adminReady || !adminUser) return;
+
+  try {
+    await firebaseDb.runTransaction(async function(transaction) {
+      const submissionRef = firebaseDb.collection("submissions").doc(submissionId);
+      const submissionSnap = await transaction.get(submissionRef);
+      if (!submissionSnap.exists) throw new Error("SUBMISSION_NOT_FOUND");
+
+      const submission = submissionSnap.data() || {};
+      if (String(submission.status || "pending").toLowerCase() !== "pending") throw new Error("SUBMISSION_ALREADY_REVIEWED");
+
+      const taskRef = firebaseDb.collection("tasks").doc(String(submission.taskId || ""));
+      const taskSnap = await transaction.get(taskRef);
+      if (!taskSnap.exists) throw new Error("TASK_NOT_FOUND");
+      const task = taskSnap.data() || {};
+
+      const reward = Number(task.reward || submission.reward || 0);
+      const userId = String(submission.userId || "");
+      if (!userId) throw new Error("USER_NOT_FOUND");
+
+      const walletRef = firebaseDb.collection("wallets").doc(userId);
+      const profileRef = firebaseDb.collection("profiles").doc(userId);
+      const walletSnap = await transaction.get(walletRef);
+      const profileSnap = await transaction.get(profileRef);
+
+      const wallet = walletSnap.exists ? (walletSnap.data() || {}) : {};
+      const currentBalance = Number(wallet.balance || 0);
+      const newBalance = Number((currentBalance + reward).toFixed(2));
+      const currentCompletions = Number(task.current_completions || 0);
+
+      if (walletSnap.exists) {
+        transaction.update(walletRef, { balance: newBalance });
+      } else {
+        transaction.set(walletRef, {
+          userId: userId,
+          balance: newBalance,
+          pending_balance: Number(wallet.pending_balance || 0),
+          total_earned: Number(wallet.total_earned || 0) + reward,
+          total_withdrawn: Number(wallet.total_withdrawn || 0)
+        });
+      }
+
+      if (profileSnap.exists) {
+        transaction.update(profileRef, { balance: newBalance });
+      }
+
+      transaction.update(taskRef, {
+        current_completions: currentCompletions + 1,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      transaction.update(submissionRef, {
+        status: "approved",
+        approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        approvedBy: adminUser.uid,
+        reason: "",
+        proofImage: firebase.firestore.FieldValue.delete()
+      });
+    });
+
+    alert("Task approved and reward added.");
+    await loadTaskSubmissions();
+    await loadUsers();
+    await loadTasks();
+
+  } catch (error) {
+    console.error("Approve task submission error:", error);
+    showError("Unable to approve task: " + (error.message || "Unknown error"));
+  }
+}
+
+async function sendTaskSubmissionRevision(submissionId) {
+  if (!adminReady) return;
+  const box = getElement("submission-reason-" + submissionId);
+  const reason = box ? box.value.trim() : "";
+  if (!reason) {
+    showError("Please write a reason before sending the task for revision.");
+    return;
+  }
+
+  try {
+    await firebaseDb.collection("submissions").doc(submissionId).update({
+      status: "revision",
+      reason: reason,
+      reviewedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      reviewedBy: adminUser.uid,
+      proofImage: firebase.firestore.FieldValue.delete()
+    });
+
+    alert("Task sent for revision.");
+    await loadTaskSubmissions();
+
+  } catch (error) {
+    console.error("Revision error:", error);
+    showError("Unable to send for revision: " + (error.message || "Unknown error"));
+  }
+}
+
+async function rejectTaskSubmission(submissionId) {
+  if (!adminReady) return;
+  const box = getElement("submission-reason-" + submissionId);
+  const reason = box ? box.value.trim() : "";
+  if (!reason) {
+    showError("Please write a reason before rejecting the task.");
+    return;
+  }
+
+  try {
+    await firebaseDb.collection("submissions").doc(submissionId).update({
+      status: "rejected",
+      reason: reason,
+      rejectedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      rejectedBy: adminUser.uid,
+      proofImage: firebase.firestore.FieldValue.delete()
+    });
+
+    alert("Task rejected.");
+    await loadTaskSubmissions();
+
+  } catch (error) {
+    console.error("Reject task submission error:", error);
+    showError("Unable to reject task: " + (error.message || "Unknown error"));
+  }
+}
+
+getElement("taskForm").reset();
 
   getElement("taskReward").value = "0";
   getElement("taskMax").value = "0";
@@ -2510,6 +2804,8 @@ async function saveTask(event) {
 
     resetTaskForm();
     await loadTasks();
+
+    await loadTaskSubmissions();
 
   } catch (error) {
 

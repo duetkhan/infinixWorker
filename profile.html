@@ -371,73 +371,12 @@
         Minimum withdrawal: ৳510
       </div>
 
-
-      <div class="form-group">
-
-        <label for="method">
-          Payment Method
-        </label>
-
-        <select id="method">
-
-          <option value="bKash">
-            bKash
-          </option>
-
-          <option value="Nagad">
-            Nagad
-          </option>
-
-        </select>
-
-      </div>
-
-
-      <div class="form-group">
-
-        <label for="account">
-          Account Number
-        </label>
-
-        <input
-          id="account"
-          type="text"
-          inputmode="numeric"
-          placeholder="Enter payment account number"
-        >
-
-      </div>
-
-
-      <div class="form-group">
-
-        <label for="amount">
-          Amount
-        </label>
-
-        <input
-          id="amount"
-          type="number"
-          min="510"
-          step="0.01"
-          placeholder="Enter amount"
-        >
-
-      </div>
-
-
       <button
         class="profile-btn"
         type="button"
-        onclick="submitWithdraw()">
-        Submit Withdraw
+        onclick="openWithdrawPage()">
+        Request Withdraw
       </button>
-
-
-      <div
-        id="withdrawMessage"
-        class="message">
-      </div>
 
     </section>
 
@@ -1175,13 +1114,12 @@ function escapeHtmlSafe(value) {
 
 
 /* =========================================================
-   WITHDRAW
+   REQUEST WITHDRAW
    ---------------------------------------------------------
-   Firebase withdrawal transaction will be connected in
-   the dedicated withdrawal migration step.
+   The actual withdrawal form is handled on withdraw.html.
 ========================================================= */
 
-function submitWithdraw() {
+function openWithdrawPage() {
 
   const user =
     firebaseProfileUser ||
@@ -1199,10 +1137,8 @@ function submitWithdraw() {
   }
 
 
-  showWithdrawMessage(
-    "Withdrawal system is being connected to Firebase. Please try again after the withdrawal migration is completed.",
-    false
-  );
+  window.location.href =
+    "withdraw.html";
 
 }
 

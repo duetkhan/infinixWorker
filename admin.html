@@ -2418,7 +2418,25 @@ function resetTaskForm() {
 
   editingTaskId = null;
 
-  
+  getElement("taskForm").reset();
+
+  getElement("taskReward").value = "0";
+  getElement("taskMax").value = "0";
+  getElement("taskProofType").value = "none";
+  getElement("taskStatus").value = "active";
+
+  getElement("taskSaveBtn").textContent =
+    "Add Task";
+
+  getElement("taskCancelBtn").style.display =
+    "none";
+
+  getElement("taskEditing").style.display =
+    "none";
+
+}
+
+
 /* =========================================================
    TASK SUBMISSION REVIEW
 ========================================================= */
@@ -2638,24 +2656,6 @@ async function rejectTaskSubmission(submissionId) {
     console.error("Reject task submission error:", error);
     showError("Unable to reject task: " + (error.message || "Unknown error"));
   }
-}
-
-getElement("taskForm").reset();
-
-  getElement("taskReward").value = "0";
-  getElement("taskMax").value = "0";
-  getElement("taskProofType").value = "none";
-  getElement("taskStatus").value = "active";
-
-  getElement("taskSaveBtn").textContent =
-    "Add Task";
-
-  getElement("taskCancelBtn").style.display =
-    "none";
-
-  getElement("taskEditing").style.display =
-    "none";
-
 }
 
 function cancelTaskEdit() {

@@ -426,6 +426,148 @@
 
     }
 
+
+
+    /* TASK MANAGEMENT */
+
+    .task-manager {
+      background: #f8faff;
+      border: 1px solid #e3eaf5;
+      border-radius: 15px;
+      padding: 13px;
+      margin-bottom: 15px;
+    }
+
+    .task-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .task-field {
+      margin-bottom: 10px;
+    }
+
+    .task-field.full {
+      grid-column: 1 / -1;
+    }
+
+    .task-field label {
+      display: block;
+      margin-bottom: 5px;
+      color: #4d586b;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .task-field input,
+    .task-field textarea,
+    .task-field select {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #dce4ef;
+      border-radius: 10px;
+      background: #fff;
+      color: #20283a;
+      padding: 10px;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .task-field textarea {
+      min-height: 72px;
+      resize: vertical;
+    }
+
+    .task-field input:focus,
+    .task-field textarea:focus,
+    .task-field select:focus {
+      border-color: #1769e0;
+      box-shadow: 0 0 0 3px rgba(23,105,224,.08);
+    }
+
+    .task-form-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .task-save-btn,
+    .task-cancel-btn,
+    .task-action-btn {
+      border: 0;
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .task-save-btn {
+      background: #1769e0;
+      color: #fff;
+    }
+
+    .task-cancel-btn {
+      background: #eaf2ff;
+      color: #1769e0;
+      display: none;
+    }
+
+    .task-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 11px;
+    }
+
+    .task-action-btn {
+      background: #eaf2ff;
+      color: #1769e0;
+    }
+
+    .task-action-btn.danger {
+      background: #fff0f0;
+      color: #b33b3b;
+    }
+
+    .task-action-btn.success {
+      background: #eaf8f1;
+      color: #14754b;
+    }
+
+    .task-manager-title {
+      margin: 0 0 4px;
+      color: #20283a;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .task-manager-note {
+      margin: 0 0 12px;
+      color: #7a8495;
+      font-size: 10px;
+      line-height: 1.45;
+    }
+
+    .task-editing {
+      color: #1769e0;
+      font-size: 10px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      display: none;
+    }
+
+    @media (max-width: 430px) {
+      .task-form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .task-field.full {
+        grid-column: auto;
+      }
+    }
+
   </style>
 
 </head>
@@ -686,14 +828,14 @@
       </section>
 
 
-      <!-- TASKS -->
+      <!-- TASK MANAGEMENT -->
 
       <section class="section">
 
         <div class="section-header">
 
           <h2 class="section-title">
-            📋 Tasks
+            📋 Task Management
           </h2>
 
           <button
@@ -706,6 +848,86 @@
 
         </div>
 
+        <div class="task-manager">
+
+          <h3 class="task-manager-title">
+            Create / Edit Task
+          </h3>
+
+          <p class="task-manager-note">
+            Create tasks for the Firebase task collection. Existing earning systems are not changed by this manager.
+          </p>
+
+          <div id="taskEditing" class="task-editing">
+            Editing existing task...
+          </div>
+
+          <form id="taskForm">
+
+            <div class="task-form-grid">
+
+              <div class="task-field full">
+                <label for="taskTitle">Task title *</label>
+                <input id="taskTitle" type="text" maxlength="120" required placeholder="e.g. Visit Website & Earn">
+              </div>
+
+              <div class="task-field full">
+                <label for="taskDescription">Description</label>
+                <textarea id="taskDescription" maxlength="500" placeholder="Short description shown to users"></textarea>
+              </div>
+
+              <div class="task-field full">
+                <label for="taskInstructions">Instructions</label>
+                <textarea id="taskInstructions" maxlength="2000" placeholder="Step-by-step task instructions"></textarea>
+              </div>
+
+              <div class="task-field full">
+                <label for="taskUrl">Task URL</label>
+                <input id="taskUrl" type="url" placeholder="https://example.com">
+              </div>
+
+              <div class="task-field">
+                <label for="taskReward">Reward</label>
+                <input id="taskReward" type="number" min="0" step="0.01" value="0" inputmode="decimal">
+              </div>
+
+              <div class="task-field">
+                <label for="taskMax">Max completions (0 = unlimited)</label>
+                <input id="taskMax" type="number" min="0" step="1" value="0" inputmode="numeric">
+              </div>
+
+              <div class="task-field">
+                <label for="taskProofType">Proof type</label>
+                <select id="taskProofType">
+                  <option value="none">None</option>
+                  <option value="text">Text</option>
+                  <option value="url">URL</option>
+                  <option value="image">Image</option>
+                </select>
+              </div>
+
+              <div class="task-field">
+                <label for="taskStatus">Status</label>
+                <select id="taskStatus">
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+
+            </div>
+
+            <div class="task-form-actions">
+              <button class="task-save-btn" type="submit" id="taskSaveBtn">
+                Add Task
+              </button>
+              <button class="task-cancel-btn" type="button" id="taskCancelBtn" onclick="cancelTaskEdit()">
+                Cancel
+              </button>
+            </div>
+
+          </form>
+
+        </div>
 
         <div
           id="tasksList"
@@ -2115,8 +2337,274 @@ async function rejectWithdrawal(
 
 
 /* =========================================================
-   TASKS
+   TASK MANAGEMENT
 ========================================================= */
+
+let editingTaskId = null;
+
+function resetTaskForm() {
+
+  editingTaskId = null;
+
+  getElement("taskForm").reset();
+
+  getElement("taskReward").value = "0";
+  getElement("taskMax").value = "0";
+  getElement("taskProofType").value = "none";
+  getElement("taskStatus").value = "active";
+
+  getElement("taskSaveBtn").textContent =
+    "Add Task";
+
+  getElement("taskCancelBtn").style.display =
+    "none";
+
+  getElement("taskEditing").style.display =
+    "none";
+
+}
+
+function cancelTaskEdit() {
+  resetTaskForm();
+}
+
+function startTaskEdit(task) {
+
+  editingTaskId = task.id;
+
+  getElement("taskTitle").value =
+    task.title || "";
+
+  getElement("taskDescription").value =
+    task.description || "";
+
+  getElement("taskInstructions").value =
+    task.instructions || "";
+
+  getElement("taskUrl").value =
+    task.task_url || task.taskUrl || "";
+
+  getElement("taskReward").value =
+    Number(task.reward || 0);
+
+  getElement("taskMax").value =
+    Number(task.max_completions || 0);
+
+  getElement("taskProofType").value =
+    task.proof_type || task.proofType || "none";
+
+  getElement("taskStatus").value =
+    task.status || "active";
+
+  getElement("taskSaveBtn").textContent =
+    "Update Task";
+
+  getElement("taskCancelBtn").style.display =
+    "inline-block";
+
+  getElement("taskEditing").textContent =
+    "Editing: " + (task.title || "Untitled task");
+
+  getElement("taskEditing").style.display =
+    "block";
+
+  window.scrollTo({
+    top: document.body.scrollHeight,
+    behavior: "smooth"
+  });
+
+}
+
+async function saveTask(event) {
+
+  event.preventDefault();
+
+  if (!adminReady || !adminUser) {
+    showError("Administrator access is required.");
+    return;
+  }
+
+  const title =
+    getElement("taskTitle").value.trim();
+
+  const description =
+    getElement("taskDescription").value.trim();
+
+  const instructions =
+    getElement("taskInstructions").value.trim();
+
+  const taskUrl =
+    getElement("taskUrl").value.trim();
+
+  const reward =
+    Number(getElement("taskReward").value || 0);
+
+  const maxCompletions =
+    Number(getElement("taskMax").value || 0);
+
+  const proofType =
+    getElement("taskProofType").value;
+
+  const status =
+    getElement("taskStatus").value;
+
+  if (!title) {
+    showError("Task title is required.");
+    return;
+  }
+
+  if (!Number.isFinite(reward) || reward < 0) {
+    showError("Reward must be 0 or greater.");
+    return;
+  }
+
+  if (!Number.isInteger(maxCompletions) || maxCompletions < 0) {
+    showError("Max completions must be a whole number of 0 or greater.");
+    return;
+  }
+
+  const saveBtn =
+    getElement("taskSaveBtn");
+
+  saveBtn.disabled = true;
+  saveBtn.textContent =
+    editingTaskId ? "Updating..." : "Saving...";
+
+  try {
+
+    const taskData = {
+      title: title,
+      description: description,
+      instructions: instructions,
+      reward: Number(reward.toFixed(2)),
+      task_url: taskUrl,
+      proof_type: proofType,
+      max_completions: maxCompletions,
+      status: status,
+      updatedAt:
+        firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    if (editingTaskId) {
+
+      await firebaseDb
+        .collection("tasks")
+        .doc(editingTaskId)
+        .update(taskData);
+
+      showError("Task updated successfully.");
+
+    } else {
+
+      taskData.current_completions = 0;
+      taskData.createdAt =
+        firebase.firestore.FieldValue.serverTimestamp();
+
+      await firebaseDb
+        .collection("tasks")
+        .add(taskData);
+
+      showError("Task created successfully.");
+
+    }
+
+    resetTaskForm();
+    await loadTasks();
+
+  } catch (error) {
+
+    console.error("Task save error:", error);
+
+    showError(
+      "Unable to save task: " +
+      (error.message || "Unknown error")
+    );
+
+  } finally {
+
+    saveBtn.disabled = false;
+
+    if (editingTaskId) {
+      saveBtn.textContent = "Update Task";
+    } else {
+      saveBtn.textContent = "Add Task";
+    }
+
+  }
+
+}
+
+async function toggleTaskStatus(taskId, currentStatus) {
+
+  if (!adminReady) return;
+
+  const nextStatus =
+    String(currentStatus || "active").toLowerCase() === "active"
+      ? "inactive"
+      : "active";
+
+  try {
+
+    await firebaseDb
+      .collection("tasks")
+      .doc(taskId)
+      .update({
+        status: nextStatus,
+        updatedAt:
+          firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+    await loadTasks();
+
+  } catch (error) {
+
+    console.error("Task status error:", error);
+
+    showError(
+      "Unable to change task status: " +
+      (error.message || "Unknown error")
+    );
+
+  }
+
+}
+
+async function deleteTask(taskId) {
+
+  if (!adminReady) return;
+
+  const confirmed =
+    window.confirm(
+      "Delete this task permanently? This cannot be undone."
+    );
+
+  if (!confirmed) return;
+
+  try {
+
+    await firebaseDb
+      .collection("tasks")
+      .doc(taskId)
+      .delete();
+
+    if (editingTaskId === taskId) {
+      resetTaskForm();
+    }
+
+    await loadTasks();
+
+  } catch (error) {
+
+    console.error("Task delete error:", error);
+
+    showError(
+      "Unable to delete task: " +
+      (error.message || "Unknown error")
+    );
+
+  }
+
+}
 
 async function loadTasks() {
 
@@ -2124,203 +2612,188 @@ async function loadTasks() {
     return;
   }
 
-
   const list =
     getElement("tasksList");
 
-
   list.innerHTML = `
-
     <div class="loading">
       Loading tasks...
     </div>
-
   `;
-
 
   try {
 
     const snapshot =
       await firebaseDb
-
         .collection("tasks")
-
         .get();
 
-
     const tasks =
-      snapshot.docs
+      snapshot.docs.map(function(doc) {
+        return {
+          id: doc.id,
+          ...(doc.data() || {})
+        };
+      });
 
-        .map(
-          function(doc) {
+    tasks.sort(function(a, b) {
 
-            return {
+      const aTimestamp =
+        a.createdAt || a.updatedAt || null;
 
-              id: doc.id,
+      const bTimestamp =
+        b.createdAt || b.updatedAt || null;
 
-              ...(doc.data() || {})
+      const aTime =
+        aTimestamp &&
+        typeof aTimestamp.toMillis === "function"
+          ? aTimestamp.toMillis()
+          : 0;
 
-            };
+      const bTime =
+        bTimestamp &&
+        typeof bTimestamp.toMillis === "function"
+          ? bTimestamp.toMillis()
+          : 0;
 
-          }
-        );
+      return bTime - aTime;
 
+    });
 
-    tasks.sort(
-      function(a, b) {
-
-        const aTime =
-          a.createdAt &&
-          typeof a.createdAt.toMillis ===
-          "function"
-
-            ? a.createdAt.toMillis()
-
-            : 0;
-
-
-        const bTime =
-          b.createdAt &&
-          typeof b.createdAt.toMillis ===
-          "function"
-
-            ? b.createdAt.toMillis()
-
-            : 0;
-
-
-        return bTime - aTime;
-
-      }
-    );
-
-
-    getElement("tasksCount")
-      .textContent =
+    getElement("tasksCount").textContent =
       tasks.length;
-
 
     if (!tasks.length) {
 
       list.innerHTML = `
-
         <div class="empty">
-
-          <div class="empty-icon">
-            📋
-          </div>
-
+          <div class="empty-icon">📋</div>
           No Firebase tasks found yet.
-
         </div>
-
       `;
 
       return;
-
     }
 
+    list.innerHTML = tasks.map(function(task) {
 
-    list.innerHTML =
+      const title = escapeHtml(
+        task.title || "Untitled task"
+      );
 
-      tasks
+      const description = escapeHtml(
+        task.description || ""
+      );
 
-        .map(
-          function(task) {
+      const instructions = escapeHtml(
+        task.instructions || ""
+      );
 
-            const title =
-              escapeHtml(
-                task.title ||
-                "Untitled task"
-              );
+      const taskUrl = escapeHtml(
+        task.task_url || task.taskUrl || ""
+      );
 
+      const reward = Number(
+        task.reward || 0
+      );
 
-            const description =
-              escapeHtml(
-                task.description ||
-                ""
-              );
+      const status = String(
+        task.status || "active"
+      );
 
+      const lowerStatus =
+        status.toLowerCase();
 
-            const reward =
-              Number(
-                task.reward || 0
-              );
+      const completed = Number(
+        task.current_completions || 0
+      );
 
+      const max = Number(
+        task.max_completions || 0
+      );
 
-            const status =
-              escapeHtml(
-                task.status ||
-                "active"
-              );
+      const proofType = escapeHtml(
+        task.proof_type || task.proofType || "none"
+      );
 
+      const id = escapeHtml(task.id);
 
-            const completed =
-              Number(
-                task.current_completions ||
-                0
-              );
+      return `
+        <div class="data-row">
 
+          <div class="data-main">
 
-            const max =
-              Number(
-                task.max_completions ||
-                0
-              );
+            <div>
 
-
-            return `
-
-              <div class="data-row">
-
-                <div class="data-main">
-
-                  <div>
-
-                    <div class="data-name">
-                      ${title}
-                    </div>
-
-                    <div class="data-secondary">
-                      ${description}
-                    </div>
-
-                  </div>
-
-                  <div class="data-amount">
-                    ${reward.toFixed(2)}
-                  </div>
-
-                </div>
-
-
-                <span class="status">
-                  ${status}
-                </span>
-
-
-                <div class="data-secondary">
-
-                  Completions:
-                  ${completed}
-
-                  ${
-                    max > 0
-                      ? " / " + max
-                      : ""
-                  }
-
-                </div>
-
+              <div class="data-name">
+                📋 ${title}
               </div>
 
-            `;
+              <div class="data-secondary">
+                ${description || "No description"}
+              </div>
 
-          }
-        )
+              ${
+                instructions
+                  ? `<div class="data-secondary">📝 ${instructions}</div>`
+                  : ""
+              }
 
-        .join("");
+              ${
+                taskUrl
+                  ? `<div class="data-secondary">🔗 ${taskUrl}</div>`
+                  : ""
+              }
 
+              <div class="data-secondary">
+                Proof: ${proofType}
+                · Completions: ${completed}${max > 0 ? " / " + max : " / Unlimited"}
+              </div>
+
+            </div>
+
+            <div class="data-amount">
+              ৳${reward.toFixed(2)}
+            </div>
+
+          </div>
+
+          <span class="status ${lowerStatus === "active" ? "approved" : "rejected"}">
+            ${escapeHtml(status)}
+          </span>
+
+          <div class="task-actions">
+
+            <button
+              class="task-action-btn"
+              type="button"
+              onclick='startTaskEdit(${JSON.stringify(task).replace(/'/g, "&#039;")})'
+            >
+              Edit
+            </button>
+
+            <button
+              class="task-action-btn ${lowerStatus === "active" ? "" : "success"}"
+              type="button"
+              onclick="toggleTaskStatus('${id}', '${escapeHtml(status).replace(/'/g, "&#039;")}')"
+            >
+              ${lowerStatus === "active" ? "Disable" : "Activate"}
+            </button>
+
+            <button
+              class="task-action-btn danger"
+              type="button"
+              onclick="deleteTask('${id}')"
+            >
+              Delete
+            </button>
+
+          </div>
+
+        </div>
+      `;
+
+    }).join("");
 
   } catch (error) {
 
@@ -2329,18 +2802,23 @@ async function loadTasks() {
       error
     );
 
-
     list.innerHTML = `
-
       <div class="empty">
-        No Firebase tasks found yet.
+        Unable to load Firebase tasks.
       </div>
-
     `;
+
+    showError(
+      "Tasks: " +
+      (error.message || "Unable to load tasks.")
+    );
 
   }
 
 }
+
+getElement("taskForm")
+  .addEventListener("submit", saveTask);
 
 
 /* =========================================================

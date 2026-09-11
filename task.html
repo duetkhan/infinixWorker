@@ -496,7 +496,73 @@
       box-shadow: 0 6px 20px rgba(25,35,60,.08);
     }
 
-  </style>
+  
+    .firebase-my-submissions {
+      margin-top: 15px;
+    }
+
+    .my-submission-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 10px;
+      box-shadow: 0 6px 20px rgba(25,35,60,.08);
+    }
+
+    .my-submission-title {
+      color: #20283a;
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .my-submission-status {
+      display: inline-block;
+      border-radius: 10px;
+      padding: 6px 9px;
+      font-size: 11px;
+      font-weight: 800;
+      background: #eef3fb;
+      color: #586579;
+      margin-bottom: 8px;
+    }
+
+    .my-submission-status.approved { background:#eaf8f1; color:#14754b; }
+    .my-submission-status.revision { background:#fff7e6; color:#9a6500; }
+    .my-submission-status.rejected { background:#fff0f0; color:#b33b3b; }
+
+    .my-submission-reason {
+      background: #f7f9fc;
+      border-radius: 11px;
+      padding: 10px;
+      color: #5d687a;
+      font-size: 12px;
+      line-height: 1.5;
+      margin-bottom: 9px;
+    }
+
+    .firebase-proof-preview {
+      margin-top: 8px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .firebase-proof-preview img {
+      display: block;
+      width: 100%;
+      max-height: 260px;
+      object-fit: contain;
+      background: #f4f7fb;
+    }
+
+    .proof-upload-note {
+      margin-top: 7px;
+      color: #748095;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+</style>
 </head>
 
 <body>
@@ -698,6 +764,22 @@
       <div id="firebaseTasksList">
         <div class="firebase-task-empty">
           Loading tasks...
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- MY TASK SUBMISSIONS -->
+    <section
+      id="myTaskSubmissions"
+      class="firebase-my-submissions"
+      style="display:none;">
+
+      <div class="firebase-tasks-header">
+        <div>
+          <h2>📝 My Task Submissions</h2>
+          <p>Check approval status and admin revision/rejection reasons.</p>
         </div>
       </div>
 
@@ -2839,10 +2921,11 @@ function completeWatchAd() {
 
 
 /* =========================================================
-   ADMIN MANAGED FIREBASE TASKS
+   ADMIN MANAGED FIREBASE TASKS + PROOF SUBMISSIONS
 ========================================================= */
 
 let firebaseTasks = [];
+let firebaseTaskSubmissions = [];
 
 function escapeFirebaseTaskHtml(value) {
   return String(value == null ? "" : value)
@@ -2857,6 +2940,12 @@ function getFirebaseTaskField(task, snake, camel, fallback) {
   if (task && task[snake] != null) return task[snake];
   if (task && task[camel] != null) return task[camel];
   return fallback;
+}
+
+function idSafeForJs(value) {
+  return String(value == null ? "" : value)
+    .replace(/\\/g, "\\\\")
+    .replace(/'/g, "\\'");
 }
 
 async function loadFirebaseTasks() {
@@ -2875,26 +2964,17 @@ async function loadFirebaseTasks() {
   list.innerHTML = '<div class="firebase-task-empty">Loading tasks...</div>';
 
   try {
+    const snapshot = await firebaseDb.collection("tasks").get();
 
-    const snapshot = await firebaseDb
-      .collection("tasks")
-      .get();
-
-    firebaseTasks = snapshot.docs
-      .map(function(doc) {
-        return {
-          id: doc.id,
-          ...(doc.data() || {})
-        };
-      })
-      .filter(function(task) {
-        return String(task.status || "active").toLowerCase() === "active";
-      })
-      .filter(function(task) {
-        const max = Number(getFirebaseTaskField(task, "max_completions", "maxCompletions", 0) || 0);
-        const current = Number(getFirebaseTaskField(task, "current_completions", "currentCompletions", 0) || 0);
-        return max <= 0 || current < max;
-      });
+    firebaseTasks = snapshot.docs.map(function(doc) {
+      return { id: doc.id, ...(doc.data() || {}) };
+    }).filter(function(task) {
+      return String(task.status || "active").toLowerCase() === "active";
+    }).filter(function(task) {
+      const max = Number(getFirebaseTaskField(task, "max_completions", "maxCompletions", 0) || 0);
+      const current = Number(getFirebaseTaskField(task, "current_completions", "currentCompletions", 0) || 0);
+      return max <= 0 || current < max;
+    });
 
     firebaseTasks.sort(function(a, b) {
       const aTs = a.createdAt || a.updatedAt || null;
@@ -2906,343 +2986,362 @@ async function loadFirebaseTasks() {
 
     if (!firebaseTasks.length) {
       list.innerHTML = '<div class="firebase-task-empty">No tasks are available right now.</div>';
+      await loadMyTaskSubmissions();
       return;
     }
 
     list.innerHTML = firebaseTasks.map(function(task) {
-
       const id = escapeFirebaseTaskHtml(task.id);
       const title = escapeFirebaseTaskHtml(task.title || "Untitled Task");
       const safeId = id.replace(/[^a-zA-Z0-9_-]/g, "_");
-
       return `
-        <button
-          class="firebase-task-title-btn"
-          type="button"
-          onclick="showFirebaseTaskDetails('${id}')">
+        <button class="firebase-task-title-btn" type="button" onclick="showFirebaseTaskDetails('${id}')">
           <span>📋 ${title}</span>
           <span class="firebase-task-title-arrow">›</span>
         </button>
-
-        <article
-          id="firebase-detail-${safeId}"
-          class="firebase-task-detail">
-        </article>
+        <article id="firebase-detail-${safeId}" class="firebase-task-detail"></article>
       `;
+    }).join("");
 
+    await loadMyTaskSubmissions();
+
+  } catch (error) {
+    console.error("Firebase task load error:", error);
+    list.innerHTML = '<div class="firebase-task-empty">Unable to load tasks. Please refresh.</div>';
+  }
+}
+
+async function loadMyTaskSubmissions() {
+
+  const box = document.getElementById("myTaskSubmissions");
+  if (!box) return;
+
+  const user = getTaskFirebaseUser();
+  if (!user) {
+    box.style.display = "none";
+    return;
+  }
+
+  box.style.display = "block";
+  box.innerHTML = '<div class="firebase-task-empty">Loading your task submissions...</div>';
+
+  try {
+    const snapshot = await firebaseDb.collection("submissions").get();
+    const items = snapshot.docs.map(function(doc) {
+      return { id: doc.id, ...(doc.data() || {}) };
+    }).filter(function(item) {
+      return String(item.userId || "") === String(user.uid);
+    });
+
+    items.sort(function(a, b) {
+      const aTs = a.createdAt || a.submittedAt || null;
+      const bTs = b.createdAt || b.submittedAt || null;
+      const aTime = aTs && typeof aTs.toMillis === "function" ? aTs.toMillis() : 0;
+      const bTime = bTs && typeof bTs.toMillis === "function" ? bTs.toMillis() : 0;
+      return bTime - aTime;
+    });
+
+    firebaseTaskSubmissions = items;
+
+    if (!items.length) {
+      box.innerHTML = '<div class="firebase-task-empty">No task submissions yet.</div>';
+      return;
+    }
+
+    box.innerHTML = items.map(function(item) {
+      const task = firebaseTasks.find(function(t) { return t.id === item.taskId; });
+      const title = escapeFirebaseTaskHtml(item.taskTitle || (task && task.title) || "Task");
+      const status = String(item.status || "pending").toLowerCase();
+      const reason = escapeFirebaseTaskHtml(item.reason || "");
+      let statusLabel = "Pending review";
+      if (status === "approved") statusLabel = "Approved";
+      if (status === "revision") statusLabel = "Sent for revision";
+      if (status === "rejected") statusLabel = "Rejected";
+      const safeId = escapeFirebaseTaskHtml(item.id).replace(/[^a-zA-Z0-9_-]/g, "_");
+      return `
+        <div class="my-submission-card">
+          <div class="my-submission-title">📋 ${title}</div>
+          <div class="my-submission-status ${escapeFirebaseTaskHtml(status)}">${escapeFirebaseTaskHtml(statusLabel)}</div>
+          ${reason ? `<div class="my-submission-reason"><strong>Admin reason:</strong><br>${reason}</div>` : ""}
+          ${status === "revision" ? `
+            <button class="firebase-task-start-btn" type="button" onclick="resubmitFirebaseTask('${idSafeForJs(item.taskId)}')">Resubmit Task</button>
+          ` : ""}
+        </div>
+      `;
     }).join("");
 
   } catch (error) {
-
-    console.error("Firebase task load error:", error);
-
-    list.innerHTML = '<div class="firebase-task-empty">Unable to load tasks. Please refresh.</div>';
-
+    console.error("My submissions load error:", error);
+    box.innerHTML = '<div class="firebase-task-empty">Unable to load your submissions.</div>';
   }
 }
 
 function showFirebaseTaskDetails(taskId) {
 
-  const task = firebaseTasks.find(function(item) {
-    return item.id === taskId;
-  });
-
+  const task = firebaseTasks.find(function(item) { return item.id === taskId; });
   if (!task) return;
 
-  const safeId = escapeFirebaseTaskHtml(taskId)
-    .replace(/[^a-zA-Z0-9_-]/g, "_");
-
-  const detail = document.getElementById(
-    "firebase-detail-" + safeId
-  );
-
+  const safeId = escapeFirebaseTaskHtml(taskId).replace(/[^a-zA-Z0-9_-]/g, "_");
+  const detail = document.getElementById("firebase-detail-" + safeId);
   if (!detail) return;
 
-  const title = escapeFirebaseTaskHtml(
-    task.title || "Untitled Task"
-  );
-
-  const description = escapeFirebaseTaskHtml(
-    task.description || ""
-  );
-
-  const instructions = escapeFirebaseTaskHtml(
-    task.instructions || ""
-  );
-
-  const proofType = String(
-    getFirebaseTaskField(
-      task,
-      "proof_type",
-      "proofType",
-      "none"
-    ) || "none"
-  ).toLowerCase();
-
+  const title = escapeFirebaseTaskHtml(task.title || "Untitled Task");
+  const description = escapeFirebaseTaskHtml(task.description || "");
+  const instructions = escapeFirebaseTaskHtml(task.instructions || "");
+  const proofType = String(getFirebaseTaskField(task, "proof_type", "proofType", "none") || "none").toLowerCase();
   const reward = Number(task.reward || 0);
-
-  const max = Number(
-    getFirebaseTaskField(
-      task,
-      "max_completions",
-      "maxCompletions",
-      0
-    ) || 0
-  );
-
-  const current = Number(
-    getFirebaseTaskField(
-      task,
-      "current_completions",
-      "currentCompletions",
-      0
-    ) || 0
-  );
-
-  const safeProofId = safeId;
+  const max = Number(getFirebaseTaskField(task, "max_completions", "maxCompletions", 0) || 0);
+  const current = Number(getFirebaseTaskField(task, "current_completions", "currentCompletions", 0) || 0);
 
   detail.innerHTML = `
     <h3>📋 ${title}</h3>
-
-    ${description
-      ? `<div class="firebase-task-detail-text"><strong>Task Details</strong><br>${description}</div>`
-      : ""}
-
-    ${instructions
-      ? `<div class="firebase-task-detail-text"><strong>Instructions</strong><br>${instructions}</div>`
-      : ""}
-
+    ${description ? `<div class="firebase-task-detail-text"><strong>Task Details</strong><br>${description}</div>` : ""}
+    ${instructions ? `<div class="firebase-task-detail-text"><strong>Instructions</strong><br>${instructions}</div>` : ""}
     <div class="firebase-task-meta">
       <span class="firebase-task-badge">Reward: ৳${reward.toFixed(2)}</span>
       <span class="firebase-task-badge">${max > 0 ? "Slots: " + current + " / " + max : "Unlimited"}</span>
       ${proofType !== "none" ? `<span class="firebase-task-badge">Proof: ${escapeFirebaseTaskHtml(proofType)}</span>` : ""}
     </div>
-
-    <button
-      id="start-firebase-task-${safeId}"
-      class="firebase-task-start-btn"
-      type="button"
-      onclick="startFirebaseManagedTask('${idSafeForJs(taskId)}')">
-      Start Task
-    </button>
-
-    <div
-      id="started-note-${safeProofId}"
-      class="firebase-task-started-note">
-      Task opened. Complete the task, then submit your proof below.
+    <button id="start-firebase-task-${safeId}" class="firebase-task-start-btn" type="button" onclick="startFirebaseManagedTask('${idSafeForJs(taskId)}')">Start Task</button>
+    <div id="started-note-${safeId}" class="firebase-task-started-note">Task opened. Complete the task, then submit your proof below.</div>
+    <div id="firebase-proof-after-${safeId}" class="firebase-task-proof-after-start" style="display:none;">
+      <span class="firebase-task-proof-label">Proof of completion</span>
+      ${proofType === "image" ? `
+        <input id="firebase-proof-input-${safeId}" type="file" accept="image/*">
+        <div class="proof-upload-note">Attach a screenshot from your phone. The image will be compressed before upload.</div>
+        <div id="firebase-proof-preview-${safeId}" class="firebase-proof-preview"></div>
+      ` : proofType === "url" ? `
+        <input id="firebase-proof-input-${safeId}" type="url" placeholder="Enter proof URL">
+      ` : proofType === "text" ? `
+        <textarea id="firebase-proof-input-${safeId}" placeholder="Enter your proof"></textarea>
+      ` : `
+        <div class="proof-upload-note">No attachment is required. Submit after completing the task.</div>
+      `}
+      <button class="firebase-task-submit-after-start" type="button" onclick="submitFirebaseTaskProof('${idSafeForJs(taskId)}','${safeId}')">Submit Task</button>
     </div>
-
-    ${proofType !== "none" ? `
-      <div
-        id="firebase-proof-after-${safeProofId}"
-        class="firebase-task-proof-after-start">
-
-        <span class="firebase-task-proof-label">
-          Proof of completion
-        </span>
-
-        ${proofType === "url"
-          ? `<input id="firebase-proof-input-${safeProofId}" type="url" placeholder="Enter proof URL">`
-          : `<textarea id="firebase-proof-input-${safeProofId}" placeholder="Enter your proof"></textarea>`}
-
-        <button
-          class="firebase-task-submit-after-start"
-          type="button"
-          onclick="submitFirebaseTaskProof('${idSafeForJs(taskId)}','${safeProofId}')">
-          Submit Proof
-        </button>
-
-      </div>
-    ` : `
-      <div
-        id="firebase-proof-after-${safeProofId}"
-        class="firebase-task-proof-after-start">
-        <span class="firebase-task-proof-label">
-          No proof is required for this task.
-        </span>
-      </div>
-    `}
   `;
 
+  const fileInput = document.getElementById("firebase-proof-input-" + safeId);
+  if (fileInput && proofType === "image") {
+    fileInput.addEventListener("change", function() {
+      const file = fileInput.files && fileInput.files[0];
+      const preview = document.getElementById("firebase-proof-preview-" + safeId);
+      if (!preview) return;
+      if (!file) { preview.innerHTML = ""; return; }
+      if (!file.type || file.type.indexOf("image/") !== 0) {
+        fileInput.value = "";
+        preview.innerHTML = "";
+        showTaskMessage("Please attach an image screenshot.", "error");
+        return;
+      }
+      preview.innerHTML = `<div class="proof-upload-note">Selected: ${escapeFirebaseTaskHtml(file.name)}</div>`;
+    });
+  }
+
   detail.style.display = "block";
+  detail.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
 
-  detail.scrollIntoView({
-    behavior: "smooth",
-    block: "nearest"
+async function resubmitFirebaseTask(taskId) {
+  const user = getTaskFirebaseUser();
+  if (!user) { window.location.href = "login.html"; return; }
+
+  const latest = firebaseTaskSubmissions.find(function(item) {
+    return item.taskId === taskId && String(item.userId) === String(user.uid) && String(item.status || "").toLowerCase() === "revision";
   });
+
+  if (!latest) {
+    showTaskMessage("This task is not waiting for revision.", "error");
+    return;
+  }
+
+  const task = firebaseTasks.find(function(item) { return item.id === taskId; });
+  if (!task) {
+    showTaskMessage("This task is no longer available.", "error");
+    return;
+  }
+
+  showFirebaseTaskDetails(taskId);
 }
 
-function idSafeForJs(value) {
-  return String(value == null ? "" : value)
-    .replace(/\\/g, "\\\\")
-    .replace(/'/g, "\\'");
-}
-
-function startFirebaseManagedTask(taskId) {
+async function startFirebaseManagedTask(taskId) {
 
   const user = getTaskFirebaseUser();
+  if (!user) { window.location.href = "login.html"; return; }
 
-  if (!user) {
-    window.location.href = "login.html";
-    return;
-  }
+  const task = firebaseTasks.find(function(item) { return item.id === taskId; });
+  if (!task) { showTaskMessage("Task not found.", "error"); return; }
 
-  const task = firebaseTasks.find(function(item) {
-    return item.id === taskId;
-  });
-
-  if (!task) {
-    showTaskMessage("Task not found.", "error");
-    return;
-  }
-
-  const url = getFirebaseTaskField(
-    task,
-    "task_url",
-    "taskUrl",
-    ""
-  );
-
-  if (!url) {
-    showTaskMessage("This task has no task link.", "error");
-    return;
-  }
+  const url = getFirebaseTaskField(task, "task_url", "taskUrl", "");
+  if (!url) { showTaskMessage("This task has no task link.", "error"); return; }
 
   try {
+    const parsed = new URL(url, window.location.href);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") throw new Error("invalid");
 
-    const parsed = new URL(
-      url,
-      window.location.href
-    );
+    window.open(parsed.href, "_blank", "noopener,noreferrer");
 
-    if (
-      parsed.protocol !== "http:" &&
-      parsed.protocol !== "https:"
-    ) {
-      showTaskMessage("This task link is not valid.", "error");
+    const safeId = escapeFirebaseTaskHtml(taskId).replace(/[^a-zA-Z0-9_-]/g, "_");
+    const proofBox = document.getElementById("firebase-proof-after-" + safeId);
+    const note = document.getElementById("started-note-" + safeId);
+    const startBtn = document.getElementById("start-firebase-task-" + safeId);
+
+    if (proofBox) proofBox.style.display = "block";
+    if (note) note.style.display = "block";
+    if (startBtn) startBtn.disabled = true;
+
+    showTaskMessage("Task opened. Complete it, then submit your proof.", "success");
+
+  } catch (error) {
+    console.error("Task link error:", error);
+    showTaskMessage("This task link is not valid.", "error");
+  }
+}
+
+function readAndCompressProofImage(file) {
+  return new Promise(function(resolve, reject) {
+    if (!file || !file.type || file.type.indexOf("image/") !== 0) {
+      reject(new Error("IMAGE_REQUIRED"));
       return;
     }
 
-    window.open(
-      parsed.href,
-      "_blank",
-      "noopener,noreferrer"
-    );
+    const reader = new FileReader();
+    reader.onerror = function() { reject(new Error("IMAGE_READ_ERROR")); };
+    reader.onload = function(event) {
+      const image = new Image();
+      image.onerror = function() { reject(new Error("IMAGE_READ_ERROR")); };
+      image.onload = function() {
+        const maxSide = 1200;
+        const scale = Math.min(1, maxSide / Math.max(image.width, image.height));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(image.width * scale));
+        canvas.height = Math.max(1, Math.round(image.height * scale));
+        const ctx = canvas.getContext("2d", { alpha: false });
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 
-    const safeId = escapeFirebaseTaskHtml(taskId)
-      .replace(/[^a-zA-Z0-9_-]/g, "_");
+        let quality = 0.78;
+        let data = canvas.toDataURL("image/jpeg", quality);
+        while (data.length > 900000 && quality > 0.42) {
+          quality -= 0.07;
+          data = canvas.toDataURL("image/jpeg", quality);
+        }
 
-    const proofBox = document.getElementById(
-      "firebase-proof-after-" + safeId
-    );
-
-    const note = document.getElementById(
-      "started-note-" + safeId
-    );
-
-    if (proofBox) {
-      proofBox.style.display = "block";
-    }
-
-    if (note) {
-      note.style.display = "block";
-    }
-
-    showTaskMessage(
-      "Task opened. Complete it, then submit your proof.",
-      "success"
-    );
-
-  } catch (error) {
-
-    console.error("Task link error:", error);
-    showTaskMessage("This task link is not valid.", "error");
-
-  }
+        if (data.length > 950000) {
+          reject(new Error("IMAGE_TOO_LARGE"));
+          return;
+        }
+        resolve(data);
+      };
+      image.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
 async function submitFirebaseTaskProof(taskId, safeId) {
 
   const user = getTaskFirebaseUser();
+  if (!user) { window.location.href = "login.html"; return; }
 
-  if (!user) {
-    window.location.href = "login.html";
-    return;
-  }
+  const task = firebaseTasks.find(function(item) { return item.id === taskId; });
+  if (!task) { showTaskMessage("Task not found.", "error"); return; }
 
-  const input = document.getElementById(
-    "firebase-proof-input-" + safeId
-  );
-
-  const proof = input
-    ? input.value.trim()
-    : "";
-
-  if (!proof) {
-    showTaskMessage("Please enter your proof.", "error");
-    return;
-  }
-
-  const task = firebaseTasks.find(function(item) {
-    return item.id === taskId;
-  });
-
-  if (!task) {
-    showTaskMessage("Task not found.", "error");
-    return;
-  }
+  const proofType = String(getFirebaseTaskField(task, "proof_type", "proofType", "none") || "none").toLowerCase();
 
   try {
+    const all = await firebaseDb.collection("submissions").get();
+    const previous = all.docs.map(function(doc) {
+      return { id: doc.id, ...(doc.data() || {}) };
+    }).filter(function(item) {
+      return String(item.taskId || "") === String(taskId) && String(item.userId || "") === String(user.uid);
+    });
 
-    const duplicate = await firebaseDb
-      .collection("submissions")
-      .where("taskId", "==", taskId)
-      .where("userId", "==", user.uid)
-      .limit(1)
-      .get();
+    previous.sort(function(a, b) {
+      const aTs = a.createdAt || a.submittedAt || null;
+      const bTs = b.createdAt || b.submittedAt || null;
+      const aTime = aTs && typeof aTs.toMillis === "function" ? aTs.toMillis() : 0;
+      const bTime = bTs && typeof bTs.toMillis === "function" ? bTs.toMillis() : 0;
+      return bTime - aTime;
+    });
 
-    if (!duplicate.empty) {
-      showTaskMessage(
-        "You have already submitted this task.",
-        "error"
-      );
-      return;
+    const latest = previous[0];
+    if (latest) {
+      const latestStatus = String(latest.status || "").toLowerCase();
+      if (latestStatus === "pending") {
+        showTaskMessage("This task is already pending admin review.", "error");
+        return;
+      }
+      if (latestStatus === "approved") {
+        showTaskMessage("This task has already been approved.", "error");
+        return;
+      }
+      if (latestStatus === "rejected") {
+        showTaskMessage("This task was rejected. Please contact the administrator if needed.", "error");
+        return;
+      }
+      if (latestStatus !== "revision") {
+        showTaskMessage("This task cannot be submitted again right now.", "error");
+        return;
+      }
     }
 
-    await firebaseDb
-      .collection("submissions")
-      .add({
-        taskId: taskId,
-        userId: user.uid,
-        proof: proof,
-        status: "pending",
-        reward: Number(task.reward || 0),
-        createdAt:
-          firebase.firestore.FieldValue.serverTimestamp()
-      });
+    let proof = "";
+    let proofImage = "";
 
-    showTaskMessage(
-      "Proof submitted successfully. It is pending review.",
-      "success"
-    );
+    if (proofType === "image") {
+      const input = document.getElementById("firebase-proof-input-" + safeId);
+      const file = input && input.files ? input.files[0] : null;
+      if (!file) {
+        showTaskMessage("Please attach the screenshot before submitting.", "error");
+        return;
+      }
+      proofImage = await readAndCompressProofImage(file);
+      proof = "Screenshot attached";
+    } else if (proofType === "url" || proofType === "text") {
+      const input = document.getElementById("firebase-proof-input-" + safeId);
+      proof = input ? input.value.trim() : "";
+      if (!proof) {
+        showTaskMessage("Please enter your proof.", "error");
+        return;
+      }
+    } else {
+      proof = "Task completed without proof attachment";
+    }
 
-    input.value = "";
+    await firebaseDb.collection("submissions").add({
+      taskId: taskId,
+      taskTitle: String(task.title || "Untitled Task"),
+      userId: user.uid,
+      userEmail: user.email || "",
+      proof: proof,
+      proofImage: proofImage,
+      proofType: proofType,
+      reward: Number(task.reward || 0),
+      status: "pending",
+      reason: "",
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    showTaskMessage("Task submitted successfully. It is pending admin review.", "success");
+
+    const detail = document.getElementById("firebase-detail-" + safeId);
+    if (detail) {
+      const submitBtn = detail.querySelector(".firebase-task-submit-after-start");
+      if (submitBtn) submitBtn.disabled = true;
+    }
+
+    await loadMyTaskSubmissions();
 
   } catch (error) {
-
-    console.error(
-      "Task proof submit error:",
-      error
-    );
-
-    showTaskMessage(
-      "Unable to submit proof. Please try again.",
-      "error"
-    );
-
+    console.error("Task proof submit error:", error);
+    let message = "Unable to submit task. Please try again.";
+    if (error.message === "IMAGE_TOO_LARGE") message = "Screenshot is too large. Please choose a smaller image.";
+    if (error.message === "IMAGE_READ_ERROR") message = "The screenshot could not be read. Please try another image.";
+    showTaskMessage(message, "error");
   }
 }
-
 
 /* =========================================================
    FIREBASE AUTH STATE

@@ -2979,15 +2979,21 @@ async function loadFirebaseTasks() {
 
     firebaseTaskSubmissions = allSubmissions.slice();
 
-    firebaseTasks = taskSnapshot.docs.map(function(doc) {
+    // Keep ALL active tasks in firebaseTasks so a revision can still reopen
+    // its original task even when that task is not currently in Available Tasks.
+    const activeTasks = taskSnapshot.docs.map(function(doc) {
       return { id: doc.id, ...(doc.data() || {}) };
     }).filter(function(task) {
       return String(task.status || "active").toLowerCase() === "active";
-    }).filter(function(task) {
+    });
+
+    firebaseTasks = activeTasks.slice();
+
+    const availableTasks = activeTasks.filter(function(task) {
       const max = Number(getFirebaseTaskField(task, "max_completions", "maxCompletions", 0) || 0);
       const current = Number(getFirebaseTaskField(task, "current_completions", "currentCompletions", 0) || 0);
-      return max <= 0 || current < max;
-    }).filter(function(task) {
+      if (max > 0 && current >= max) return false;
+
       const taskId = String(task.id);
       const executionMode = String(
         getFirebaseTaskField(task, "execution_mode", "executionMode", "one_user_one_execution")
@@ -3010,26 +3016,30 @@ async function loadFirebaseTasks() {
         - approved => available again
         - rejected => available again
       */
-      const hasPending = userTaskSubmissions.some(function(item) {
+      const pending = userTaskSubmissions.some(function(item) {
         return String(item.status || "").toLowerCase() === "pending";
       });
-
-      const hasRevision = userTaskSubmissions.some(function(item) {
+      const revision = userTaskSubmissions.some(function(item) {
         return String(item.status || "").toLowerCase() === "revision";
       });
-
-      const hasApproved = userTaskSubmissions.some(function(item) {
+      const approved = userTaskSubmissions.some(function(item) {
         return String(item.status || "").toLowerCase() === "approved";
       });
 
-      if (executionMode === "multiple_times") {
-        return !hasPending && !hasRevision;
-      }
+      // A user cannot start another execution while the current execution
+      // is pending or waiting for revision.
+      if (pending || revision) return false;
 
-      return !hasPending && !hasRevision && !hasApproved;
+      // Multiple times: an approved execution does NOT block the task.
+      if (executionMode === "multiple_times") return true;
+
+      // One user one execution: an approved execution permanently removes
+      // this task from this user's available list. Rejected executions can
+      // be attempted again.
+      return !approved;
     });
 
-    firebaseTasks.sort(function(a, b) {
+    availableTasks.sort(function(a, b) {
       const aTs = a.createdAt || a.updatedAt || null;
       const bTs = b.createdAt || b.updatedAt || null;
       const aTime = aTs && typeof aTs.toMillis === "function" ? aTs.toMillis() : 0;
@@ -3037,13 +3047,13 @@ async function loadFirebaseTasks() {
       return bTime - aTime;
     });
 
-    if (!firebaseTasks.length) {
+    if (!availableTasks.length) {
       list.innerHTML = '<div class="firebase-task-empty">No tasks are available right now.</div>';
       await loadMyTaskSubmissions();
       return;
     }
 
-    list.innerHTML = firebaseTasks.map(function(task) {
+    list.innerHTML = availableTasks.map(function(task) {
       const id = escapeFirebaseTaskHtml(task.id);
       const title = escapeFirebaseTaskHtml(task.title || "Untitled Task");
       const safeId = id.replace(/[^a-zA-Z0-9_-]/g, "_");
@@ -3139,7 +3149,8 @@ async function loadMyTaskSubmissions() {
       const title = escapeFirebaseTaskHtml(item.taskTitle || (task && task.title) || "Task");
       const status = String(item.status || "pending").toLowerCase();
       const reason = escapeFirebaseTaskHtml(item.reason || "");
-      const resubmittedSuccessful = item.resubmittedSuccessful === true;
+      const isPending = status === "pending";
+      const submissionSuccessMessage = item.submissionSuccessMessage || (item.resubmittedSuccessful === true ? "Resubmitted successful" : "Submitted successful");
       let statusLabel = "Pending review";
       if (status === "approved") statusLabel = "Approved";
       if (status === "revision") statusLabel = "Sent for revision";
@@ -3149,7 +3160,7 @@ async function loadMyTaskSubmissions() {
         <div class="my-submission-card">
           <div class="my-submission-title">📋 ${title}</div>
           <div class="my-submission-status ${escapeFirebaseTaskHtml(status)}">${escapeFirebaseTaskHtml(statusLabel)}</div>
-          ${resubmittedSuccessful ? `<div class="my-submission-reason"><strong>Resubmitted successful</strong></div>` : (reason ? `<div class="my-submission-reason"><strong>Admin reason:</strong><br>${reason}</div>` : "")}
+          ${isPending ? `<div class="my-submission-reason"><strong>${escapeFirebaseTaskHtml(submissionSuccessMessage)}</strong></div>` : (reason ? `<div class="my-submission-reason"><strong>Admin reason:</strong><br>${reason}</div>` : "")}
           ${status === "revision" ? `
             <button class="firebase-task-start-btn" type="button" onclick="resubmitFirebaseTask('${idSafeForJs(item.taskId)}')">Resubmit Task</button>
           ` : ""}
@@ -3169,8 +3180,18 @@ function showFirebaseTaskDetails(taskId) {
   if (!task) return;
 
   const safeId = escapeFirebaseTaskHtml(taskId).replace(/[^a-zA-Z0-9_-]/g, "_");
-  const detail = document.getElementById("firebase-detail-" + safeId);
-  if (!detail) return;
+  let detail = document.getElementById("firebase-detail-" + safeId);
+
+  // A revision task may be hidden from Available Tasks. Create its detail
+  // container on demand so the user can resubmit the revised task.
+  if (!detail) {
+    const list = document.getElementById("firebaseTasksList");
+    if (!list) return;
+    detail = document.createElement("article");
+    detail.id = "firebase-detail-" + safeId;
+    detail.className = "firebase-task-detail";
+    list.appendChild(detail);
+  }
 
   const title = escapeFirebaseTaskHtml(task.title || "Untitled Task");
   const description = escapeFirebaseTaskHtml(task.description || "");
@@ -3366,25 +3387,33 @@ async function submitFirebaseTaskProof(taskId, safeId) {
       return bTime - aTime;
     });
 
-    const latest = previous[0];
+    // Determine the most recent meaningful submission. Multiple-times tasks
+    // may be submitted again after APPROVAL; one-user tasks may not.
+    const latest = previous.slice().sort(function(a, b) {
+      const aTs = a.createdAt && typeof a.createdAt.toMillis === "function" ? a.createdAt.toMillis() : 0;
+      const bTs = b.createdAt && typeof b.createdAt.toMillis === "function" ? b.createdAt.toMillis() : 0;
+      return bTs - aTs;
+    })[0] || null;
+
+    let isRevisionResubmission = false;
+    const executionMode = String(getFirebaseTaskField(task, "execution_mode", "executionMode", "one_user_one_execution") || "one_user_one_execution").toLowerCase();
+
     if (latest) {
       const latestStatus = String(latest.status || "").toLowerCase();
       if (latestStatus === "pending") {
         showTaskMessage("This task is already pending admin review.", "error");
         return;
       }
-      if (latestStatus === "approved") {
-        const executionMode = String(getFirebaseTaskField(task, "execution_mode", "executionMode", "one_user_one_execution") || "one_user_one_execution").toLowerCase();
+      if (latestStatus === "revision") {
+        isRevisionResubmission = true;
+      } else if (latestStatus === "approved") {
         if (executionMode !== "multiple_times") {
           showTaskMessage("This task has already been approved and can only be completed once.", "error");
           return;
         }
-        // Multiple-times task: an approved previous execution does not block a new submission.
-      }
-      if (latestStatus === "rejected") {
-        // A rejected task may be attempted again.
-      }
-      if (latestStatus !== "revision") {
+      } else if (latestStatus === "rejected") {
+        // Rejected tasks are treated as a fresh new submission.
+      } else {
         showTaskMessage("This task cannot be submitted again right now.", "error");
         return;
       }
@@ -3423,12 +3452,12 @@ async function submitFirebaseTaskProof(taskId, safeId) {
       proof: proof,
       proofImage: proofImage,
       proofType: proofType,
-      executionMode: String(getFirebaseTaskField(task, "execution_mode", "executionMode", "one_user_one_execution") || "one_user_one_execution").toLowerCase(),
+      executionMode: executionMode,
       reward: Number(task.reward || 0),
       status: "pending",
       reason: "",
-      resubmittedSuccessful: true,
-      resubmittedFrom: latest ? latest.id : "",
+      submissionSuccessMessage: isRevisionResubmission ? "Resubmitted successful" : "Submitted successful",
+      resubmittedFrom: isRevisionResubmission && latest ? latest.id : "",
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
 
@@ -3443,11 +3472,16 @@ async function submitFirebaseTaskProof(taskId, safeId) {
       try {
         await firebaseDb.collection("submissions").doc(latest.id).delete();
       } catch (deleteError) {
-        console.warn("Old revision deletion failed; it will remain hidden from user history.", deleteError);
+        console.warn("Old revision deletion failed. Update Firestore Rules to allow the user to delete only their own revision submission.", deleteError);
       }
     }
 
-    showTaskMessage("Resubmitted successful. Your new submission is pending admin review.", "success");
+    showTaskMessage(
+      isRevisionResubmission
+        ? "Resubmitted successful. Your new submission is pending admin review."
+        : "Submitted successful. Your task is pending admin review.",
+      "success"
+    );
 
     const detail = document.getElementById("firebase-detail-" + safeId);
     if (detail) {

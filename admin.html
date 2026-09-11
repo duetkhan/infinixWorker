@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
   <meta charset="UTF-8">
@@ -16,15 +17,16 @@
 
   <title>Admin Panel - Infinix Worker</title>
 
-  <link rel="stylesheet" href="style.css">
-
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
 
   <style>
 
     * {
       box-sizing: border-box;
     }
-
 
     body {
       margin: 0;
@@ -33,19 +35,14 @@
       font-family: Arial, sans-serif;
     }
 
-
     .admin-page {
       min-height: 100vh;
       padding-bottom: 40px;
     }
 
-
-    /* =========================================
-       HEADER
-    ========================================= */
+    /* HEADER */
 
     .admin-header {
-
       background:
         linear-gradient(
           135deg,
@@ -63,90 +60,51 @@
       box-shadow:
         0 5px 18px
         rgba(23,105,224,.20);
-
     }
-
 
     .admin-header-row {
-
       display: flex;
-
       align-items: center;
-
       justify-content: space-between;
-
       gap: 12px;
-
     }
-
 
     .admin-title {
-
       margin: 0;
-
       font-size: 21px;
-
       font-weight: 800;
-
     }
-
 
     .admin-subtitle {
-
       margin: 5px 0 0;
-
       font-size: 11px;
-
       opacity: .88;
-
     }
-
 
     .logout-btn {
-
       border: 0;
-
       background:
         rgba(255,255,255,.16);
-
       color: #fff;
-
       border-radius: 11px;
-
       padding: 10px 13px;
-
       font-size: 12px;
-
       font-weight: 700;
-
       cursor: pointer;
-
     }
 
-
-    /* =========================================
-       CONTENT
-    ========================================= */
+    /* CONTENT */
 
     .admin-content {
-
       padding: 16px;
-
     }
 
-
-    /* =========================================
-       LOGIN / ACCESS
-    ========================================= */
+    /* ACCESS */
 
     #accessMessage {
-
       background: #fff;
-
       border-radius: 18px;
-
       padding: 22px;
-
       text-align: center;
 
       box-shadow:
@@ -154,88 +112,107 @@
         rgba(25,35,60,.08);
 
       margin-bottom: 16px;
-
     }
-
 
     .access-icon {
-
       font-size: 38px;
-
       margin-bottom: 8px;
-
     }
-
 
     .access-title {
-
       font-size: 17px;
-
       font-weight: 800;
-
       margin-bottom: 6px;
-
     }
-
 
     .access-text {
-
       color: #70798b;
-
       font-size: 12px;
-
       line-height: 1.5;
-
     }
 
+    /* ERROR */
 
-    /* =========================================
-       DASHBOARD
-    ========================================= */
+    .error-box {
+      background: #fff0f0;
+      color: #b33b3b;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 11px;
+      line-height: 1.5;
+      margin-bottom: 14px;
+      display: none;
+    }
+
+    /* ADMIN INFO */
+
+    .admin-info {
+      background: #fff;
+      border-radius: 18px;
+      padding: 15px;
+      margin-bottom: 16px;
+
+      box-shadow:
+        0 6px 20px
+        rgba(25,35,60,.07);
+    }
+
+    .admin-info-title {
+      color: #1769e0;
+      font-size: 11px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .admin-info-email {
+      color: #20283a;
+      font-size: 13px;
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .admin-role {
+      display: inline-block;
+      margin-top: 7px;
+      padding: 5px 8px;
+      background: #eaf2ff;
+      color: #1769e0;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    /* DASHBOARD */
 
     .stats-grid {
-
       display: grid;
 
       grid-template-columns:
         repeat(2, minmax(0, 1fr));
 
       gap: 12px;
-
       margin-bottom: 17px;
-
     }
 
-
     .stat-card {
-
       background: #fff;
-
       border-radius: 17px;
-
       padding: 15px;
 
       box-shadow:
         0 6px 20px
         rgba(25,35,60,.07);
-
     }
 
-
     .stat-icon {
-
       width: 39px;
-
       height: 39px;
 
       display: flex;
-
       align-items: center;
-
       justify-content: center;
 
       background: #eaf2ff;
-
       color: #1769e0;
 
       border-radius: 12px;
@@ -243,433 +220,208 @@
       font-size: 19px;
 
       margin-bottom: 10px;
-
     }
-
 
     .stat-label {
-
       color: #7a8495;
-
       font-size: 11px;
-
     }
-
 
     .stat-value {
-
       margin-top: 4px;
-
       color: #20283a;
-
       font-size: 22px;
-
       font-weight: 800;
-
     }
 
-
-    /* =========================================
-       SECTION
-    ========================================= */
+    /* SECTION */
 
     .section {
-
       background: #fff;
-
       border-radius: 19px;
-
       padding: 16px;
-
       margin-bottom: 16px;
 
       box-shadow:
         0 6px 20px
         rgba(25,35,60,.07);
-
     }
-
 
     .section-header {
-
       display: flex;
-
       align-items: center;
-
       justify-content: space-between;
-
       gap: 10px;
-
       margin-bottom: 13px;
-
     }
-
 
     .section-title {
-
       margin: 0;
-
       font-size: 17px;
-
       font-weight: 800;
-
     }
-
 
     .refresh-btn {
-
       border: 0;
-
       background: #eef5ff;
-
       color: #1769e0;
-
       border-radius: 10px;
-
       padding: 8px 11px;
-
       font-size: 11px;
-
       font-weight: 700;
-
       cursor: pointer;
-
     }
 
-
-    /* =========================================
-       TABLE-LIKE ROWS
-    ========================================= */
+    /* DATA */
 
     .data-list {
-
       display: flex;
-
       flex-direction: column;
-
       gap: 9px;
-
     }
-
 
     .data-row {
-
       background: #f8faff;
-
       border: 1px solid #edf1f7;
-
       border-radius: 13px;
-
       padding: 12px;
-
     }
-
 
     .data-main {
-
       display: flex;
-
       align-items: flex-start;
-
       justify-content: space-between;
-
       gap: 10px;
-
     }
-
 
     .data-name {
-
       color: #20283a;
-
       font-size: 13px;
-
       font-weight: 800;
-
       word-break: break-word;
-
     }
-
 
     .data-secondary {
-
       margin-top: 4px;
-
       color: #7a8495;
-
       font-size: 10px;
-
-      line-height: 1.5;
-
+      line-height: 1.6;
       word-break: break-word;
-
     }
-
 
     .data-amount {
-
       color: #1769e0;
-
       font-size: 13px;
-
       font-weight: 800;
-
       white-space: nowrap;
-
     }
 
+    /* WITHDRAWAL DETAILS */
+
+    .withdraw-details {
+      margin-top: 7px;
+      color: #697487;
+      font-size: 11px;
+      line-height: 1.8;
+      word-break: break-word;
+    }
+
+    .withdraw-details strong {
+      color: #20283a;
+      font-weight: 800;
+    }
+
+    .withdraw-account {
+      color: #1769e0;
+      font-weight: 800;
+      letter-spacing: .2px;
+    }
 
     .status {
-
       display: inline-block;
-
-      margin-top: 7px;
-
+      margin-top: 8px;
       padding: 5px 8px;
-
       border-radius: 8px;
-
       background: #eef5ff;
-
       color: #1769e0;
-
       font-size: 10px;
-
       font-weight: 700;
-
     }
-
 
     .status.approved {
-
       background: #eaf8f1;
-
       color: #14754b;
-
     }
-
 
     .status.rejected {
-
       background: #fff0f0;
-
       color: #b33b3b;
-
     }
 
-
-    /* =========================================
-       WITHDRAW ACTIONS
-    ========================================= */
+    /* ACTIONS */
 
     .action-row {
-
       display: flex;
-
       gap: 8px;
-
       margin-top: 10px;
-
     }
-
 
     .action-btn {
-
       flex: 1;
-
       min-height: 38px;
-
       border: 0;
-
       border-radius: 10px;
-
       font-size: 11px;
-
       font-weight: 800;
-
       cursor: pointer;
-
     }
-
 
     .approve-btn {
-
       background: #eaf8f1;
-
       color: #14754b;
-
     }
-
 
     .reject-btn {
-
       background: #fff0f0;
-
       color: #b33b3b;
-
     }
-
 
     .action-btn:disabled {
-
       opacity: .55;
-
       cursor: not-allowed;
-
     }
 
-
-    /* =========================================
-       EMPTY
-    ========================================= */
+    /* EMPTY */
 
     .empty {
-
       text-align: center;
-
       padding: 17px 8px;
-
       color: #7a8495;
-
       font-size: 12px;
-
     }
-
 
     .empty-icon {
-
       font-size: 27px;
-
       margin-bottom: 6px;
-
     }
-
-
-    /* =========================================
-       LOADING
-    ========================================= */
 
     .loading {
-
       text-align: center;
-
       padding: 18px;
-
       color: #7a8495;
-
       font-size: 12px;
-
     }
-
-
-    /* =========================================
-       ERROR
-    ========================================= */
-
-    .error-box {
-
-      background: #fff0f0;
-
-      color: #b33b3b;
-
-      border-radius: 12px;
-
-      padding: 12px;
-
-      font-size: 11px;
-
-      line-height: 1.5;
-
-      margin-bottom: 14px;
-
-      display: none;
-
-    }
-
-
-    /* =========================================
-       ADMIN PROFILE
-    ========================================= */
-
-    .admin-info {
-
-      background: #fff;
-
-      border-radius: 18px;
-
-      padding: 15px;
-
-      margin-bottom: 16px;
-
-      box-shadow:
-        0 6px 20px
-        rgba(25,35,60,.07);
-
-    }
-
-
-    .admin-info-title {
-
-      color: #1769e0;
-
-      font-size: 11px;
-
-      font-weight: 800;
-
-      margin-bottom: 6px;
-
-    }
-
-
-    .admin-info-email {
-
-      color: #20283a;
-
-      font-size: 13px;
-
-      font-weight: 700;
-
-      word-break: break-word;
-
-    }
-
-
-    .admin-role {
-
-      display: inline-block;
-
-      margin-top: 7px;
-
-      padding: 5px 8px;
-
-      background: #eaf2ff;
-
-      color: #1769e0;
-
-      border-radius: 8px;
-
-      font-size: 10px;
-
-      font-weight: 800;
-
-    }
-
 
     @media (min-width: 700px) {
 
       .admin-content {
-
         max-width: 720px;
-
         margin: 0 auto;
-
       }
 
       .stats-grid {
-
         grid-template-columns:
           repeat(4, minmax(0, 1fr));
-
       }
 
     }
@@ -681,13 +433,9 @@
 
 <body>
 
-
 <div class="admin-page">
 
-
-  <!-- =========================================
-       HEADER
-  ========================================== -->
+  <!-- HEADER -->
 
   <header class="admin-header">
 
@@ -705,15 +453,13 @@
 
       </div>
 
-
       <button
         id="logoutButton"
         class="logout-btn"
         type="button"
-        onclick="adminLogout()">
-
+        onclick="adminLogout()"
+      >
         Logout
-
       </button>
 
     </div>
@@ -724,9 +470,7 @@
   <main class="admin-content">
 
 
-    <!-- =========================================
-         ACCESS MESSAGE
-    ========================================== -->
+    <!-- ACCESS -->
 
     <div id="accessMessage">
 
@@ -745,24 +489,21 @@
     </div>
 
 
-    <!-- =========================================
-         ERROR
-    ========================================== -->
+    <!-- ERROR -->
 
     <div
       id="errorBox"
-      class="error-box">
-    </div>
+      class="error-box"
+    ></div>
 
 
-    <!-- =========================================
-         ADMIN INFO
-    ========================================== -->
+    <!-- ADMIN INFO -->
 
     <div
       id="adminInfo"
       class="admin-info"
-      style="display:none;">
+      style="display:none;"
+    >
 
       <div class="admin-info-title">
         ADMIN ACCOUNT
@@ -770,8 +511,8 @@
 
       <div
         id="adminEmail"
-        class="admin-info-email">
-      </div>
+        class="admin-info-email"
+      ></div>
 
       <span class="admin-role">
         Administrator
@@ -780,14 +521,15 @@
     </div>
 
 
-    <!-- =========================================
-         DASHBOARD
-    ========================================== -->
+    <!-- DASHBOARD -->
 
     <div
       id="dashboard"
-      style="display:none;">
+      style="display:none;"
+    >
 
+
+      <!-- STATS -->
 
       <div class="stats-grid">
 
@@ -804,7 +546,8 @@
 
           <div
             id="usersCount"
-            class="stat-value">
+            class="stat-value"
+          >
             0
           </div>
 
@@ -823,7 +566,8 @@
 
           <div
             id="balanceCount"
-            class="stat-value">
+            class="stat-value"
+          >
             0
           </div>
 
@@ -842,7 +586,8 @@
 
           <div
             id="withdrawCount"
-            class="stat-value">
+            class="stat-value"
+          >
             0
           </div>
 
@@ -861,7 +606,8 @@
 
           <div
             id="tasksCount"
-            class="stat-value">
+            class="stat-value"
+          >
             0
           </div>
 
@@ -871,9 +617,7 @@
       </div>
 
 
-      <!-- =====================================
-           USERS
-      ====================================== -->
+      <!-- USERS -->
 
       <section class="section">
 
@@ -886,18 +630,17 @@
           <button
             class="refresh-btn"
             type="button"
-            onclick="loadUsers()">
-
+            onclick="loadUsers()"
+          >
             Refresh
-
           </button>
 
         </div>
 
-
         <div
           id="usersList"
-          class="data-list">
+          class="data-list"
+        >
 
           <div class="loading">
             Loading users...
@@ -908,9 +651,7 @@
       </section>
 
 
-      <!-- =====================================
-           WITHDRAWALS
-      ====================================== -->
+      <!-- WITHDRAWALS -->
 
       <section class="section">
 
@@ -923,10 +664,9 @@
           <button
             class="refresh-btn"
             type="button"
-            onclick="loadWithdrawals()">
-
+            onclick="loadWithdrawals()"
+          >
             Refresh
-
           </button>
 
         </div>
@@ -934,7 +674,8 @@
 
         <div
           id="withdrawalsList"
-          class="data-list">
+          class="data-list"
+        >
 
           <div class="loading">
             Loading withdrawals...
@@ -945,9 +686,7 @@
       </section>
 
 
-      <!-- =====================================
-           TASKS
-      ====================================== -->
+      <!-- TASKS -->
 
       <section class="section">
 
@@ -960,10 +699,9 @@
           <button
             class="refresh-btn"
             type="button"
-            onclick="loadTasks()">
-
+            onclick="loadTasks()"
+          >
             Refresh
-
           </button>
 
         </div>
@@ -971,7 +709,8 @@
 
         <div
           id="tasksList"
-          class="data-list">
+          class="data-list"
+        >
 
           <div class="loading">
             Loading tasks...
@@ -984,16 +723,12 @@
 
     </div>
 
-
   </main>
-
 
 </div>
 
 
-<!-- =====================================================
-     FIREBASE
-====================================================== -->
+<!-- FIREBASE -->
 
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
 
@@ -1011,11 +746,12 @@
 ========================================================= */
 
 let adminUser = null;
+
 let adminReady = false;
 
 
 /* =========================================================
-   ELEMENT HELPERS
+   ELEMENT
 ========================================================= */
 
 function getElement(id) {
@@ -1034,15 +770,12 @@ function showError(message) {
   const box =
     getElement("errorBox");
 
-
   if (!box) {
     return;
   }
 
-
   box.style.display =
     "block";
-
 
   box.textContent =
     message;
@@ -1050,24 +783,17 @@ function showError(message) {
 }
 
 
-/* =========================================================
-   CLEAR ERROR
-========================================================= */
-
 function clearError() {
 
   const box =
     getElement("errorBox");
 
-
   if (!box) {
     return;
   }
 
-
   box.style.display =
     "none";
-
 
   box.textContent =
     "";
@@ -1097,7 +823,7 @@ function escapeHtml(value) {
 
 
 /* =========================================================
-   DATE FORMAT
+   DATE
 ========================================================= */
 
 function formatDate(timestamp) {
@@ -1105,7 +831,9 @@ function formatDate(timestamp) {
   try {
 
     if (!timestamp) {
+
       return "Date unavailable";
+
     }
 
 
@@ -1151,7 +879,7 @@ function formatDate(timestamp) {
 
 
 /* =========================================================
-   ADMIN ACCESS CHECK
+   ADMIN ACCESS
 ========================================================= */
 
 async function checkAdminAccess(user) {
@@ -1179,12 +907,15 @@ async function checkAdminAccess(user) {
     `;
 
 
-    setTimeout(function() {
+    setTimeout(
+      function() {
 
-      window.location.href =
-        "login.html";
+        window.location.href =
+          "login.html";
 
-    }, 1200);
+      },
+      1200
+    );
 
 
     return false;
@@ -1204,9 +935,7 @@ async function checkAdminAccess(user) {
         .get();
 
 
-    if (
-      !profileSnap.exists
-    ) {
+    if (!profileSnap.exists) {
 
       access.innerHTML = `
 
@@ -1254,7 +983,6 @@ async function checkAdminAccess(user) {
 
       `;
 
-
       return false;
 
     }
@@ -1262,7 +990,6 @@ async function checkAdminAccess(user) {
 
     adminUser =
       user;
-
 
     adminReady =
       true;
@@ -1272,21 +999,18 @@ async function checkAdminAccess(user) {
       "none";
 
 
-    getElement(
-      "adminInfo"
-    ).style.display =
+    getElement("adminInfo")
+      .style.display =
       "block";
 
 
-    getElement(
-      "dashboard"
-    ).style.display =
+    getElement("dashboard")
+      .style.display =
       "block";
 
 
-    getElement(
-      "adminEmail"
-    ).textContent =
+    getElement("adminEmail")
+      .textContent =
       user.email || "";
 
 
@@ -1341,7 +1065,7 @@ async function checkAdminAccess(user) {
 
 
 /* =========================================================
-   LOAD DASHBOARD
+   DASHBOARD
 ========================================================= */
 
 async function loadDashboard() {
@@ -1352,16 +1076,20 @@ async function loadDashboard() {
 
 
   await Promise.all([
+
     loadUsers(),
+
     loadWithdrawals(),
+
     loadTasks()
+
   ]);
 
 }
 
 
 /* =========================================================
-   LOAD USERS
+   USERS
 ========================================================= */
 
 async function loadUsers() {
@@ -1372,15 +1100,15 @@ async function loadUsers() {
 
 
   const list =
-    getElement(
-      "usersList"
-    );
+    getElement("usersList");
 
 
   list.innerHTML = `
+
     <div class="loading">
       Loading users...
     </div>
+
   `;
 
 
@@ -1399,20 +1127,23 @@ async function loadUsers() {
         function(doc) {
 
           return {
+
             id: doc.id,
-            ...(
-              doc.data() || {}
-            )
+
+            ...(doc.data() || {})
+
           };
 
         }
       );
 
 
-    let totalBalance = 0;
+    let totalBalance =
+      0;
 
 
-    const walletPromises =
+    await Promise.all(
+
       users.map(
         async function(user) {
 
@@ -1428,9 +1159,7 @@ async function loadUsers() {
                 .get();
 
 
-            if (
-              wallet.exists
-            ) {
+            if (wallet.exists) {
 
               const data =
                 wallet.data() || {};
@@ -1466,23 +1195,18 @@ async function loadUsers() {
             );
 
         }
-      );
+      )
 
-
-    await Promise.all(
-      walletPromises
     );
 
 
-    getElement(
-      "usersCount"
-    ).textContent =
+    getElement("usersCount")
+      .textContent =
       users.length;
 
 
-    getElement(
-      "balanceCount"
-    ).textContent =
+    getElement("balanceCount")
+      .textContent =
       totalBalance.toFixed(2);
 
 
@@ -1514,7 +1238,9 @@ async function loadUsers() {
           a.createdAt &&
           typeof a.createdAt.toMillis ===
           "function"
+
             ? a.createdAt.toMillis()
+
             : 0;
 
 
@@ -1522,7 +1248,9 @@ async function loadUsers() {
           b.createdAt &&
           typeof b.createdAt.toMillis ===
           "function"
+
             ? b.createdAt.toMillis()
+
             : 0;
 
 
@@ -1533,7 +1261,9 @@ async function loadUsers() {
 
 
     list.innerHTML =
+
       users
+
         .map(
           function(user) {
 
@@ -1583,8 +1313,13 @@ async function loadUsers() {
                     </div>
 
                     <div class="data-secondary">
-                      ${email}<br>
+
+                      ${email}
+
+                      <br>
+
                       UID: ${uid}
+
                     </div>
 
                   </div>
@@ -1594,6 +1329,7 @@ async function loadUsers() {
                   </div>
 
                 </div>
+
 
                 <span class="status">
                   ${role}
@@ -1605,6 +1341,7 @@ async function loadUsers() {
 
           }
         )
+
         .join("");
 
 
@@ -1639,7 +1376,7 @@ async function loadUsers() {
 
 
 /* =========================================================
-   LOAD WITHDRAWALS
+   WITHDRAWALS
 ========================================================= */
 
 async function loadWithdrawals() {
@@ -1650,15 +1387,15 @@ async function loadWithdrawals() {
 
 
   const list =
-    getElement(
-      "withdrawalsList"
-    );
+    getElement("withdrawalsList");
 
 
   list.innerHTML = `
+
     <div class="loading">
       Loading withdrawals...
     </div>
+
   `;
 
 
@@ -1679,44 +1416,48 @@ async function loadWithdrawals() {
           function(doc) {
 
             return {
+
               id: doc.id,
-              ...(
-                doc.data() || {}
-              )
+
+              ...(doc.data() || {})
+
             };
-
-          }
-        )
-
-
-        .sort(
-          function(a, b) {
-
-            const aTime =
-              a.createdAt &&
-              typeof a.createdAt.toMillis ===
-              "function"
-                ? a.createdAt.toMillis()
-                : 0;
-
-
-            const bTime =
-              b.createdAt &&
-              typeof b.createdAt.toMillis ===
-              "function"
-                ? b.createdAt.toMillis()
-                : 0;
-
-
-            return bTime - aTime;
 
           }
         );
 
 
-    getElement(
-      "withdrawCount"
-    ).textContent =
+    withdrawals.sort(
+      function(a, b) {
+
+        const aTime =
+          a.createdAt &&
+          typeof a.createdAt.toMillis ===
+          "function"
+
+            ? a.createdAt.toMillis()
+
+            : 0;
+
+
+        const bTime =
+          b.createdAt &&
+          typeof b.createdAt.toMillis ===
+          "function"
+
+            ? b.createdAt.toMillis()
+
+            : 0;
+
+
+        return bTime - aTime;
+
+      }
+    );
+
+
+    getElement("withdrawCount")
+      .textContent =
       withdrawals.length;
 
 
@@ -1741,8 +1482,71 @@ async function loadWithdrawals() {
     }
 
 
+    /*
+      Load profile information for every withdrawal.
+
+      This fixes the old "User" display when
+      username/email exist inside profiles/{userId}.
+    */
+
+    const profileCache = {};
+
+
+    await Promise.all(
+
+      withdrawals.map(
+        async function(item) {
+
+          const userId =
+            String(
+              item.userId ||
+              ""
+            );
+
+
+          if (!userId) {
+            return;
+          }
+
+
+          try {
+
+            const profileSnap =
+              await firebaseDb
+
+                .collection("profiles")
+
+                .doc(userId)
+
+                .get();
+
+
+            if (profileSnap.exists) {
+
+              profileCache[userId] =
+                profileSnap.data() || {};
+
+            }
+
+          } catch (error) {
+
+            console.error(
+              "Profile load error:",
+              error
+            );
+
+          }
+
+        }
+      )
+
+    );
+
+
     list.innerHTML =
+
       withdrawals
+
         .map(
           function(item) {
 
@@ -1783,31 +1587,50 @@ async function loadWithdrawals() {
             }
 
 
+            const userId =
+              String(
+                item.userId ||
+                ""
+              );
+
+
+            const profile =
+              profileCache[userId] ||
+              {};
+
+
+            /*
+              Prefer withdrawal snapshot values.
+              If missing, use Firebase profile.
+            */
+
             const username =
               escapeHtml(
+
                 item.username ||
+
+                profile.username ||
+
                 "User"
+
               );
 
 
             const email =
               escapeHtml(
+
                 item.email ||
+
+                profile.email ||
+
                 ""
+
               );
 
 
-            const method =
+            const uid =
               escapeHtml(
-                item.method ||
-                "Payment"
-              );
-
-
-            const payment =
-              escapeHtml(
-                item.paymentMasked ||
-                ""
+                userId
               );
 
 
@@ -1817,9 +1640,39 @@ async function loadWithdrawals() {
               );
 
 
-            const id =
+            const method =
               escapeHtml(
-                item.id
+
+                item.method ||
+
+                item.paymentMethod ||
+
+                "Payment"
+
+              );
+
+
+            /*
+              New withdrawal records use
+              accountDetails.
+
+              Old records may only have
+              paymentMasked.
+            */
+
+            const account =
+              escapeHtml(
+
+                item.accountDetails ||
+
+                item.account ||
+
+                item.payment ||
+
+                item.paymentMasked ||
+
+                "Not available"
+
               );
 
 
@@ -1828,6 +1681,12 @@ async function loadWithdrawals() {
                 formatDate(
                   item.createdAt
                 )
+              );
+
+
+            const id =
+              escapeHtml(
+                item.id
               );
 
 
@@ -1840,66 +1699,122 @@ async function loadWithdrawals() {
 
               <div class="data-row">
 
+
                 <div class="data-main">
 
                   <div>
 
                     <div class="data-name">
+
+                      👤 Username:
                       ${username}
+
                     </div>
 
-                    <div class="data-secondary">
-                      ${email}<br>
-                      ${method}
-                      ${payment ? " • " + payment : ""}<br>
-                      ${date}
+
+                    <div class="withdraw-details">
+
+
+                      📧 Email:
+                      <strong>
+                        ${email || "Not available"}
+                      </strong>
+
+
+                      <br>
+
+
+                      🆔 UID:
+                      <strong>
+                        ${uid || "Not available"}
+                      </strong>
+
+
+                      <br>
+
+
+                      💰 Amount:
+                      <strong>
+                        ৳${amount.toFixed(2)}
+                      </strong>
+
+
+                      <br>
+
+
+                      💳 Method:
+                      <strong>
+                        ${method}
+                      </strong>
+
+
+                      <br>
+
+
+                      🏦 Account:
+                      <strong class="withdraw-account">
+                        ${account}
+                      </strong>
+
+
+                      <br>
+
+
+                      📅 Requested:
+                      <strong>
+                        ${date}
+                      </strong>
+
+
                     </div>
 
                   </div>
 
-                  <div class="data-amount">
-                    ${amount.toFixed(2)}
-                  </div>
 
                 </div>
 
 
                 <span
-                  class="status ${statusClass}">
+                  class="status ${statusClass}"
+                >
                   ${escapeHtml(status)}
                 </span>
 
 
                 ${
                   canAct
+
                     ? `
 
                       <div class="action-row">
 
+
                         <button
                           class="action-btn approve-btn"
                           type="button"
-                          onclick="approveWithdrawal('${id}')">
-
+                          onclick="approveWithdrawal('${id}')"
+                        >
                           Approve
-
                         </button>
 
 
                         <button
                           class="action-btn reject-btn"
                           type="button"
-                          onclick="rejectWithdrawal('${id}')">
-
+                          onclick="rejectWithdrawal('${id}')"
+                        >
                           Reject
-
                         </button>
+
 
                       </div>
 
                     `
+
                     : ""
+
                 }
+
 
               </div>
 
@@ -1907,6 +1822,7 @@ async function loadWithdrawals() {
 
           }
         )
+
         .join("");
 
 
@@ -1942,8 +1858,9 @@ async function loadWithdrawals() {
 
 /* =========================================================
    APPROVE WITHDRAWAL
+
    IMPORTANT:
-   User balance was already deducted
+   Balance was already deducted
    when withdrawal was submitted.
 ========================================================= */
 
@@ -1980,6 +1897,7 @@ async function approveWithdrawal(
     await firebaseDb.runTransaction(
       async function(transaction) {
 
+
         const withdrawalSnap =
           await transaction.get(
             withdrawalRef
@@ -2007,11 +1925,6 @@ async function approveWithdrawal(
             "Pending"
           ).toLowerCase();
 
-
-        /*
-          Only Pending requests can be approved.
-          This prevents double processing.
-        */
 
         if (
           currentStatus !==
@@ -2048,6 +1961,7 @@ async function approveWithdrawal(
           }
         );
 
+
       }
     );
 
@@ -2059,7 +1973,9 @@ async function approveWithdrawal(
 
     clearError();
 
+
     await loadWithdrawals();
+
 
   } catch (error) {
 
@@ -2084,18 +2000,15 @@ async function approveWithdrawal(
 
 /* =========================================================
    REJECT WITHDRAWAL
+
    IMPORTANT:
-   Withdrawal amount was already deducted.
+   Amount was already deducted.
 
-   Therefore:
-   1. Read withdrawal
-   2. Read wallet
-   3. Read profile
-   4. Check status is Pending
-   5. Refund amount
-   6. Mark withdrawal Rejected
+   Reject:
+   Refund amount
+   + mark Rejected
 
-   Everything happens in ONE transaction.
+   Everything in ONE transaction.
 ========================================================= */
 
 async function rejectWithdrawal(
@@ -2131,11 +2044,8 @@ async function rejectWithdrawal(
     await firebaseDb.runTransaction(
       async function(transaction) {
 
-        /*
-          -----------------------------------------
-          STEP 1: READ WITHDRAWAL
-          -----------------------------------------
-        */
+
+        /* READ WITHDRAWAL */
 
         const withdrawalSnap =
           await transaction.get(
@@ -2164,11 +2074,6 @@ async function rejectWithdrawal(
             "Pending"
           ).toLowerCase();
 
-
-        /*
-          Only Pending requests can be rejected.
-          This prevents a second refund.
-        */
 
         if (
           currentStatus !==
@@ -2216,11 +2121,7 @@ async function rejectWithdrawal(
         }
 
 
-        /*
-          -----------------------------------------
-          STEP 2: PREPARE REFERENCES
-          -----------------------------------------
-        */
+        /* REFERENCES */
 
         const walletRef =
           firebaseDb
@@ -2238,11 +2139,7 @@ async function rejectWithdrawal(
             .doc(userId);
 
 
-        /*
-          -----------------------------------------
-          STEP 3: READ WALLET
-          -----------------------------------------
-        */
+        /* READ WALLET */
 
         const walletSnap =
           await transaction.get(
@@ -2250,11 +2147,7 @@ async function rejectWithdrawal(
           );
 
 
-        /*
-          -----------------------------------------
-          STEP 4: READ PROFILE
-          -----------------------------------------
-        */
+        /* READ PROFILE */
 
         const profileSnap =
           await transaction.get(
@@ -2264,27 +2157,25 @@ async function rejectWithdrawal(
 
         const walletData =
           walletSnap.exists
+
             ? (
                 walletSnap.data() ||
                 {}
               )
+
             : {};
 
 
         const profileData =
           profileSnap.exists
+
             ? (
                 profileSnap.data() ||
                 {}
               )
+
             : {};
 
-
-        /*
-          -----------------------------------------
-          CURRENT BALANCE
-          -----------------------------------------
-        */
 
         const walletBalance =
           Number(
@@ -2298,15 +2189,11 @@ async function rejectWithdrawal(
           );
 
 
-        /*
-          Wallet is the primary balance source.
-          If wallet exists, refund there.
-          Otherwise profile balance is used.
-        */
-
         const currentBalance =
           walletSnap.exists
+
             ? walletBalance
+
             : profileBalance;
 
 
@@ -2315,21 +2202,11 @@ async function rejectWithdrawal(
           amount;
 
 
-        /*
-          -----------------------------------------
-          STEP 5: REFUND WALLET
-          -----------------------------------------
-        */
+        /* REFUND WALLET */
 
         if (
           walletSnap.exists
         ) {
-
-          const currentTotalEarned =
-            Number(
-              walletData.total_earned || 0
-            );
-
 
           transaction.update(
             walletRef,
@@ -2346,13 +2223,8 @@ async function rejectWithdrawal(
             }
           );
 
-        } else {
 
-          /*
-            Wallet does not exist.
-            Create it so future balance
-            calculations remain consistent.
-          */
+        } else {
 
           transaction.set(
             walletRef,
@@ -2398,11 +2270,7 @@ async function rejectWithdrawal(
         }
 
 
-        /*
-          -----------------------------------------
-          STEP 6: KEEP PROFILE BALANCE IN SYNC
-          -----------------------------------------
-        */
+        /* SYNC PROFILE */
 
         if (
           profileSnap.exists
@@ -2421,11 +2289,7 @@ async function rejectWithdrawal(
         }
 
 
-        /*
-          -----------------------------------------
-          STEP 7: MARK WITHDRAWAL REJECTED
-          -----------------------------------------
-        */
+        /* MARK REJECTED */
 
         transaction.update(
           withdrawalRef,
@@ -2456,6 +2320,7 @@ async function rejectWithdrawal(
           }
         );
 
+
       }
     );
 
@@ -2466,6 +2331,7 @@ async function rejectWithdrawal(
 
 
     clearError();
+
 
     await loadUsers();
 
@@ -2494,7 +2360,7 @@ async function rejectWithdrawal(
 
 
 /* =========================================================
-   LOAD TASKS
+   TASKS
 ========================================================= */
 
 async function loadTasks() {
@@ -2505,15 +2371,15 @@ async function loadTasks() {
 
 
   const list =
-    getElement(
-      "tasksList"
-    );
+    getElement("tasksList");
 
 
   list.innerHTML = `
+
     <div class="loading">
       Loading tasks...
     </div>
+
   `;
 
 
@@ -2534,44 +2400,48 @@ async function loadTasks() {
           function(doc) {
 
             return {
+
               id: doc.id,
-              ...(
-                doc.data() || {}
-              )
+
+              ...(doc.data() || {})
+
             };
-
-          }
-        )
-
-
-        .sort(
-          function(a, b) {
-
-            const aTime =
-              a.createdAt &&
-              typeof a.createdAt.toMillis ===
-              "function"
-                ? a.createdAt.toMillis()
-                : 0;
-
-
-            const bTime =
-              b.createdAt &&
-              typeof b.createdAt.toMillis ===
-              "function"
-                ? b.createdAt.toMillis()
-                : 0;
-
-
-            return bTime - aTime;
 
           }
         );
 
 
-    getElement(
-      "tasksCount"
-    ).textContent =
+    tasks.sort(
+      function(a, b) {
+
+        const aTime =
+          a.createdAt &&
+          typeof a.createdAt.toMillis ===
+          "function"
+
+            ? a.createdAt.toMillis()
+
+            : 0;
+
+
+        const bTime =
+          b.createdAt &&
+          typeof b.createdAt.toMillis ===
+          "function"
+
+            ? b.createdAt.toMillis()
+
+            : 0;
+
+
+        return bTime - aTime;
+
+      }
+    );
+
+
+    getElement("tasksCount")
+      .textContent =
       tasks.length;
 
 
@@ -2597,7 +2467,9 @@ async function loadTasks() {
 
 
     list.innerHTML =
+
       tasks
+
         .map(
           function(task) {
 
@@ -2676,6 +2548,7 @@ async function loadTasks() {
 
                   Completions:
                   ${completed}
+
                   ${
                     max > 0
                       ? " / " + max
@@ -2690,6 +2563,7 @@ async function loadTasks() {
 
           }
         )
+
         .join("");
 
 
@@ -2715,7 +2589,7 @@ async function loadTasks() {
 
 
 /* =========================================================
-   ADMIN LOGOUT
+   LOGOUT
 ========================================================= */
 
 async function adminLogout() {
@@ -2729,9 +2603,11 @@ async function adminLogout() {
       "worker_logged_in"
     );
 
+
     localStorage.removeItem(
       "worker_username"
     );
+
 
     localStorage.removeItem(
       "worker_email"
@@ -2766,6 +2642,7 @@ async function adminLogout() {
 document.addEventListener(
   "DOMContentLoaded",
   function() {
+
 
     if (
       typeof firebaseAuth ===
@@ -2810,6 +2687,7 @@ document.addEventListener(
       }
     );
 
+
   }
 );
 
@@ -2817,4 +2695,5 @@ document.addEventListener(
 
 
 </body>
+
 </html>
